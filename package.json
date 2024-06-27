@@ -10,7 +10,8 @@
     "test": "jest",
     "clear": "cd android && ./gradlew clean && cd ../",
     "prebuild": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
-    "build": "cd android && ./gradlew assembleDebug && cd ../"
+    "build": "cd android && ./gradlew assembleDebug && cd ../",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.6.3",
@@ -29,8 +30,11 @@
     "@reduxjs/toolkit": "^2.2.5",
     "antd": "^5.18.3",
     "axios": "^1.7.2",
+    "deprecated-react-native-prop-types": "^5.0.0",
     "libphonenumber-js": "^1.11.4",
     "native-base": "^3.4.28",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "react": "^18.3.1",
     "react-hook-form": "^7.52.0",
     "react-hooks-form-validator": "^5.2.0",

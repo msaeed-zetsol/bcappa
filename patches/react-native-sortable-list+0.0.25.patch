@@ -1,0 +1,27 @@
+diff --git a/node_modules/react-native-sortable-list/src/Row.js b/node_modules/react-native-sortable-list/src/Row.js
+index 3cd798c..56dcb8f 100644
+--- a/node_modules/react-native-sortable-list/src/Row.js
++++ b/node_modules/react-native-sortable-list/src/Row.js
+@@ -1,6 +1,7 @@
+ import React, {Component, cloneElement} from 'react';
+ import PropTypes from 'prop-types';
+-import {Animated, PanResponder, StyleSheet, ViewPropTypes} from 'react-native';
++import {Animated, PanResponder, StyleSheet} from 'react-native';
++import { ViewPropTypes } from 'deprecated-react-native-prop-types';
+ import {shallowEqual} from './utils';
+ 
+ export default class Row extends Component {
+diff --git a/node_modules/react-native-sortable-list/src/SortableList.js b/node_modules/react-native-sortable-list/src/SortableList.js
+index 4140db5..be3c547 100644
+--- a/node_modules/react-native-sortable-list/src/SortableList.js
++++ b/node_modules/react-native-sortable-list/src/SortableList.js
+@@ -1,6 +1,8 @@
+ import React, {Component} from 'react';
+ import PropTypes from 'prop-types';
+-import {ScrollView, View, StyleSheet, Platform, RefreshControl, ViewPropTypes} from 'react-native';
++import {ScrollView, View, StyleSheet, Platform, RefreshControl} from 'react-native';
++import { ViewPropTypes } from 'deprecated-react-native-prop-types';
++
+ import {shallowEqual, swapArrayElements} from './utils';
+ import Row from './Row';
+ 
