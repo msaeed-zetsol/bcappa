@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "425837288874",
+    "project_id": "bcappa-82c60",
+    "storage_bucket": "bcappa-82c60.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:425837288874:android:e65ab76435bf66091a1fd3",
+        "android_client_info": {
+          "package_name": "com.bcappa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "425837288874-65auprpa2b2nus0tl6le9coe78s6i5ue.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bcappa",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "425837288874-ivnre9s31uk6clo206fqaa8op0n5p5r3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD34jzx42Ss1mI4u0GuFlkWVLVQrGC1ty4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "425837288874-ivnre9s31uk6clo206fqaa8op0n5p5r3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
