@@ -5,7 +5,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import {View, Text, Avatar, Button} from 'native-base';
 import {verticalScale, horizontalScale} from '../../utilities/Dimensions';
 import {newColorTheme} from '../../constants/Colors';

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {BcDetailsScreen, SummaryScreen} from '../../screens';
 import {StackNavigatorParamList} from '../types';

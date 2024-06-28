@@ -1,7 +1,7 @@
 import messaging, {
   FirebaseMessagingTypes,
 } from '@react-native-firebase/messaging';
-import {Alert, Platform} from 'react-native';
+import {Platform} from 'react-native';
 import notifee, {AndroidImportance} from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
