@@ -23,7 +23,7 @@ import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import Colors, {newColorTheme} from '../../constants/Colors';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useForm, Controller} from 'react-hook-form';
-import {Fonts, Images} from '../../constants';
+import {Fonts} from '../../constants';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Heading from '../../components/Heading';
 import {apimiddleWare} from '../../utilities/HelperFunctions';
@@ -33,6 +33,8 @@ import TextFieldComponent from '../../components/TextFieldComponent';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {setMembers} from '../../redux/members/membersSlice';
 import {errors} from '../../redux/user/userSlice';
+import AddUser from '../../assets/svg/AddUser';
+import Call from '../../assets/svg/Call';
 
 const NewBc = () => {
   const navigation: any = useNavigation();
@@ -380,7 +382,7 @@ const NewBc = () => {
               maxUsers,
             });
           }}>
-          <Images.AddUser />
+          <AddUser />
           <Text
             color={Colors.PRIMARY_COLOR}
             ml={horizontalScale(5)}
@@ -408,7 +410,7 @@ const NewBc = () => {
                 backgroundColor: 'white',
               },
             ]}>
-            <Images.Call />
+            <Call />
             <Text
               color={Colors.PRIMARY_COLOR}
               ml={horizontalScale(5)}

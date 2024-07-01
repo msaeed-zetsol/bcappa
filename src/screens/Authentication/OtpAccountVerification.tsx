@@ -7,13 +7,14 @@ import {
 } from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import {View, Pressable, Heading, Text, Button} from 'native-base';
-import {Colors, Images, Fonts} from '../../constants';
+import {Colors, Fonts} from '../../constants';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {newColorTheme} from '../../constants/Colors';
 import {apimiddleWare} from '../../utilities/HelperFunctions';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BackButton from '../../assets/svg/BackButton';
 
 const OtpAccountVerification = () => {
   const routes: any = useRoute();
@@ -232,7 +233,7 @@ const OtpAccountVerification = () => {
         onPress={() => {
           navigation.goBack();
         }}>
-        <Images.BackButton />
+        <BackButton />
       </Pressable>
       <Heading mt={10} fontSize={'3xl'} fontFamily={Fonts.POPPINS_EXTRA_BOLD}>
         Account Verification

@@ -32,7 +32,7 @@ import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import Colors, {newColorTheme} from '../../constants/Colors';
 import SortableList from 'react-native-sortable-list';
 import {useForm, Controller} from 'react-hook-form';
-import {Fonts, Images} from '../../constants';
+import {Fonts} from '../../constants';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   addMember,
@@ -42,6 +42,9 @@ import {
 } from '../../redux/members/membersSlice';
 
 import {removeMembers} from '../../redux/user/userSlice';
+import DragIcon from '../../assets/svg/dragIcon';
+import Del from '../../assets/svg/Del';
+import Not_membersfound from '../../assets/svg/not_membersfound';
 const AddMembers = () => {
   const navigation: any = useNavigation();
   const routes: any = useRoute();
@@ -147,7 +150,7 @@ const AddMembers = () => {
           },
         ]}>
         <View>
-          <Images.DragIcon />
+          <DragIcon />
         </View>
         <View
           style={{
@@ -182,7 +185,7 @@ const AddMembers = () => {
                 console.log({finalNew});
                 dispatch(setMembers(finalNew));
               }}>
-              <Images.Del />
+              <Del />
             </TouchableOpacity>
           </View>
           <View
@@ -304,7 +307,7 @@ const AddMembers = () => {
               alignItems: 'center',
               flex: 0.8,
             }}>
-            <Images.Not_Members_Found />
+            <Not_membersfound />
           </View>
         )}
       </View>
