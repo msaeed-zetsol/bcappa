@@ -1,3 +1,8 @@
+import React from 'react';
+import { SvgXml } from 'react-native-svg';
+
+const Congratulations = () => {
+  const svgMarkup = `
 <svg width="256" height="219" viewBox="0 0 256 219" fill="none" xmlns="http://www.w3.org/2000/svg">
 <ellipse cx="134.49" cy="110.727" rx="53.4899" ry="53.5087" fill="#02A7FD"/>
 <path d="M153.612 98.5547L129.274 122.9L117.105 110.728" stroke="white" stroke-width="5.67982" stroke-linecap="round" stroke-linejoin="round"/>
@@ -10,3 +15,10 @@
 <path d="M118.468 0.787109L121.134 8.99069L129.759 8.99069L122.781 14.0608L125.446 22.2644L118.468 17.1943L111.49 22.2644L114.155 14.0608L107.177 8.99069L115.803 8.99069L118.468 0.787109Z" fill="#E9FBF3"/>
 <path d="M3.32492 186.426C3.32492 186.426 1.39848 175.617 6.92718 173.463C11.5719 171.653 15.5986 179.657 19.415 176.755C23.2808 173.816 13.6306 169.16 16.7734 165.644C20.081 161.945 30.7021 165.644 30.7021 165.644" stroke="#02A7FD" stroke-width="4.96797"/>
 </svg>
+
+  `; 
+
+  return <SvgXml xml={svgMarkup} width="256" height="219"/>;
+};
+
+export default Congratulations;

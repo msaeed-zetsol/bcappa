@@ -6,6 +6,7 @@ import {Fonts, Colors, Images} from '../constants';
 import {useDispatch} from 'react-redux';
 import {errors} from '../redux/user/userSlice';
 import * as Animatable from 'react-native-animatable';
+import ErrorModals from '../assets/svg/ErrorModals';
 
 const ErrorModal = ({message}: any) => {
   const dispatch: any = useDispatch();
@@ -27,10 +28,7 @@ const ErrorModal = ({message}: any) => {
               paddingVertical: verticalScale(20),
             },
           ]}>
-          <Images.ErrorModals
-            height={verticalScale(200)}
-            width={verticalScale(200)}
-          />
+         <ErrorModals/>
           <View style={styles.textContainer}>
             <Text style={styles.modalText}>Something went wrong!!</Text>
             <Text style={styles.title}>{message}</Text>

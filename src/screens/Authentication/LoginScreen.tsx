@@ -1,6 +1,8 @@
-import {StyleSheet, StatusBar, TouchableOpacity, Keyboard} from 'react-native';
+import {StyleSheet, StatusBar, TouchableOpacity, Keyboard, Image} from 'react-native';
 import React, {useState} from 'react';
 import {Images, Fonts} from '../../constants';
+import GoogleIcon from '../../assets/svg/GoogleIcon';
+import Facebook from  '../../assets/svg/Facebook';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import {useForm, Controller} from 'react-hook-form';
 
@@ -94,6 +96,7 @@ const LoginScreen = () => {
   const LoginHandler = async (details: any) => {
     try {
       const getToken: any = await AsyncStorage.getItem('fcmToken');
+      console.log(getToken);
       const parsedFcmToken: any = await JSON.parse(getToken);
       Keyboard.dismiss();
       setIsLoading(true);
@@ -325,7 +328,8 @@ const LoginScreen = () => {
           _pressed={{
             backgroundColor: 'DISABLED_COLOR',
           }}>
-          <Images.Google />
+        
+<GoogleIcon  />
           <Text
             pl="2"
             fontSize={verticalScale(16)}
@@ -340,7 +344,8 @@ const LoginScreen = () => {
           _pressed={{
             backgroundColor: 'DISABLED_COLOR',
           }}>
-          <Images.Facebook />
+<Facebook />
+
           <Text
             pl="2"
             fontSize={verticalScale(16)}

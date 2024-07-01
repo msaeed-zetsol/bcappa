@@ -9,7 +9,7 @@ import {
 import React, {useEffect, useMemo, useState} from 'react';
 import {Text, View, Avatar, Button} from 'native-base';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {Images, Fonts} from '../../constants';
+import {Fonts} from '../../constants';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {
   BcMemberStatus,
@@ -23,6 +23,9 @@ import {apimiddleWare} from '../../utilities/HelperFunctions';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import InfoModal from '../../components/InfoModal';
+import Calender from '../../assets/svg/Calender';
+import Cash from '../../assets/svg/Cash';
+import Err from '../../assets/svg/Err';
 
 const BcDetailsScreen = () => {
   const routes: any = useRoute();
@@ -252,7 +255,7 @@ const BcDetailsScreen = () => {
               justifyContent={'space-between'}
               mt={verticalScale(26)}>
               <View flexDirection={'row'} flex={1}>
-                <Images.Calender />
+                <Calender />
                 <View ml={3}>
                   <Text
                     fontSize={'sm'}
@@ -277,7 +280,7 @@ const BcDetailsScreen = () => {
                 alignItems="center"
                 maxWidth={150}
                 width="80%">
-                <Images.Cash />
+                <Cash />
                 <View ml={3}>
                   <Text
                     fontSize={'sm'}
@@ -614,7 +617,7 @@ const BcDetailsScreen = () => {
           message="Please verify your account to join BC!"
           buttonText="OK"
           callback={handleCallback}
-          Photo={Images.Err}
+          Photo={<Err/>}
           isButtonPressed={isButtonPressed}
         />
       )}

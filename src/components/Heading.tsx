@@ -3,6 +3,7 @@ import {TouchableOpacity} from 'react-native';
 import {View, Text} from 'native-base';
 import {horizontalScale, verticalScale} from '../utilities/Dimensions';
 import {Fonts, Images} from '../constants';
+import BackButton from '../assets/svg/BackButton';
 const Heading = ({name, navigation, color, onPress}: any) => {
   return (
     <View
@@ -23,10 +24,7 @@ const Heading = ({name, navigation, color, onPress}: any) => {
                 navigation.goBack();
               }
         }>
-        <Images.BackButton
-          wdith={horizontalScale(50)}
-          height={verticalScale(50)}
-        />
+        <BackButton/>
       </TouchableOpacity>
       <Text
         textAlign="center"

@@ -29,7 +29,7 @@ import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import Colors, {newColorTheme} from '../../constants/Colors';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useForm, Controller} from 'react-hook-form';
-import {Fonts, Images} from '../../constants';
+import {Fonts} from '../../constants';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Heading from '../../components/Heading';
 import SortableList from 'react-native-sortable-list';
@@ -46,6 +46,8 @@ import {
 } from '../../redux/members/membersSlice';
 import {RootState} from '../../redux/store';
 import {removeMembers} from '../../redux/user/userSlice';
+import AddUser from '../../assets/svg/AddUser';
+import Call from '../../assets/svg/Call';
 
 const UpdateBc = () => {
   const navigation: any = useNavigation();
@@ -626,7 +628,7 @@ const UpdateBc = () => {
                 // maxUsers,
               });
             }}>
-            <Images.AddUser />
+            <AddUser />
             <Text
               color={Colors.PRIMARY_COLOR}
               ml={horizontalScale(5)}
@@ -667,7 +669,7 @@ const UpdateBc = () => {
                   backgroundColor: 'white',
                 },
               ]}>
-              <Images.Call />
+              <Call />
               <Text
                 color={Colors.PRIMARY_COLOR}
                 ml={horizontalScale(5)}

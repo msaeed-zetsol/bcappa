@@ -1,24 +1,27 @@
-import {StyleSheet, StatusBar, ScrollView, Modal} from 'react-native';
-import React, {useState} from 'react';
-import {View, Text, Radio, Button} from 'native-base';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {Fonts, Images} from '../../constants';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {newColorTheme} from '../../constants/Colors';
+import React, { useState } from 'react';
+import { StyleSheet, StatusBar, ScrollView, Modal } from 'react-native';
+import { View, Text, Radio, Button } from 'native-base';
+import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
+import { Fonts } from '../../constants';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { newColorTheme } from '../../constants/Colors';
 import Heading from '../../components/Heading';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
+import { apimiddleWare } from '../../utilities/HelperFunctions';
+import JazzCash from '../../assets/svg/JazzCash';
+import Payment from '../../assets/svg/payment';
+import Err from '../../assets/svg/Err';
 
 const SummaryScreen = () => {
   const paymentMethod = [
     {
       name: 'Credit/Debit Card',
       value: 'credit-debit-card',
-      ImageComponent: Images.JazzCash,
+      ImageComponent: JazzCash,
     },
     {
       name: 'Voucher Payment',
       value: 'voucher-payment',
-      ImageComponent: Images.JazzCash,
+      ImageComponent: JazzCash,
     },
   ];
 
@@ -29,14 +32,10 @@ const SummaryScreen = () => {
   const [error, setError] = useState(false);
 
   const route: any = useRoute();
-  const {item, member, bcData}: any = route.params;
+  const { item, member, bcData }: any = route.params;
   const navigation: any = useNavigation();
 
-  function calculateTotal(
-    monthlyAmount: number,
-    bcCharges: number,
-    Tax: number,
-  ) {
+  function calculateTotal(monthlyAmount: number, bcCharges: number, Tax: number) {
     let total = 0;
     total = monthlyAmount + bcCharges + Tax;
     return total;
@@ -88,8 +87,9 @@ const SummaryScreen = () => {
         <Heading name={'Summary'} navigation={navigation} />
       </View>
       <ScrollView
-        contentContainerStyle={{paddingBottom: verticalScale(10)}}
-        showsVerticalScrollIndicator={false}>
+        contentContainerStyle={{ paddingBottom: verticalScale(10) }}
+        showsVerticalScrollIndicator={false}
+      >
         <View
           bg={'WHITE_COLOR'}
           borderRadius={15}
@@ -105,12 +105,14 @@ const SummaryScreen = () => {
               height: 2,
             },
             shadowRadius: 20,
-          }}>
+          }}
+        >
           <View
             mt={3}
             flexDirection="row"
             justifyContent={'space-between'}
-            alignItems={'center'}>
+            alignItems={'center'}
+          >
             <Text color="GREY" fontFamily={Fonts.POPPINS_MEDIUM}>
               BC Month
             </Text>
@@ -125,7 +127,8 @@ const SummaryScreen = () => {
             mt={3}
             flexDirection="row"
             justifyContent={'space-between'}
-            alignItems={'center'}>
+            alignItems={'center'}
+          >
             <Text color="GREY" fontFamily={Fonts.POPPINS_MEDIUM}>
               BC Type
             </Text>
@@ -137,7 +140,8 @@ const SummaryScreen = () => {
             mt={3}
             flexDirection="row"
             justifyContent={'space-between'}
-            alignItems={'center'}>
+            alignItems={'center'}
+          >
             <Text color="GREY" fontFamily={Fonts.POPPINS_MEDIUM}>
               Amount
             </Text>
@@ -149,9 +153,10 @@ const SummaryScreen = () => {
             mt={3}
             flexDirection="row"
             justifyContent={'space-between'}
-            alignItems={'center'}>
+            alignItems={'center'}
+          >
             <Text color="GREY" fontFamily={Fonts.POPPINS_MEDIUM}>
-              Bc charges
+              BC Charges
             </Text>
             <Text color={'BLACK_COLOR'} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
               Rs 0
@@ -161,7 +166,8 @@ const SummaryScreen = () => {
             mt={3}
             flexDirection="row"
             justifyContent={'space-between'}
-            alignItems={'center'}>
+            alignItems={'center'}
+          >
             <Text color="GREY" fontFamily={Fonts.POPPINS_MEDIUM}>
               Tax
             </Text>
@@ -174,14 +180,16 @@ const SummaryScreen = () => {
             mt={3}
             flexDirection="row"
             justifyContent={'space-between'}
-            alignItems={'center'}>
+            alignItems={'center'}
+          >
             <Text color={'BLACK_COLOR'} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
               Total
             </Text>
             <Text
               color={'PRIMARY_COLOR'}
               fontFamily={Fonts.POPPINS_SEMI_BOLD}
-              fontSize={'md'}>
+              fontSize={'md'}
+            >
               Rs {calculateTotal(bcData?.amount, 0, 0)}
             </Text>
           </View>
@@ -190,12 +198,14 @@ const SummaryScreen = () => {
           color="#06202E"
           mx={horizontalScale(20)}
           fontFamily={Fonts.POPPINS_MEDIUM}
-          mt={5}>
+          mt={5}
+        >
           Please select your payment method
         </Text>
         {paymentMethod.map((item, index) => {
           return (
             <View
+              key={index}
               mx={horizontalScale(20)}
               bg={'WHITE_COLOR'}
               borderRadius={15}
@@ -214,18 +224,21 @@ const SummaryScreen = () => {
               }}
               flexDirection={'row'}
               justifyContent={'space-between'}
-              alignItems="center">
+              alignItems="center"
+            >
               <Radio.Group
                 name="Payment Radio Group"
                 value={value && value}
                 onChange={(nextValue: any) => {
                   setValue(nextValue);
                   console.log(nextValue);
-                }}>
+                }}
+              >
                 <Radio
                   value={item.value}
                   my={1}
-                  fontFamily={Fonts.POPPINS_EXTRA_BOLD}>
+                  fontFamily={Fonts.POPPINS_EXTRA_BOLD}
+                >
                   {item.name}
                 </Radio>
               </Radio.Group>
@@ -263,13 +276,15 @@ const SummaryScreen = () => {
           isPressed={isLoading}
           onPress={() => {
             openEditModal();
-          }}>
+          }}
+        >
           Pay
         </Button>
         <Modal
           visible={activeModalItem}
           transparent={true}
-          animationType="slide">
+          animationType="slide"
+        >
           <StatusBar
             backgroundColor={'rgba(0, 0, 0, 0.63)'}
             barStyle={'dark-content'}
@@ -279,22 +294,25 @@ const SummaryScreen = () => {
               mx={horizontalScale(20)}
               bg={'WHITE_COLOR'}
               borderRadius={15}
-              py={verticalScale(20)}>
+              py={verticalScale(20)}
+            >
               <View justifyContent={'center'} alignItems={'center'}>
-                <Images.Payment />
+                <Payment />
                 <Text
                   mt={verticalScale(20)}
                   color={'BLACK_COLOR'}
                   fontSize={'2xl'}
                   letterSpacing={1}
-                  fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+                  fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                >
                   Are you sure
                 </Text>
                 <Text
                   color={'GREY'}
                   fontSize={'sm'}
-                  fontFamily={Fonts.POPPINS_MEDIUM}>
-                  to pay the bc?
+                  fontFamily={Fonts.POPPINS_MEDIUM}
+                >
+                  to pay the BC?
                 </Text>
               </View>
               <View mt={5} flexDirection={'row'} justifyContent={'center'}>
@@ -306,13 +324,13 @@ const SummaryScreen = () => {
                   }}
                   backgroundColor={'#D3D3D3'}
                   size={'md'}
-                  // py={'3'}
                   px={'7'}
                   mr={2}
                   borderRadius={10}
                   onPress={() => {
                     setActiveModalItem(false);
-                  }}>
+                  }}
+                >
                   Cancel
                 </Button>
                 <Button
@@ -344,7 +362,8 @@ const SummaryScreen = () => {
                   onPress={async () => {
                     setActiveModalItem(false);
                     await changeStatus();
-                  }}>
+                  }}
+                >
                   Pay
                 </Button>
               </View>
@@ -357,22 +376,25 @@ const SummaryScreen = () => {
               mx={horizontalScale(20)}
               bg={'WHITE_COLOR'}
               borderRadius={15}
-              py={verticalScale(20)}>
+              py={verticalScale(20)}
+            >
               <View justifyContent={'center'} alignItems={'center'}>
-                <Images.Err />
+                <Err />
                 <Text
                   textAlign={'center'}
                   mt={verticalScale(20)}
                   color={'BLACK_COLOR'}
                   fontSize={'2xl'}
                   letterSpacing={1}
-                  fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-                  Payments unsuccessful !
+                  fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                >
+                  Payment unsuccessful!
                 </Text>
                 <Text
                   color={'GREY'}
                   fontSize={'sm'}
-                  fontFamily={Fonts.POPPINS_MEDIUM}>
+                  fontFamily={Fonts.POPPINS_MEDIUM}
+                >
                   Please try again.
                 </Text>
               </View>
@@ -385,15 +407,15 @@ const SummaryScreen = () => {
                   }}
                   backgroundColor={'#D3D3D3'}
                   size={'md'}
-                  // py={'3'}
                   px={'7'}
                   mr={2}
                   borderRadius={10}
                   onPress={() => {
                     setError(false);
                     navigation.goBack();
-                  }}>
-                  ok
+                  }}
+                >
+                  OK
                 </Button>
               </View>
             </View>

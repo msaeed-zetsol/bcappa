@@ -8,18 +8,23 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import React, {useState} from 'react';
-import {View, Text, Avatar, Button, Pressable} from 'native-base';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {Fonts, Images} from '../../constants';
-import {BcStatus, BcType} from '../../lookups/Enums';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import Colors, {newColorTheme} from '../../constants/Colors';
+import React, { useState } from 'react';
+import { View, Text, Avatar, Button, Pressable } from 'native-base';
+import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
+import { Fonts } from '../../constants';
+import { BcStatus, BcType } from '../../lookups/Enums';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import Colors, { newColorTheme } from '../../constants/Colors';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import {useDispatch} from 'react-redux';
+import { apimiddleWare } from '../../utilities/HelperFunctions';
+import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {setMembers} from '../../redux/members/membersSlice';
+import { setMembers } from '../../redux/members/membersSlice';
+import Global from '../../assets/svg/Global';
+import RedLock from '../../assets/svg/RedLock';
+import CreateBc from '../../assets/svg/CreateBc';
+import Pencil from '../../assets/svg/pencil';
+import Send from '../../assets/svg/Send';
 
 const MyBcsScreen = () => {
   const dispatch: any = useDispatch();
@@ -121,7 +126,7 @@ const MyBcsScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       getAllBc();
-      return () => {};
+      return () => { };
     }, []),
   );
 
@@ -154,17 +159,14 @@ const MyBcsScreen = () => {
           zIndex: 1,
           elevation: 100,
         }}>
-        <Images.CreateBc
-          width={horizontalScale(65)}
-          height={verticalScale(60)}
-        />
+        <CreateBc />
       </TouchableOpacity>
       {!loading ? (
         allBc.length > 0 ? (
           <FlatList
             data={allBc}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{paddingBottom: verticalScale(30)}}
+            contentContainerStyle={{ paddingBottom: verticalScale(30) }}
             refreshControl={
               <RefreshControl
                 refreshing={loading}
@@ -173,8 +175,8 @@ const MyBcsScreen = () => {
               />
             }
             // keyExtractor={item => item.id}
-            renderItem={({item, index}) => {
-              const {col, bg} = setColor(item.status);
+            renderItem={({ item, index }) => {
+              const { col, bg } = setColor(item.status);
               return (
                 <View
                   key={index}
@@ -226,7 +228,7 @@ const MyBcsScreen = () => {
                               item,
                             });
                           }}>
-                          <Images.Pencil />
+                          <Pencil />
                         </TouchableOpacity>
                       )}
 
@@ -247,7 +249,7 @@ const MyBcsScreen = () => {
                               console.error('Error building link:', error);
                             }
                           }}>
-                          <Images.Send />
+                          <Send />
                         </TouchableOpacity>
                       )}
                   </View>
@@ -260,15 +262,9 @@ const MyBcsScreen = () => {
                       {item.title}
                     </Text>
                     {item.type === BcType.Private ? (
-                      <Images.RedLock
-                        width={horizontalScale(22)}
-                        height={verticalScale(20)}
-                      />
+                      <RedLock />
                     ) : (
-                      <Images.Global
-                        width={horizontalScale(22)}
-                        height={verticalScale(20)}
-                      />
+                      <Global />
                     )}
                   </View>
                   <Text

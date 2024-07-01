@@ -15,9 +15,10 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import {Fonts, Images} from '../../constants';
+import {Fonts} from '../../constants';
 import {apimiddleWare} from '../../utilities/HelperFunctions';
 import {BcType} from '../../lookups/Enums';
+import Payment from '../../assets/svg/payment';
 
 const getCurrentAndPreviousMonthsPayments = (data: any) => {
   const currentDate = new Date();
@@ -339,7 +340,7 @@ const UserSchedule = () => {
             borderRadius={15}
             py={verticalScale(20)}>
             <View justifyContent={'center'} alignItems={'center'}>
-              <Images.Payment />
+              <Payment />
               <Text
                 mt={verticalScale(20)}
                 color={'BLACK_COLOR'}

@@ -3,9 +3,9 @@ import {
   StatusBar,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
+  FlatList
 } from 'react-native';
-import React, {useState, useCallback, useEffect} from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   Text,
   View,
@@ -17,24 +17,32 @@ import {
   HStack,
   VStack,
 } from 'native-base';
-import {Fonts, Images} from '../../constants';
-import {verticalScale, horizontalScale} from '../../utilities/Dimensions';
+import { Fonts } from '../../constants';
+import { verticalScale, horizontalScale } from '../../utilities/Dimensions';
 import {
   useFocusEffect,
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import Colors, {newColorTheme} from '../../constants/Colors';
+import Colors, { newColorTheme } from '../../constants/Colors';
 import InfoModal from '../../components/InfoModal';
-import {BcStatus, BcType, modalEnums} from '../../lookups/Enums';
+import { BcStatus, BcType, modalEnums } from '../../lookups/Enums';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Profile} from '../../interface/Interface';
+import { Profile } from '../../interface/Interface';
 import {
   apimiddleWare,
   getFirstAndLastCharsUppercase,
 } from '../../utilities/HelperFunctions';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
+import Reward from '../../assets/svg/Reward';
+import People from '../../assets/svg/People';
+import Finance from '../../assets/svg/Finance';
+import HoldingHeart from '../../assets/svg/HoldingHeart';
+import CreateBc from '../../assets/svg/CreateBc';
+import Congratulations from '../../assets/svg/Congratulations';
+import AccountNotVerified from '../../assets/svg/Account_Not_Verified';
+import CommimgSoonIcon from '../../assets/svg/CommingSoon';
 
 const HomeScreen = () => {
   const route: any = useRoute();
@@ -182,7 +190,9 @@ const HomeScreen = () => {
                 fontSize={'sm'}>
                 {userInfo?.fullName}
               </Text>
-              <Images.Reward />
+              <Reward />
+
+
             </View>
           </View>
         </View>
@@ -298,7 +308,7 @@ const HomeScreen = () => {
             >
               {swiperData.map((item: any) => {
                 return (
-                  <View key={item.id} style={{flex: 1}}>
+                  <View key={item.id} style={{ flex: 1 }}>
                     <Text
                       color={'#06202E'}
                       isTruncated={true}
@@ -431,7 +441,8 @@ const HomeScreen = () => {
           </Button> */}
           </View>
           <View>
-            <Images.People />
+          <People/>
+            
           </View>
         </View>
       )}
@@ -466,10 +477,7 @@ const HomeScreen = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Images.HoldingHeart
-              height={verticalScale(55)}
-              width={verticalScale(55)}
-            />
+            <HoldingHeart />
             <Text
               color={'WHITE_COLOR'}
               fontFamily={Fonts.POPPINS_SEMI_BOLD}
@@ -504,10 +512,8 @@ const HomeScreen = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Images.Finance
-              height={verticalScale(55)}
-              width={verticalScale(55)}
-            />
+              <Finance/>
+            
             <Text
               color={'WHITE_COLOR'}
               fontFamily={Fonts.POPPINS_SEMI_BOLD}
@@ -635,7 +641,7 @@ const HomeScreen = () => {
             </Button>
           </View>
           <View>
-            <Images.People />
+          <People/>
           </View>
         </View>
       )}
@@ -650,7 +656,7 @@ const HomeScreen = () => {
             horizontal
             data={activeBc}
             keyExtractor={(item: any, index: number) => item.id}
-            renderItem={({item, index}) => {
+            renderItem={({ item, index }) => {
               return (
                 <View style={styles.activeBcCntainer} key={index}>
                   <Text
@@ -760,10 +766,7 @@ const HomeScreen = () => {
           zIndex: 1,
           elevation: 100,
         }}>
-        <Images.CreateBc
-          width={horizontalScale(65)}
-          height={verticalScale(60)}
-        />
+        <CreateBc />
       </TouchableOpacity>
       <Modal
         isOpen={firstSignup}
@@ -776,7 +779,7 @@ const HomeScreen = () => {
           py={verticalScale(10)}>
           <Modal.Body>
             <View justifyContent={'center'} alignItems={'center'}>
-              <Images.Congratulations />
+              <Congratulations />
               <Text
                 color={'#03110A'}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
@@ -811,7 +814,7 @@ const HomeScreen = () => {
           on this exciting new app feature!"
           buttonText="OK"
           callback={handleCallback}
-          Photo={Images.CommingSoon}
+         Photo={<CommimgSoonIcon />} 
           name={modalEnums.COMMING_SOON}
           isButtonPressed={isButtonPressed}
         />
@@ -821,7 +824,7 @@ const HomeScreen = () => {
           message="your account is not currently verified with Jazzdost."
           buttonText="Verify Now"
           callback={handleCallback}
-          Photo={Images.AccountNotVerified}
+          Photo={<AccountNotVerified/>}
           name={modalEnums.ACCOUNT_NOT_VERIFIED}
           isButtonPressed={isButtonPressed}
         />

@@ -1,11 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 24.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 36.7 36.7" style="enable-background:new 0 0 36.7 36.7;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:#FFFFFF;}
-	.st1{fill:#0398E5;}
-</style>
+import React from 'react';
+import { SvgXml } from 'react-native-svg';
+
+const HoldingHeart = () => {
+  const svgMarkup = `
+ <?xml version="1.0" encoding="utf-8"?>
+    <!-- Generator: Adobe Illustrator 24.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+      viewBox="0 0 36.7 36.7" style="enable-background:new 0 0 36.7 36.7;" xml:space="preserve">
+    <style type="text/css">
+      .st0{fill:white;}
+      .st1{fill:#0398E5;}
+    </style>
 <g>
 	<path class="st0" d="M6.4,36.2c-1.5,0-3-0.6-4.1-1.7c-1.1-1.1-1.7-2.6-1.7-4.1v-7.5c0-1.5,0.6-3,1.7-4.1c1.1-1.1,2.6-1.7,4.1-1.7
 		h13.3c0.8,0,1.5,0.2,2.2,0.6c0.7,0.4,1.2,0.9,1.6,1.6l0.1,0.2l5-5.5c0.4-0.4,0.8-0.8,1.4-1c0.5-0.2,1.1-0.4,1.6-0.4l0.2,0
@@ -51,3 +56,10 @@
 		c-0.2,0.3-0.3,0.7-0.3,1.1c0.1,0.4,0.3,0.7,0.6,1C11.7,27.3,12,27.4,12.4,27.4L12.4,27.4z"/>
 </g>
 </svg>
+
+  `; 
+
+  return <SvgXml xml={svgMarkup} width="80" height="50" fill="white"/>;
+};
+
+export default HoldingHeart;

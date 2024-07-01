@@ -7,7 +7,7 @@ import {
   Alert,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
-import {Fonts, Images} from '../../constants';
+import {Fonts} from '../../constants';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import {CountryPicker} from 'react-native-country-codes-picker';
 import {useForm, Controller} from 'react-hook-form';
@@ -36,6 +36,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {locationPermission} from '../../service/LocationService';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BackButton from '../../assets/svg/BackButton';
+import GoogleIcon from '../../assets/svg/GoogleIcon';
+import Facebook from '../../assets/svg/Facebook';
 
 const initialDate = new Date();
 initialDate.setDate(initialDate.getDate() - 1); // Set initial date to one day before today
@@ -238,9 +241,7 @@ const SignupScreen = () => {
           onPress={() => {
             navigation.goBack();
           }}>
-          <Images.BackButton
-            wdith={horizontalScale(50)}
-            height={verticalScale(50)}
+          <BackButton
           />
         </Pressable>
         <Text
@@ -608,7 +609,7 @@ const SignupScreen = () => {
             _pressed={{
               backgroundColor: 'DISABLED_COLOR',
             }}>
-            <Images.Google />
+            <GoogleIcon />
             <Text
               pl="2"
               fontSize={verticalScale(16)}
@@ -622,7 +623,7 @@ const SignupScreen = () => {
             _pressed={{
               backgroundColor: 'DISABLED_COLOR',
             }}>
-            <Images.Facebook />
+            <Facebook />
             <Text
               pl="2"
               fontSize={verticalScale(16)}

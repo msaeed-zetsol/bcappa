@@ -1,6 +1,7 @@
-import {StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   ExploreScreen,
   HomeScreen,
@@ -13,13 +14,13 @@ import {
   moderateScale,
   horizontalScale,
 } from '../../utilities/Dimensions';
-import {Colors, Images} from '../../constants';
+import { Colors } from '../../constants';
 
 const Tab = createBottomTabNavigator();
 
 const BottomNavigator = () => {
   return (
-    <View style={{flex: 1, backgroundColor: Colors.WHITE_COLOR}}>
+    <View style={{ flex: 1, backgroundColor: Colors.WHITE_COLOR }}>
       <Tab.Navigator
         initialRouteName="HomeScreen"
         screenOptions={{
@@ -38,178 +39,121 @@ const BottomNavigator = () => {
             shadowRadius: 80,
             backgroundColor: Colors.WHITE_COLOR,
           },
-        }}>
+        }}
+      >
         <Tab.Screen
           name="HomeScreen"
           component={HomeScreen}
           options={{
-            tabBarIcon: ({focused}) => {
-              return (
-                <View
+            tabBarIcon: ({ focused }) => (
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <MaterialIcons
+                  name="home"
+                  color={focused ? Colors.PRIMARY_COLOR : Colors.GREY}
+                  size={focused ? horizontalScale(35) : horizontalScale(30)}
+                />
+                <Text
                   style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {focused ? (
-                    <Images.Home_Blue
-                      resizeMode="contain"
-                      width={horizontalScale(35)}
-                      height={verticalScale(35)}
-                    />
-                  ) : (
-                    <Images.Home
-                      resizeMode="contain"
-                      width={horizontalScale(30)}
-                      height={verticalScale(30)}
-                    />
-                  )}
-
-                  <Text
-                    style={{
-                      color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
-                      fontSize: verticalScale(13),
-                      marginTop: verticalScale(5),
-                      fontWeight: '500',
-                    }}>
-                    Home
-                  </Text>
-                </View>
-              );
-            },
+                    color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
+                    fontSize: verticalScale(13),
+                    marginTop: verticalScale(5),
+                    fontWeight: '500',
+                  }}
+                >
+                  Home
+                </Text>
+              </View>
+            ),
           }}
         />
         <Tab.Screen
           name="MyBcsScreen"
           component={MyBcsScreen}
           options={{
-            tabBarIcon: ({focused}) => {
-              return (
-                <View
+            tabBarIcon: ({ focused }) => (
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <MaterialIcons
+                  name="business-center"
+                  color={focused ? Colors.PRIMARY_COLOR : Colors.GREY}
+                  size={focused ? horizontalScale(37) : horizontalScale(32)}
+                />
+                <Text
                   style={{
-                    alignItems: 'center',
-
-                    justifyContent: 'center',
-                  }}>
-                  {focused ? (
-                    <Images.MyBc_Blue
-                      resizeMode="contain"
-                      width={horizontalScale(37)}
-                      height={verticalScale(37)}
-                    />
-                  ) : (
-                    <Images.MyBc
-                      resizeMode="contain"
-                      width={horizontalScale(32)}
-                      height={verticalScale(32)}
-                    />
-                  )}
-
-                  <Text
-                    style={{
-                      color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
-                      fontSize: verticalScale(13),
-                      marginTop: verticalScale(5),
-                      fontWeight: '500',
-                    }}>
-                    My Bc's
-                  </Text>
-                </View>
-              );
-            },
+                    color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
+                    fontSize: verticalScale(13),
+                    marginTop: verticalScale(5),
+                    fontWeight: '500',
+                  }}
+                >
+                  My Bc's
+                </Text>
+              </View>
+            ),
           }}
         />
         <Tab.Screen
           name="ExploreScreen"
           component={ExploreScreen}
           options={{
-            tabBarIcon: () => {
-              return (
-                <View style={{position: 'absolute', bottom: verticalScale(20)}}>
-                  <Images.Explore
-                    width={verticalScale(110)}
-                    height={verticalScale(110)}
-                  />
-                </View>
-              );
-            },
+            tabBarIcon: () => (
+              <View style={{ position: 'absolute', bottom: verticalScale(20) }}>
+                <MaterialIcons
+                  name="explore"
+                  size={verticalScale(90)}
+                  color={Colors.PRIMARY_COLOR}
+                />
+              </View>
+            ),
           }}
         />
         <Tab.Screen
           name="NotificationScreen"
           component={NotificationScreen}
           options={{
-            tabBarIcon: ({focused}) => {
-              return (
-                <View
+            tabBarIcon: ({ focused }) => (
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <MaterialIcons
+                  name="notifications"
+                  color={focused ? Colors.PRIMARY_COLOR : Colors.GREY}
+                  size={focused ? horizontalScale(37) : horizontalScale(33)}
+                />
+                <Text
                   style={{
-                    alignItems: 'center',
-
-                    justifyContent: 'center',
-                  }}>
-                  {focused ? (
-                    <Images.NotificationBlue
-                      resizeMode="contain"
-                      width={horizontalScale(37)}
-                      height={verticalScale(37)}
-                    />
-                  ) : (
-                    <Images.Notification
-                      resizeMode="contain"
-                      width={horizontalScale(33)}
-                      height={verticalScale(33)}
-                    />
-                  )}
-
-                  <Text
-                    style={{
-                      color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
-                      fontSize: verticalScale(13),
-                      marginTop: verticalScale(5),
-                      fontWeight: '500',
-                    }}>
-                    Notifications
-                  </Text>
-                </View>
-              );
-            },
+                    color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
+                    fontSize: verticalScale(13),
+                    marginTop: verticalScale(5),
+                    fontWeight: '500',
+                  }}
+                >
+                  Notifications
+                </Text>
+              </View>
+            ),
           }}
         />
         <Tab.Screen
           name="ProfileScreen"
           component={ProfileScreen}
           options={{
-            tabBarIcon: ({focused}) => {
-              return (
-                <View
+            tabBarIcon: ({ focused }) => (
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <MaterialIcons
+                  name="person"
+                  color={focused ? Colors.PRIMARY_COLOR : Colors.GREY}
+                  size={focused ? horizontalScale(37) : horizontalScale(32)}
+                />
+                <Text
                   style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {focused ? (
-                    <Images.Profile_Blue
-                      resizeMode="contain"
-                      width={horizontalScale(37)}
-                      height={verticalScale(37)}
-                    />
-                  ) : (
-                    <Images.Profile
-                      resizeMode="contain"
-                      width={horizontalScale(32)}
-                      height={verticalScale(32)}
-                    />
-                  )}
-                  <Text
-                    style={{
-                      color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
-                      fontSize: verticalScale(13),
-                      marginTop: verticalScale(5),
-                      fontWeight: '500',
-                    }}>
-                    Profile
-                  </Text>
-                </View>
-              );
-            },
+                    color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
+                    fontSize: verticalScale(13),
+                    marginTop: verticalScale(5),
+                    fontWeight: '500',
+                  }}
+                >
+                  Profile
+                </Text>
+              </View>
+            ),
           }}
         />
       </Tab.Navigator>
