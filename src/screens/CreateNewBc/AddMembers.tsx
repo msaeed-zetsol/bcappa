@@ -34,6 +34,8 @@ import SortableList from 'react-native-sortable-list';
 import {useForm, Controller} from 'react-hook-form';
 import {Fonts} from '../../constants';
 import {useDispatch, useSelector} from 'react-redux';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import {
   addMember,
   removeMember,
@@ -45,6 +47,7 @@ import {removeMembers} from '../../redux/user/userSlice';
 import DragIcon from '../../assets/svg/dragIcon';
 import Del from '../../assets/svg/Del';
 import Not_membersfound from '../../assets/svg/not_membersfound';
+import Facebook from '../../assets/svg/Facebook';
 const AddMembers = () => {
   const navigation: any = useNavigation();
   const routes: any = useRoute();
@@ -185,7 +188,12 @@ const AddMembers = () => {
                 console.log({finalNew});
                 dispatch(setMembers(finalNew));
               }}>
-              <Del />
+              {/* <Del /> */}
+              <MaterialIcons
+                  name="close"
+                  size={25}
+                  color="red"
+                />
             </TouchableOpacity>
           </View>
           <View

@@ -1,10 +1,10 @@
-import {StyleSheet, StatusBar, TouchableOpacity, Keyboard, Image} from 'react-native';
-import React, {useState} from 'react';
-import {Images, Fonts} from '../../constants';
+import { StyleSheet, StatusBar, TouchableOpacity, Keyboard, Image } from 'react-native';
+import React, { useState } from 'react';
+import { Images, Fonts } from '../../constants';
 import GoogleIcon from '../../assets/svg/GoogleIcon';
-import Facebook from  '../../assets/svg/Facebook';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {useForm, Controller} from 'react-hook-form';
+import Facebook from '../../assets/svg/Facebook';
+import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
+import { useForm, Controller } from 'react-hook-form';
 
 import {
   Text,
@@ -17,13 +17,13 @@ import {
   View,
 } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
-import {newColorTheme} from '../../constants/Colors';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
+import { useNavigation } from '@react-navigation/native';
+import { newColorTheme } from '../../constants/Colors';
+import { apimiddleWare } from '../../utilities/HelperFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {requestUserPermission} from '../../firebase/Notifications';
-import {useDispatch} from 'react-redux';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import { requestUserPermission } from '../../firebase/Notifications';
+import { useDispatch } from 'react-redux';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 GoogleSignin.configure({
   webClientId:
@@ -35,7 +35,7 @@ const LoginScreen = () => {
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm({
     defaultValues: {
       email: '',
@@ -51,8 +51,8 @@ const LoginScreen = () => {
 
   const googleLogin = async () => {
     try {
-      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-      const {user} = await GoogleSignin.signIn();
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      const { user } = await GoogleSignin.signIn();
       const getToken: any = await AsyncStorage.getItem('fcmToken');
       const parsedFcmToken: any = await JSON.parse(getToken);
 
@@ -86,7 +86,7 @@ const LoginScreen = () => {
   const logoutSocialLogIn = async () => {
     try {
       const data = await GoogleSignin.signOut();
-      console.log({data});
+      console.log({ data });
       // Handle any additional logout steps for social login providers
     } catch (err) {
       console.log(err);
@@ -158,7 +158,7 @@ const LoginScreen = () => {
         <FormControl w="100%">
           <Controller
             control={control}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <View>
                 <Input
                   placeholder="Email"
@@ -208,7 +208,7 @@ const LoginScreen = () => {
               required: 'Password is required',
               minLength: 8,
             }}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 placeholder="Password"
                 w="100%"
@@ -328,8 +328,8 @@ const LoginScreen = () => {
           _pressed={{
             backgroundColor: 'DISABLED_COLOR',
           }}>
-        
-<GoogleIcon  />
+
+          <GoogleIcon />
           <Text
             pl="2"
             fontSize={verticalScale(16)}
@@ -344,7 +344,7 @@ const LoginScreen = () => {
           _pressed={{
             backgroundColor: 'DISABLED_COLOR',
           }}>
-<Facebook />
+          <Facebook />
 
           <Text
             pl="2"
