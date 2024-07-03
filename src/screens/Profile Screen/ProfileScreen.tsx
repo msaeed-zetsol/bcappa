@@ -9,7 +9,7 @@ import React, {useState, useCallback} from 'react';
 import {View, Text, Avatar, Button} from 'native-base';
 import {verticalScale, horizontalScale} from '../../utilities/Dimensions';
 import {newColorTheme} from '../../constants/Colors';
-import {Fonts, Images} from '../../constants';
+import {Fonts, Colors} from '../../constants';
 import ImagePicker from 'react-native-image-crop-picker';
 import InfoModal from '../../components/InfoModal';
 import {modalEnums} from '../../lookups/Enums';
@@ -26,6 +26,12 @@ import {Content_Type} from '../../constants/Base_Url';
 import {useDispatch} from 'react-redux';
 import * as Animatable from 'react-native-animatable';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import Camera from '../../assets/svg/Camera';
+import Reward from '../../assets/svg/Reward';
+import AccountNotVerified from '../../assets/svg/Account_Not_Verified';
+import LogoutImage from '../../assets/svg/LogoutImage';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 
 const ProfileScreen = () => {
   const navigation: any = useNavigation();
@@ -194,7 +200,7 @@ const ProfileScreen = () => {
               onPress={() => {
                 setImageModal(true);
               }}>
-              <Images.Camera width={18} height={18} />
+              <Camera />
             </TouchableOpacity>
           </Avatar.Badge>
         </Avatar>
@@ -215,119 +221,107 @@ const ProfileScreen = () => {
           textAlign="center">
           {userInfo?.fullName}
         </Text>
-        <Images.Reward />
+        <Reward />
       </View>
       <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: verticalScale(15)}}>
-        <Text
-          mt={5}
-          color={'GREY'}
-          fontFamily={Fonts.POPPINS_REGULAR}
-          fontSize={verticalScale(15)}>
-          General
-        </Text>
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{paddingBottom: verticalScale(15)}}>
+      <Text
+        mt={5}
+        color={'GREY'}
+        fontFamily={Fonts.POPPINS_REGULAR}
+        fontSize={verticalScale(15)}>
+        General
+      </Text>
 
-        <ProfileItems
-          heading={'Personal Information'}
-          onPress={() => {
-            navigation.navigate('PersonalInformation');
-          }}
-          showImage={true}
-          Image={Images.Profiles}
-        />
-        <TouchableOpacity
-          style={styles.contentStyles}
-          onPress={() => {
-            if (userInfo?.settings?.isJazzDostVerified) {
-              navigation.navigate('VerifiedAccountDetails');
-            } else {
-              setVerificationModal(prevData => ({
-                ...prevData,
-                notVerified: true,
-              }));
-            }
-          }}>
-          <View flexDirection={'row'} alignItems="center">
-            <Images.PaymentInfo height={40} width={40} />
-            <Text
-              ml={3}
-              color={'#03110A'}
-              fontFamily={Fonts.POPPINS_MEDIUM}
-              fontSize={verticalScale(18)}>
-              Account Verification
-            </Text>
-          </View>
-          {userInfo?.settings?.isJazzDostVerified ? (
-            <Images.Verified />
-          ) : (
-            <Images.NotVerified />
-          )}
-        </TouchableOpacity>
-        <ProfileItems
-          heading={'My Rewards'}
-          onPress={() => {
-            navigation.navigate('MyRewards');
-          }}
-          showImage={true}
-          Image={Images.Faq}
-        />
-        <ProfileItems
-          heading={'FAQ & Support'}
-          onPress={() => {
-            navigation.navigate('FaqAndSupport');
-          }}
-          showImage={true}
-          Image={Images.Faq}
-        />
-        <ProfileItems
-          heading={'Terms & Conditions'}
-          onPress={() => {
-            navigation.navigate('TermsAndConditions', {
-              name: 'Terms And Condition',
-            });
-          }}
-          showImage={true}
-          Image={Images.Faq}
-        />
+      <ProfileItems
+        heading="Personal Information"
+        onPress={() => navigation.navigate('PersonalInformation')}
+        showIcon={true}
+        iconName="person"
+      />
 
-        <Text
-          mt={5}
-          color={'GREY'}
-          fontFamily={Fonts.POPPINS_REGULAR}
-          fontSize={verticalScale(15)}>
-          Preferences
-        </Text>
-        <ProfileItems
-          heading={'Language'}
-          onPress={() => {
-            navigation.navigate('Language');
-          }}
-          showImage={true}
-          Image={Images.Language}
-        />
-        <ProfileItems
-          heading={'BC Settings'}
-          onPress={() => {}}
-          showImage={true}
-          Image={Images.Settings}
-        />
-        <ProfileItems
-          heading={'Log Out'}
-          onPress={() => {
-            setLogoutModal(true);
-          }}
-          showImage={true}
-          Image={Images.Logout}
-        />
-      </ScrollView>
+      <TouchableOpacity
+        style={styles.contentStyles}
+        onPress={() => {
+          if (userInfo?.settings?.isJazzDostVerified) {
+            navigation.navigate('VerifiedAccountDetails');
+          } else {
+            setVerificationModal(prevData => ({
+              ...prevData,
+              notVerified: true,
+            }));
+          }
+        }}>
+        <View flexDirection="row" alignItems="center ">
+          <MaterialIcons name="payment"  size={25} color={Colors.PRIMARY_COLOR}  style={styles.iconContainer  } />
+          <Text
+            ml={3}
+            fontFamily={Fonts.POPPINS_MEDIUM}
+            fontSize={verticalScale(18)}>
+            Account Verification
+          </Text>
+        </View>
+        {userInfo?.settings?.isJazzDostVerified ? (
+          <MaterialIcons name="verified" size={25} color={Colors.PRIMARY_COLOR} style={styles.iconContainer}/>
+        ) : (
+          <MaterialIcons name="error" size={25} color="red" />
+        )}
+      </TouchableOpacity>
+
+      <ProfileItems
+        heading="My Rewards"
+        onPress={() => navigation.navigate('MyRewards')}
+        showIcon={true}
+        iconName="card-giftcard"
+      />
+      <ProfileItems
+        heading="FAQ & Support"
+        onPress={() => navigation.navigate('FaqAndSupport')}
+        showIcon={true}
+        iconName="help-outline"
+      />
+      <ProfileItems
+        heading="Terms & Conditions"
+        onPress={() => navigation.navigate('TermsAndConditions', {name: 'Terms And Condition'})}
+        showIcon={true}
+        iconName="gavel"
+      />
+
+      <Text
+        mt={5}
+        color="GREY"
+        fontFamily={Fonts.POPPINS_REGULAR}
+        fontSize={verticalScale(15)}>
+        Preferences
+      </Text>
+
+      <ProfileItems
+        heading="Language"
+        onPress={() => navigation.navigate('Language')}
+        showIcon={true}
+        iconName="language"
+      />
+      <ProfileItems
+        heading="BC Settings"
+        onPress={() => {}}
+        showIcon={true}
+        iconName="settings"
+      />
+      <ProfileItems
+        heading="Log Out"
+        onPress={() => setLogoutModal(true)}
+        showIcon={true}
+        iconName="logout"
+      />
+    </ScrollView>
 
       {verificationModal.notVerified && (
         <InfoModal
           message="your account is not currently verified with Jazzdost."
           buttonText="Verify Now"
           callback={handleCallback}
-          Photo={Images.AccountNotVerified}
+          Photo={<AccountNotVerified/>}
           name={modalEnums.ACCOUNT_NOT_VERIFIED}
           isButtonPressed={isButtonPressed}
           show={true}
@@ -417,7 +411,7 @@ const ProfileScreen = () => {
               paddingVertical: verticalScale(20),
             }}>
             <View justifyContent={'center'} alignItems={'center'}>
-              <Images.LogoutImage />
+              <LogoutImage />
               <Text
                 mt={verticalScale(20)}
                 color={'BLACK_COLOR'}
@@ -496,5 +490,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: verticalScale(25),
     alignItems: 'center',
+  },
+  iconContainer: {
+    backgroundColor:'#cfebfa',
+    borderRadius: 22, 
+    padding: 6, 
   },
 });

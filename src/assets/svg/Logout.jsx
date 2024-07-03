@@ -1,3 +1,6 @@
+
+const Logout = () => {
+    const svgMarkup = `
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="16" cy="16" r="16" fill="#EAF8FF"/>
 <g clip-path="url(#clip0_878_4356)">
@@ -9,3 +12,9 @@
 </clipPath>
 </defs>
 </svg>
+    `;
+  
+    return <SvgXml xml={svgMarkup} />;
+  };
+  
+  export default Logout;

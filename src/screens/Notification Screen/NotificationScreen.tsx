@@ -16,6 +16,8 @@ import {apimiddleWare} from '../../utilities/HelperFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
+import ErrorNotification from '../../assets/svg/ErrorNotification';
+import CongratulationsNotification from '../../assets/svg/CongratulationsNotification';
 
 const NotificationScreen = () => {
   const [notification, setNotification] = useState<Notifications[] | []>([]);
@@ -151,11 +153,9 @@ const NotificationScreen = () => {
                   alignItems={'center'}>
                   <View flexDirection={'row'} alignItems={'center'}>
                     {item.status === 0 ? (
-                      <Images.ErrorNotification height={40} width={40} />
+                      <ErrorNotification />
                     ) : (
-                      <Images.CongratulationsNotification
-                        height={40}
-                        width={40}
+                      <CongratulationsNotification
                       />
                     )}
 

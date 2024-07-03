@@ -24,7 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { requestUserPermission } from '../../firebase/Notifications';
 import { useDispatch } from 'react-redux';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-
+import messaging from '@react-native-firebase/messaging';
 GoogleSignin.configure({
   webClientId:
     '425837288874-ivnre9s31uk6clo206fqaa8op0n5p5r3.apps.googleusercontent.com',
@@ -85,7 +85,9 @@ const LoginScreen = () => {
 
   const logoutSocialLogIn = async () => {
     try {
+      await messaging().deleteToken();
       const data = await GoogleSignin.signOut();
+  
       console.log({ data });
       // Handle any additional logout steps for social login providers
     } catch (err) {

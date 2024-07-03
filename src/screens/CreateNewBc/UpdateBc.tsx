@@ -9,6 +9,7 @@ import {
   Dimensions,
   ActivityIndicator,
   TextInput,
+  Linking,
 } from 'react-native';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
@@ -70,6 +71,12 @@ const UpdateBc = () => {
   const [totalExpected, setTotalExpected] = useState(0);
   const [balloting, setBalloting] = useState(item.selectionType === BcSelectionType.Auto);
 
+  const handleDialPress = () => {
+    const phoneNumberURL = 'tel:03163110456';
+    Linking.openURL(phoneNumberURL).catch(error => {
+      console.error(`Failed to open the phone dialer: ${error}`);
+    });
+  };
   const calculateTotalExpected = () => {
     return item.amount * item.maxMembers; 
   };
@@ -473,6 +480,7 @@ const UpdateBc = () => {
               Don’t know ho to add?
             </Text>
             <TouchableOpacity
+            onPress={handleDialPress}
               style={[
                 styles.btnContainer,
                 {
