@@ -34,7 +34,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { Fonts } from '../../constants';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Heading from '../../components/Heading';
-import SortableList from 'react-native-sortable-list';
+// import SortableList from 'react-native-sortable-list';
 import { apimiddleWare } from '../../utilities/HelperFunctions';
 import { BcSelectionType, BcStatus, BcType } from '../../lookups/Enums';
 import { useDispatch, useSelector } from 'react-redux';
