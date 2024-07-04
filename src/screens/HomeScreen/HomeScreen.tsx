@@ -16,6 +16,7 @@ import {
   Skeleton,
   HStack,
   VStack,
+  ScrollView,
 } from 'native-base';
 import {Fonts, Images} from '../../constants';
 import {verticalScale, horizontalScale} from '../../utilities/Dimensions';
@@ -128,11 +129,13 @@ const HomeScreen = () => {
     }
   }, []);
   return (
-    <View
-      flex={1}
-      bg={'BACKGROUND_COLOR'}
-      px={horizontalScale(20)}
-      pt={verticalScale(15)}>
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 10,
+        paddingHorizontal: verticalScale(15),
+        backgroundColor: newColorTheme.BACKGROUND_COLOR,
+        paddingBottom: verticalScale(15),
+      }}>
       <StatusBar
         barStyle={'dark-content'}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
@@ -826,7 +829,7 @@ const HomeScreen = () => {
           isButtonPressed={isButtonPressed}
         />
       )}
-    </View>
+    </ScrollView>
   );
 };
 

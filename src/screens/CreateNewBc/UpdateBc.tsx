@@ -8,6 +8,7 @@ import {
   ScrollView,
   Dimensions,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {
@@ -52,23 +53,28 @@ const UpdateBc = () => {
   const dispatch: any = useDispatch();
   const route: any = useRoute();
   const {item} = route.params;
-  // console.log({item: item.id});
   const [bcData, setBcData] = useState<any>();
-  // const [isLoading, setIsLoading] = useState(false);
   const [disabled, setIsDisabled] = useState(false);
-  const [balloting, setBalloting] = useState(false);
-  // const [openModal, setOpenModal] = useState(false);
-  // const [members, setMembers] = useState<[] | any>();
   const [scroll, setScroll] = useState(true);
   const [date, setDate] = useState<any>(new Date());
   const [openDate, setOpenDate] = useState(false);
   const [showDate, setShowDate] = useState('');
   const [load, setLoad] = useState(true);
-  // const [deleteMemberId, setDeleteMemberId] = useState<any>([]);
   const members = useSelector((state: any) => state.members);
-  // const removeArray = useSelector((state: any) => state.user.removeArray);
   const remove: any = useSelector((state: RootState) => state.users.removeUser);
-  // console.log({shur: members});
+
+  const [totalExpected, setTotalExpected] = useState(0);
+  const [balloting, setBalloting] = useState(
+    item.selectionType === BcSelectionType.Auto,
+  );
+
+  const calculateTotalExpected = () => {
+    return item.amount * item.maxMembers;
+  };
+  useEffect(() => {
+    return setTotalExpected(calculateTotalExpected());
+  }, []);
+
   let currentDate = new Date();
   let nextDay = new Date(currentDate);
   nextDay.setDate(currentDate.getDate() + 1);
@@ -87,7 +93,6 @@ const UpdateBc = () => {
       );
 
       const mem = response[0].bcMembers.map((item: any) => {
-        // console.log({item12: item});
         return {
           id: item?.id,
           fullName: item?.user?.fullName,
@@ -97,13 +102,11 @@ const UpdateBc = () => {
         };
       });
 
-      // console.log({bababa: mem});
-      // setMembers(mem);
       dispatch(updateMembersOrder(mem));
       setLoad(false);
       const d = response[0].commenceDate.split('T')[0];
-      // setDate(response[0].commenceDate);
       setShowDate(d);
+      setBalloting(bcData.selectionType === BcSelectionType.Auto);
     }
     setLoad(false);
   };
@@ -132,101 +135,13 @@ const UpdateBc = () => {
       openingPrecedence: 0,
     },
   });
-  //
-  // function Row(props: any) {
-  //   const {active, data, index} = props;
 
-  //   const activeAnim = useRef(new Animated.Value(0));
-  //   const style = useMemo(
-  //     () => ({
-  //       ...Platform.select({
-  //         ios: {
-  //           transform: [
-  //             {
-  //               scale: activeAnim.current.interpolate({
-  //                 inputRange: [0, 1],
-  //                 outputRange: [1, 1.07],
-  //               }),
-  //             },
-  //           ],
-  //           shadowRadius: activeAnim.current.interpolate({
-  //             inputRange: [0, 1],
-  //             outputRange: [2, 10],
-  //           }),
-  //         },
-
-  //         android: {
-  //           transform: [
-  //             {
-  //               scale: activeAnim.current.interpolate({
-  //                 inputRange: [0, 1],
-  //                 outputRange: [1, 1.07],
-  //               }),
-  //             },
-  //           ],
-  //           elevation: activeAnim.current.interpolate({
-  //             inputRange: [0, 1],
-  //             outputRange: [2, 6],
-  //           }),
-  //         },
-  //       }),
-  //     }),
-  //     [],
-  //   );
-
-  //   useEffect(() => {
-  //     Animated.timing(activeAnim.current, {
-  //       duration: 300,
-  //       easing: Easing.bounce,
-  //       toValue: Number(active),
-  //       useNativeDriver: true,
-  //     }).start();
-  //   }, [active]);
-
-  //   return (
-  //     <Animated.View style={[styles.row, style]}>
-  //       <View style={styles.memberContainer}>
-  //         <View flexDirection={'row'} alignItems={'center'}>
-  //           <Text style={styles.name}>{`${data?.fullName} (${
-  //             index + 1
-  //           })`}</Text>
-  //         </View>
-  //         <TouchableOpacity
-  //           onPress={() => {
-  //             console.log({heavy: data});
-  //             setDeleteMemberId((prevDelete: any) => {
-  //               // Create a new array by spreading the previous delete state and adding the new cardId
-  //               return [...prevDelete, data.id];
-  //             });
-  //             dispatch(removeMember(data.email));
-  //           }}>
-  //           <Images.Del />
-  //         </TouchableOpacity>
-  //       </View>
-  //       <View
-  //         style={{
-  //           flexDirection: 'row',
-  //           justifyContent: 'space-between',
-  //           alignItems: 'center',
-  //           marginTop: verticalScale(10),
-  //         }}>
-  //         <View>
-  //           <Text style={styles.details}>Email</Text>
-  //           <Text fontSize={'sm'} style={styles.desc}>
-  //             {data?.email}
-  //           </Text>
-  //         </View>
-  //         <View style={{overflow: 'hidden', marginLeft: 2}}>
-  //           <Text style={styles.details}>Phone</Text>
-  //           <Text fontSize={'sm'} style={styles.desc}>
-  //             {data?.phone}
-  //           </Text>
-  //         </View>
-  //       </View>
-  //     </Animated.View>
-  //   );
-  // }
-  //
+  const handleDialPress = () => {
+    const phoneNumberURL = 'tel:03163110456';
+    Linking.openURL(phoneNumberURL).catch(error => {
+      console.error(`Failed to open the phone dialer: ${error}`);
+    });
+  };
 
   const deleteMembers = async () => {
     console.log({membersstart: members});
@@ -434,24 +349,6 @@ const UpdateBc = () => {
                 </Text>
               )}
             </View>
-            {/* <View mt={verticalScale(15)}>
-              <TextFieldComponent
-                placeholder={'Commence Date'}
-                value={showDate}
-                // onBlur={onBlur}
-                // onChange={onChange}
-                InputRightElement={
-                  <Pressable onPress={() => setOpenDate(true)}>
-                    <Icon
-                      as={<Ionicons name={'calendar'} />}
-                      size={5}
-                      mr="5"
-                      color="muted.400"
-                    />
-                  </Pressable>
-                }
-              />
-            </View> */}
             <TouchableOpacity
               onPress={() => setOpenDate(true)}
               style={{marginTop: verticalScale(15)}}>
@@ -459,8 +356,6 @@ const UpdateBc = () => {
                 placeholder={'Date of Birth'}
                 value={showDate}
                 readOnly={true}
-                // onBlur={onBlur}
-                // onChange={onChange}
                 InputRightElement={
                   <Pressable onPress={() => setOpenDate(true)}>
                     <Icon
@@ -479,7 +374,7 @@ const UpdateBc = () => {
               mt={verticalScale(10)}
               fontSize={'sm'}
               color={'GREY'}>
-              Total expected amount per BC{' '}
+              Total expected amount per BC {totalExpected}
               <Text
                 color={'PRIMARY_COLOR'}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}>
@@ -487,7 +382,6 @@ const UpdateBc = () => {
               </Text>
             </Text>
           </FormControl>
-          {/*  */}
           <View
             flexDirection={'row'}
             justifyContent={'space-between'}
@@ -507,9 +401,7 @@ const UpdateBc = () => {
                   fontFamily: Fonts.POPPINS_SEMI_BOLD,
                 }}
                 size="medium"
-                onToggle={async () => {
-                  setBalloting(!balloting);
-                }}
+                onToggle={async () => setBalloting(!balloting)}
                 thumbOffStyle={{
                   backgroundColor: Colors.WHITE_COLOR,
                 }}
@@ -519,26 +411,7 @@ const UpdateBc = () => {
               />
             </View>
           </View>
-          {/*  */}
-          {/* <DatePicker
-            modal
-            mode="date"
-            open={openDate}
-            maximumDate={new Date('3000-12-31')}
-            date={new Date(date)}
-            locale="en"
-            theme="dark"
-            onConfirm={selectedDate => {
-              setDate(selectedDate);
-              setShowDate(selectedDate.toLocaleDateString());
-              setOpenDate(false);
 
-              // console.log(date);
-            }}
-            onCancel={() => {
-              setOpenDate(false);
-            }}
-          /> */}
           {openDate && (
             <DateTimePicker
               testID="datePicker"
@@ -564,8 +437,6 @@ const UpdateBc = () => {
               }}
             />
           )}
-          {/*  */}
-          {/*  */}
           <View
             flexDirection={'row'}
             alignItems={'center'}
@@ -575,55 +446,11 @@ const UpdateBc = () => {
               Members
             </Text>
           </View>
-          {/*  */}
-          {/* <View flex={1} height={'100%'}>
-            <SortableList
-              data={members}
-              sortingEnabled={!balloting}
-              style={styles.list}
-              contentContainerStyle={{
-                paddingBottom: verticalScale(10),
-              }}
-              onActivateRow={(key: any) => {
-                console.log(key);
-                setScroll(false);
-              }}
-              onReleaseRow={() => {
-                setScroll(true);
-              }}
-              onChangeOrder={(nextOrder: any) => {
-                console.log({nextOrder});
-                let integerList = nextOrder.map((item: any) =>
-                  parseInt(item, 10),
-                );
-                console.log({integerList});
-                let run = integerList.map((item: any, index: any) => {
-                  members[item].openingPrecedence = index + 1;
-                  // console.log({ok: members[item]});
-                  return members[item];
-                });
-
-                // dispatch(addMember(run));
-                dispatch(updateMembersOrder(run));
-                console.log({run});
-              }}
-              renderRow={({data, index, active}: any) => {
-                // console.log({data});
-                members[index].openingPrecedence = index + 1;
-
-                return <Row data={data} active={active} index={index} />;
-              }}
-            />
-          </View> */}
-          {/*  */}
           <TouchableOpacity
             style={styles.btnContainer}
             onPress={() => {
-              // dispatch(updateMembersOrder(members));
               navigation.navigate('AddMembers', {
                 balloting: balloting,
-                // members,
-                // maxUsers,
               });
             }}>
             <Images.AddUser />
@@ -635,21 +462,6 @@ const UpdateBc = () => {
             </Text>
           </TouchableOpacity>
 
-          {/* <TouchableOpacity
-            style={styles.btnContainer}
-            onPress={() => {
-              setOpenModal(true);
-            }}>
-            <Images.AddUser />
-            <Text
-              color={Colors.PRIMARY_COLOR}
-              ml={horizontalScale(5)}
-              fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-              Add User
-            </Text>
-          </TouchableOpacity> */}
-
-          {/*  */}
           <View justifyContent={'flex-end'} mb={verticalScale(10)}>
             <Text
               color={Colors.BLACK_COLOR}
@@ -659,6 +471,7 @@ const UpdateBc = () => {
               Don’t know ho to add?
             </Text>
             <TouchableOpacity
+              onPress={handleDialPress}
               style={[
                 styles.btnContainer,
                 {
