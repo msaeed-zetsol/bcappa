@@ -4,8 +4,7 @@ import {
   LoginScreen,
   OtpAccountVerification,
   SignupScreen,
-  WelcomeScreen,
-} from '../../screens';
+} from "../../screens";
 import {AuthStackNavigatorParamList} from '../types';
 import ForgotPassword from '../../screens/Authentication/ForgotPassword';
 import NewPassword from '../../screens/Authentication/NewPassword';

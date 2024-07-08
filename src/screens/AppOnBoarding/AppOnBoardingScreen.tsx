@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { View, StyleSheet, Image, StatusBar } from "react-native";
+import { View, Image, StatusBar } from "react-native";
 import { OnboardFlow } from "react-native-onboard";
 import { Colors } from "../../constants";
 import { useTranslation } from "react-i18next";

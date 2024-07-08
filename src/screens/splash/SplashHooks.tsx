@@ -5,6 +5,7 @@ export type SplashResponse = {
   id: number;
   image: string;
   endDate: string;
+  statusBarColor: string | undefined;
 };
 
 const KEY_SPLASH = "splash";
@@ -17,7 +18,8 @@ const findSplash = async (): Promise<SplashResponse | null> => {
     return null;
   }
 };
-const saveSplash = (response: SplashResponse) =>
+
+export const saveSplash = (response: SplashResponse) =>
   AsyncStorage.setItem(KEY_SPLASH, JSON.stringify(response));
 
 const isSplashExpired = (response: SplashResponse): boolean =>
