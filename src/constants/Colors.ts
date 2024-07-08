@@ -27,3 +27,5 @@ export const newColorTheme = {
   ERROR: '#D20707',
   LIGHT_GREY: '#8E8E8E',
 };
+
+export const deepSkyBlue = "#02A7FD";

@@ -32,6 +32,7 @@ import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import parsePhoneNumber, {CountryCode, PhoneNumber} from 'libphonenumber-js';
+import { useTranslation } from "react-i18next";
 
 const initialDate = new Date();
 initialDate.setDate(initialDate.getDate() - 1); // Set initial date to one day before today
@@ -43,33 +44,34 @@ const PersonalInformationScreen = () => {
   const [countryCode, setCountryCode] = useState<CountryCode>();
   const [date, setDate] = useState(initialDate);
   const [openDate, setOpenDate] = useState(false);
-  const [showDate, setShowDate] = useState('');
+  const [showDate, setShowDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [personalData, setPersonalData] = useState<any>({
-    fullName: '',
-    email: '',
-    phone: '',
-    cnic: '',
-    dob: '',
-    role: '',
-    gender: '',
+    fullName: "",
+    email: "",
+    phone: "",
+    cnic: "",
+    dob: "",
+    role: "",
+    gender: "",
     bcAmount: 0,
   });
+  const { t } = useTranslation();
 
   const getPersonalData = async () => {
     try {
       const response = await apimiddleWare({
-        url: '/user/profile',
-        method: 'get',
+        url: "/user/profile",
+        method: "get",
         reduxDispatch: dispatch,
         navigation: navigation,
       });
 
       if (response) {
-        console.log({response: response?.dob});
+        console.log({ response: response?.dob });
 
         if (response?.dob) {
-          const d = response?.dob?.split('T')[0];
+          const d = response?.dob?.split("T")[0];
           setShowDate(d);
         }
 
@@ -78,22 +80,22 @@ const PersonalInformationScreen = () => {
         if (response?.phone) {
           phoneNumber = parsePhoneNumber(response?.phone);
           setCountryCode(
-            ('+' + phoneNumber?.countryCallingCode) as CountryCode | undefined,
+            ("+" + phoneNumber?.countryCallingCode) as CountryCode | undefined
           );
         }
 
         setPersonalData({
-          fullName: response?.fullName || '',
-          email: response?.email || '',
-          phone: phoneNumber?.nationalNumber?.toString() || '',
-          cnic: response?.cnic || '',
-          dob: response?.dob || '',
-          gender: response?.gender || '',
+          fullName: response?.fullName || "",
+          email: response?.email || "",
+          phone: phoneNumber?.nationalNumber?.toString() || "",
+          cnic: response?.cnic || "",
+          dob: response?.dob || "",
+          gender: response?.gender || "",
           bcAmount: response?.monthlyAmount || 0, // Assuming it's a number, replace with appropriate default value if needed
         });
       }
     } catch (error) {
-      console.error('Error fetching personal data:', error);
+      console.error("Error fetching personal data:", error);
       // Handle the error appropriately, e.g., show an error message to the user
     }
   };
@@ -101,33 +103,33 @@ const PersonalInformationScreen = () => {
   const saveDetailsHandler = async () => {
     setIsLoading(true);
     const data = {
-      fullName: personalData.fullName || '',
+      fullName: personalData.fullName || "",
       phone:
         countryCode && personalData.phone
           ? countryCode + personalData.phone
-          : '',
+          : "",
       monthlyAmount: +personalData.bcAmount || 0,
-      cnic: personalData.cnic || '',
-      dob: date ? date : '',
-      gender: personalData?.gender || '',
+      cnic: personalData.cnic || "",
+      dob: date ? date : "",
+      gender: personalData?.gender || "",
     };
 
     removeEmptyProperties(data);
     try {
       const response = await apimiddleWare({
-        url: '/user/profile',
-        method: 'put',
+        url: "/user/profile",
+        method: "put",
         data: data,
         reduxDispatch: dispatch,
         navigation: navigation,
       });
-      console.log({response});
+      console.log({ response });
       const stringifyUserData: any = await JSON.stringify(response);
-      await AsyncStorage.setItem('loginUserData', stringifyUserData);
+      await AsyncStorage.setItem("loginUserData", stringifyUserData);
       navigation.goBack();
       setIsLoading(false);
     } catch (error) {
-      console.log({error});
+      console.log({ error });
       setIsLoading(false);
     }
   };
@@ -136,37 +138,35 @@ const PersonalInformationScreen = () => {
   }, []);
 
   return (
-    <View flex={1} bg={'BACKGROUND_COLOR'} px={horizontalScale(20)}>
+    <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
       <ScrollView>
         <StatusBar
-          barStyle={'dark-content'}
+          barStyle={"dark-content"}
           backgroundColor={newColorTheme.BACKGROUND_COLOR}
         />
         <Heading
-          name={'Personal Information'}
+          name={t("personal_information")}
           navigation={navigation}
-          onPress={() => {
-            navigation.navigate('ProfileScreen');
-          }}
+          onPress={() => navigation.navigate("ProfileScreen")}
         />
 
         <Modal visible={showDropdown} transparent={true} animationType="slide">
           <StatusBar
-            backgroundColor={'rgba(0, 0, 0, 0.63)'}
-            barStyle={'dark-content'}
+            backgroundColor={"rgba(0, 0, 0, 0.63)"}
+            barStyle={"dark-content"}
           />
           <CountryPicker
-            lang={'en'}
+            lang={"en"}
             show={showDropdown}
             // when picker button press you will get the country object with dial code
-            pickerButtonOnPress={item => {
+            pickerButtonOnPress={(item) => {
               setCountryCode(item.dial_code as CountryCode | undefined);
               setShowDropdown(false);
             }}
             style={{
               // Styles for whole modal [View]
               modal: {
-                maxHeight: '75%',
+                maxHeight: "75%",
               },
             }}
             onBackdropPress={() => {
@@ -179,7 +179,7 @@ const PersonalInformationScreen = () => {
           <DateTimePicker
             testID="datePicker"
             value={date}
-            mode={'date'}
+            mode={"date"}
             display="default"
             maximumDate={new Date(new Date().setDate(new Date().getDate() - 1))}
             onChange={(event: any, selectedDate?: Date) => {
@@ -192,18 +192,21 @@ const PersonalInformationScreen = () => {
             onTouchCancel={() => {
               setOpenDate(false);
             }}
-            style={{flex: 1, backgroundColor: 'red'}}
-            positiveButton={{label: 'OK', textColor: Colors.PRIMARY_COLOR}}
-            negativeButton={{label: 'Cancel', textColor: Colors.PRIMARY_COLOR}}
+            style={{ flex: 1, backgroundColor: "red" }}
+            positiveButton={{ label: t("ok"), textColor: Colors.PRIMARY_COLOR }}
+            negativeButton={{
+              label: t("cancel"),
+              textColor: Colors.PRIMARY_COLOR,
+            }}
           />
         )}
         <Box mt={verticalScale(50)}>
           {/* email */}
           <FormControl mt={verticalScale(15)}>
             <TextFieldComponent
-              placeholder={'Full Name'}
+              placeholder={t("full_name")}
               value={personalData.fullName}
-              onChange={txt => {
+              onChange={(txt) => {
                 setPersonalData({
                   ...personalData,
                   fullName: txt,
@@ -214,11 +217,11 @@ const PersonalInformationScreen = () => {
             <View mt={verticalScale(15)}>
               <TextFieldComponent
                 style={{
-                  backgroundColor: 'rgba(0, 0, 0, 0.20)',
+                  backgroundColor: "rgba(0, 0, 0, 0.20)",
                 }}
-                placeholder={'Email'}
+                placeholder={t("email")}
                 value={personalData.email}
-                onChange={txt => {
+                onChange={(txt) => {
                   // setPersonalData({
                   //   ...personalData,
                   //   email: txt,
@@ -226,40 +229,41 @@ const PersonalInformationScreen = () => {
                 }}
                 editable={false}
                 readOnly={true}
-                keyboardType={'email-address'}
+                keyboardType={"email-address"}
               />
             </View>
 
             <View mt={verticalScale(15)}>
               <TextFieldComponent
-                placeholder={'Phone Number'}
+                placeholder={t("phone_number")}
                 value={personalData?.phone}
-                onChange={txt => {
+                onChange={(txt) => {
                   setPersonalData({
                     ...personalData,
                     phone: txt,
                   });
                 }}
-                keyboardType={'number-pad'}
+                keyboardType={"number-pad"}
                 InputLeftElement={
                   <Pressable
                     onPress={() => setShowDropdown(true)}
-                    flexDirection={'row'}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                    ml="6">
-                    <Text fontSize={'sm'} fontFamily={Fonts.POPPINS_REGULAR}>
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    ml="6"
+                  >
+                    <Text fontSize={"sm"} fontFamily={Fonts.POPPINS_REGULAR}>
                       {countryCode}
                     </Text>
                     <Icon
-                      as={<Ionicons name={'caret-down'} />}
+                      as={<Ionicons name={"caret-down"} />}
                       size={5}
                       ml="2"
                       color="BLACK_COLOR"
                     />
                     <View
                       borderWidth={0.5}
-                      borderColor={'BORDER_COLOR'}
+                      borderColor={"BORDER_COLOR"}
                       height={5}
                       ml={2}
                     />
@@ -271,15 +275,15 @@ const PersonalInformationScreen = () => {
             {/*  nic*/}
             <View mt={verticalScale(15)}>
               <TextFieldComponent
-                placeholder={'Cnic No'}
+                placeholder={"Cnic No"}
                 value={personalData.cnic}
-                onChange={txt => {
+                onChange={(txt) => {
                   setPersonalData({
                     ...personalData,
                     cnic: txt,
                   });
                 }}
-                keyboardType={'number-pad'}
+                keyboardType={"number-pad"}
               />
             </View>
             {/* <View mt={verticalScale(15)}>
@@ -307,17 +311,16 @@ const PersonalInformationScreen = () => {
             </View> */}
             <TouchableOpacity
               onPress={() => setOpenDate(true)}
-              style={{marginTop: verticalScale(15)}}>
+              style={{ marginTop: verticalScale(15) }}
+            >
               <TextFieldComponent
-                placeholder={'Date of Birth'}
+                placeholder={t("date_of_birth")}
                 value={showDate}
                 readOnly={true}
-                // onBlur={onBlur}
-                // onChange={onChange}
                 InputRightElement={
                   <Pressable onPress={() => setOpenDate(true)}>
                     <Icon
-                      as={<Ionicons name={'calendar'} />}
+                      as={<Ionicons name={"calendar"} />}
                       size={5}
                       mr="5"
                       color="muted.400"
@@ -333,44 +336,47 @@ const PersonalInformationScreen = () => {
                   padding={3}
                   selectedValue={personalData?.gender}
                   borderRadius={16}
-                  placeholderTextColor={'GREY'}
-                  color={'BLACK_COLOR'}
-                  fontSize={'sm'}
+                  placeholderTextColor={"GREY"}
+                  color={"BLACK_COLOR"}
+                  fontSize={"sm"}
                   fontFamily={Fonts.POPPINS_REGULAR}
                   accessibilityLabel="Select Gender"
-                  dropdownIcon={<Icon as={''} name="caret-down" />}
-                  placeholder="Select Gender"
-                  onValueChange={itemValue =>
+                  dropdownIcon={<Icon as={""} name="caret-down" />}
+                  placeholder={t("select_gender")}
+                  onValueChange={(itemValue) =>
                     setPersonalData((prev: any) => ({
                       ...prev,
                       gender: itemValue,
                     }))
-                  }>
-                  <Select.Item label="Male" value="male" />
-                  <Select.Item label="Female" value="female" />
-                  <Select.Item label="other" value="other" />
+                  }
+                >
+                  <Select.Item label={t("male")} value="male" />
+                  <Select.Item label={t("female")} value="female" />
+                  <Select.Item label={t("other")} value="other" />
                 </Select>
               </FormControl>
             </View>
 
             <View mt={verticalScale(15)}>
               <TextFieldComponent
-                placeholder={'Bc Amount'}
+                placeholder={t("bc_amount")}
                 value={
                   personalData?.bcAmount === null
                     ? 0
                     : personalData?.bcAmount?.toString()
                 }
-                onChange={txt => {
+                onChange={(txt) => {
                   setPersonalData({
                     ...personalData,
                     bcAmount: txt,
                   });
                 }}
-                keyboardType={'number-pad'}
+                keyboardType={"number-pad"}
               />
-              <Text style={{fontFamily: Fonts.POPPINS_SEMI_BOLD, marginTop: 3}}>
-                This amount will be used to match BCs.
+              <Text
+                style={{ fontFamily: Fonts.POPPINS_SEMI_BOLD, marginTop: 3 }}
+              >
+                {t("amount_used_match_bcs")}
               </Text>
             </View>
           </FormControl>
@@ -378,34 +384,33 @@ const PersonalInformationScreen = () => {
         {/*  */}
         <Button
           isLoading={isLoading}
-          // isLoadingText="Signing up"
           variant="solid"
           _text={{
-            color: 'WHITE_COLOR',
-
+            color: "WHITE_COLOR",
             fontFamily: Fonts.POPPINS_SEMI_BOLD,
           }}
           _loading={{
             _text: {
-              color: 'BLACK_COLOR',
+              color: "BLACK_COLOR",
               fontFamily: Fonts.POPPINS_MEDIUM,
             },
           }}
           _spinner={{
-            color: 'BLACK_COLOR',
+            color: "BLACK_COLOR",
           }}
           _pressed={{
-            backgroundColor: 'DISABLED_COLOR',
+            backgroundColor: "DISABLED_COLOR",
           }}
           spinnerPlacement="end"
-          backgroundColor={'PRIMARY_COLOR'}
-          size={'lg'}
+          backgroundColor={"PRIMARY_COLOR"}
+          size={"lg"}
           mt={verticalScale(50)}
-          p={'4'}
+          p={"4"}
           borderRadius={16}
           isPressed={isLoading}
-          onPress={saveDetailsHandler}>
-          Save
+          onPress={saveDetailsHandler}
+        >
+          {t("save")}
         </Button>
       </ScrollView>
     </View>

@@ -1,5 +1,5 @@
-import {StyleSheet, StatusBar, TouchableOpacity, Modal} from 'react-native';
-import React, {useState} from 'react';
+import { StyleSheet, StatusBar, Modal } from "react-native";
+import React, { useState } from "react";
 import {
   Button,
   FormControl,
@@ -8,33 +8,35 @@ import {
   Pressable,
   Text,
   View,
-} from 'native-base';
-import {newColorTheme} from '../../constants/Colors';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {Fonts, Images} from '../../constants';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
-import {CountryPicker} from 'react-native-country-codes-picker';
-import Heading from '../../components/Heading';
+} from "native-base";
+import { newColorTheme } from "../../constants/Colors";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { Fonts, Images } from "../../constants";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import { CountryPicker } from "react-native-country-codes-picker";
+import Heading from "../../components/Heading";
+import { useTranslation } from "react-i18next";
 
 const VerifiedAccountDetails = () => {
   const navigation: any = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [countryCode, setCountryCode] = useState('+92');
+  const [countryCode, setCountryCode] = useState("+92");
+  const { t } = useTranslation();
 
   return (
-    <View flex={1} bg={'BACKGROUND_COLOR'} px={horizontalScale(20)}>
+    <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
       <StatusBar
-        barStyle={'dark-content'}
+        barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
       <Modal visible={showDropdown} transparent={true} animationType="slide">
         <CountryPicker
-          lang={'en'}
+          lang={"en"}
           show={showDropdown}
           // when picker button press you will get the country object with dial code
-          pickerButtonOnPress={item => {
+          pickerButtonOnPress={(item) => {
             setCountryCode(item.dial_code);
             setShowDropdown(false);
           }}
@@ -44,60 +46,55 @@ const VerifiedAccountDetails = () => {
               height: verticalScale(500),
             },
           }}
-          onBackdropPress={() => {
-            setShowDropdown(false);
-          }}
+          onBackdropPress={() => setShowDropdown(false)}
         />
       </Modal>
-      <Heading name={'Verify Account'} navigation={navigation} />
+      <Heading name={t("verify_account")} navigation={navigation} />
       <View mt={7} alignItems="center">
         <Images.Congratulations />
         <Text
           fontFamily={Fonts.POPPINS_SEMI_BOLD}
           fontSize={verticalScale(25)}
-          mt={6}>
-          Your Account is Verified
+          mt={6}
+        >
+          {t("account_verified")}
         </Text>
       </View>
       <FormControl mt={verticalScale(25)}>
         <Input
-          // value={userCredentials.email}
-          placeholder="Phone Number"
+          placeholder={t("phone_number")}
           w="100%"
           size="lg"
           borderRadius={16}
           p="3"
-          // pl="6"
-
           autoCapitalize="none"
           keyboardType="number-pad"
           autoCorrect={false}
-          // onChangeText={handleEmail}
-          // onBlur={handleBlurForEmail}
           borderColor="BORDER_COLOR"
-          placeholderTextColor={'GREY'}
-          color={'BLACK_COLOR'}
-          fontSize={'sm'}
+          placeholderTextColor={"GREY"}
+          color={"BLACK_COLOR"}
+          fontSize={"sm"}
           fontFamily={Fonts.POPPINS_REGULAR}
           InputLeftElement={
             <Pressable
               onPress={() => setShowDropdown(true)}
-              flexDirection={'row'}
-              alignItems={'center'}
-              justifyContent={'center'}
-              ml="6">
-              <Text fontSize={'sm'} fontFamily={Fonts.POPPINS_REGULAR}>
+              flexDirection={"row"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              ml="6"
+            >
+              <Text fontSize={"sm"} fontFamily={Fonts.POPPINS_REGULAR}>
                 {countryCode}
               </Text>
               <Icon
-                as={<Ionicons name={'caret-down'} />}
+                as={<Ionicons name={"caret-down"} />}
                 size={5}
                 ml="2"
                 color="BLACK_COLOR"
               />
               <View
                 borderWidth={0.5}
-                borderColor={'BORDER_COLOR'}
+                borderColor={"BORDER_COLOR"}
                 height={5}
                 ml={2}
               />
@@ -109,37 +106,35 @@ const VerifiedAccountDetails = () => {
         isLoading={isLoading}
         variant="solid"
         _text={{
-          color: 'WHITE_COLOR',
-
+          color: "WHITE_COLOR",
           fontFamily: Fonts.POPPINS_SEMI_BOLD,
         }}
         _loading={{
           _text: {
-            color: 'BLACK_COLOR',
+            color: "BLACK_COLOR",
             fontFamily: Fonts.POPPINS_MEDIUM,
           },
         }}
         _spinner={{
-          color: 'BLACK_COLOR',
+          color: "BLACK_COLOR",
         }}
         _pressed={{
-          backgroundColor: 'DISABLED_COLOR',
+          backgroundColor: "DISABLED_COLOR",
         }}
         spinnerPlacement="end"
-        backgroundColor={'RED_COLOR'}
-        size={'lg'}
+        backgroundColor={"RED_COLOR"}
+        size={"lg"}
         mt={verticalScale(50)}
-        p={'4'}
+        p={"4"}
         borderRadius={16}
-        // isDisabled={isLoading}
         isPressed={isLoading}
         onPress={() => {
           setIsLoading(true);
 
-
-          console.log('hello');
-        }}>
-        Remove Account
+          console.log("hello");
+        }}
+      >
+        {t("remove_account")}
       </Button>
     </View>
   );

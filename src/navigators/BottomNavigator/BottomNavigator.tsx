@@ -1,79 +1,63 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { StyleSheet, View } from "react-native";
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   ExploreScreen,
   HomeScreen,
   MyBcsScreen,
   NotificationScreen,
   ProfileScreen,
-} from '../../screens';
-import {
-  verticalScale,
-  moderateScale,
-  horizontalScale,
-} from '../../utilities/Dimensions';
-import {Colors, Images} from '../../constants';
+} from "../../screens";
+import { verticalScale } from "../../utilities/Dimensions";
+import { Colors, Images } from "../../constants";
+import { useTranslation } from "react-i18next";
+import BottomNavIcon from "../../components/BottomNavIcon";
 
 const Tab = createBottomTabNavigator();
 
 const BottomNavigator = () => {
+  const { t } = useTranslation();
+
   return (
-    <View style={{flex: 1, backgroundColor: Colors.WHITE_COLOR}}>
+    <View style={{ flex: 1, backgroundColor: Colors.WHITE_COLOR }}>
       <Tab.Navigator
         initialRouteName="HomeScreen"
         screenOptions={{
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: {
-            borderTopRightRadius: moderateScale(30),
-            borderTopLeftRadius: moderateScale(30),
-            elevation: 80,
-            height: verticalScale(90),
+            borderTopStartRadius: 22,
+            borderTopEndRadius: 22,
+            borderWidth: 1,
+            borderColor: "transparent",
+            shadowColor: "#000",
             shadowOffset: {
               width: 0,
-              height: 20,
+              height: 8,
             },
-            shadowOpacity: 1,
-            shadowRadius: 80,
+            shadowOpacity: 0.44,
+            shadowRadius: 10.32,
+
+            elevation: 16,
+            height: verticalScale(90),
             backgroundColor: Colors.WHITE_COLOR,
           },
-        }}>
+        }}
+      >
         <Tab.Screen
           name="HomeScreen"
           component={HomeScreen}
           options={{
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               return (
-                <View
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {focused ? (
-                    <Images.Home_Blue
-                      resizeMode="contain"
-                      width={horizontalScale(35)}
-                      height={verticalScale(35)}
-                    />
-                  ) : (
-                    <Images.Home
-                      resizeMode="contain"
-                      width={horizontalScale(30)}
-                      height={verticalScale(30)}
-                    />
-                  )}
-
-                  <Text
-                    style={{
-                      color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
-                      fontSize: verticalScale(13),
-                      marginTop: verticalScale(5),
-                      fontWeight: '500',
-                    }}>
-                    Home
-                  </Text>
-                </View>
+                <BottomNavIcon
+                  text={t("home")}
+                  icons={{
+                    FocusedIcon: Images.Home_Blue,
+                    UnfocusedIcon: Images.Home,
+                  }}
+                  focused={focused}
+                />
               );
             },
           }}
@@ -82,38 +66,16 @@ const BottomNavigator = () => {
           name="MyBcsScreen"
           component={MyBcsScreen}
           options={{
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               return (
-                <View
-                  style={{
-                    alignItems: 'center',
-
-                    justifyContent: 'center',
-                  }}>
-                  {focused ? (
-                    <Images.MyBc_Blue
-                      resizeMode="contain"
-                      width={horizontalScale(37)}
-                      height={verticalScale(37)}
-                    />
-                  ) : (
-                    <Images.MyBc
-                      resizeMode="contain"
-                      width={horizontalScale(32)}
-                      height={verticalScale(32)}
-                    />
-                  )}
-
-                  <Text
-                    style={{
-                      color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
-                      fontSize: verticalScale(13),
-                      marginTop: verticalScale(5),
-                      fontWeight: '500',
-                    }}>
-                    My Bc's
-                  </Text>
-                </View>
+                <BottomNavIcon
+                  text={t("my_bcs")}
+                  icons={{
+                    FocusedIcon: Images.MyBc_Blue,
+                    UnfocusedIcon: Images.MyBc,
+                  }}
+                  focused={focused}
+                />
               );
             },
           }}
@@ -124,7 +86,12 @@ const BottomNavigator = () => {
           options={{
             tabBarIcon: () => {
               return (
-                <View style={{position: 'absolute', bottom: verticalScale(20)}}>
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: verticalScale(20),
+                  }}
+                >
                   <Images.Explore
                     width={verticalScale(110)}
                     height={verticalScale(110)}
@@ -138,38 +105,16 @@ const BottomNavigator = () => {
           name="NotificationScreen"
           component={NotificationScreen}
           options={{
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               return (
-                <View
-                  style={{
-                    alignItems: 'center',
-
-                    justifyContent: 'center',
-                  }}>
-                  {focused ? (
-                    <Images.NotificationBlue
-                      resizeMode="contain"
-                      width={horizontalScale(37)}
-                      height={verticalScale(37)}
-                    />
-                  ) : (
-                    <Images.Notification
-                      resizeMode="contain"
-                      width={horizontalScale(33)}
-                      height={verticalScale(33)}
-                    />
-                  )}
-
-                  <Text
-                    style={{
-                      color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
-                      fontSize: verticalScale(13),
-                      marginTop: verticalScale(5),
-                      fontWeight: '500',
-                    }}>
-                    Notifications
-                  </Text>
-                </View>
+                <BottomNavIcon
+                  text={t("notifications")}
+                  icons={{
+                    FocusedIcon: Images.NotificationBlue,
+                    UnfocusedIcon: Images.Notification,
+                  }}
+                  focused={focused}
+                />
               );
             },
           }}
@@ -178,36 +123,16 @@ const BottomNavigator = () => {
           name="ProfileScreen"
           component={ProfileScreen}
           options={{
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               return (
-                <View
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {focused ? (
-                    <Images.Profile_Blue
-                      resizeMode="contain"
-                      width={horizontalScale(37)}
-                      height={verticalScale(37)}
-                    />
-                  ) : (
-                    <Images.Profile
-                      resizeMode="contain"
-                      width={horizontalScale(32)}
-                      height={verticalScale(32)}
-                    />
-                  )}
-                  <Text
-                    style={{
-                      color: focused ? Colors.PRIMARY_COLOR : Colors.GREY,
-                      fontSize: verticalScale(13),
-                      marginTop: verticalScale(5),
-                      fontWeight: '500',
-                    }}>
-                    Profile
-                  </Text>
-                </View>
+                <BottomNavIcon
+                  text={t("profile")}
+                  icons={{
+                    FocusedIcon: Images.Profile_Blue,
+                    UnfocusedIcon: Images.Profile,
+                  }}
+                  focused={focused}
+                />
               );
             },
           }}
@@ -218,5 +143,3 @@ const BottomNavigator = () => {
 };
 
 export default BottomNavigator;
-
-const styles = StyleSheet.create({});

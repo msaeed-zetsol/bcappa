@@ -6,35 +6,29 @@ import {newColorTheme} from '../../constants/Colors';
 import Heading from '../../components/Heading';
 import {useNavigation} from '@react-navigation/native';
 import {Images, Fonts} from '../../constants';
+import i18next, { forceUpdateLanguage } from "../../localization/config";
+import { t } from "i18next";
 
 const LanguageScreen = () => {
   const navigation: any = useNavigation();
-  const [language, setLanguage] = useState({
-    urdu: false,
-    english: true,
-  });
+  const [language, setLanguage] = useState(i18next.language);
 
   return (
-    <View
-      flex={1}
-      bg={'BACKGROUND_COLOR'}
-      pt={verticalScale(15)}
-      px={horizontalScale(22)}>
+    <View style={styles.container}>
+      <Text>{i18next.language}</Text>
       <StatusBar
-        barStyle={'dark-content'}
+        barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
-      <Heading name={'Select Language'} navigation={navigation} />
-      <View style={{marginTop: verticalScale(50)}}>
+      <Heading name={t("select_language")} navigation={navigation} />
+      <View style={{ marginTop: verticalScale(50) }}>
         <TouchableOpacity
+          style={styles.btnContainer}
           onPress={() => {
-            setLanguage(prev => ({
-              ...prev,
-              english: true,
-              urdu: false,
-            }));
+            setLanguage("en");
+            forceUpdateLanguage("en");
           }}
-          style={styles.btnContainer}>
+        >
           <View style={styles.btnStyle}>
             <Images.English
               height={verticalScale(40)}
@@ -46,32 +40,30 @@ const LanguageScreen = () => {
                 {
                   fontSize: verticalScale(18),
                 },
-              ]}>
+              ]}
+            >
               English
             </Text>
           </View>
-          {language.english && <Images.Tick />}
+          {language === "en" && <Images.Tick />}
         </TouchableOpacity>
         <TouchableOpacity
-          
           onPress={() => {
-            setLanguage(prev => ({
-              ...prev,
-              english: false,
-              urdu: true,
-            }));
+            setLanguage("ur");
+            forceUpdateLanguage("ur");
           }}
-          style={styles.btnContainer}>
+          style={styles.btnContainer}
+        >
           <View style={styles.btnStyle}>
             <Images.Urdu
               height={verticalScale(40)}
               width={horizontalScale(40)}
             />
-            <Text style={[styles.text, {fontSize: verticalScale(20)}]}>
+            <Text style={[styles.text, { fontSize: verticalScale(20) }]}>
               اردو
             </Text>
           </View>
-          {language.urdu && <Images.Tick />}
+          {language === "ur" && <Images.Tick />}
         </TouchableOpacity>
       </View>
     </View>
@@ -79,13 +71,24 @@ const LanguageScreen = () => {
 };
 
 export default LanguageScreen;
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: verticalScale(15),
+    paddingHorizontal: horizontalScale(22),
+    backgroundColor: "BACKGROUND_COLOR",
+  },
   btnContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: verticalScale(10),
   },
-  btnStyle: {flexDirection: 'row', alignItems: 'center', flex: 1},
+  btnStyle: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
   text: {
     fontFamily: Fonts.POPPINS_REGULAR,
     marginLeft: horizontalScale(15),

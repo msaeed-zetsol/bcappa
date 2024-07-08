@@ -1,4 +1,4 @@
-import {StyleSheet, View, Alert} from 'react-native';
+import {StyleSheet, View, Alert, I18nManager} from 'react-native';
 import React, {useState} from 'react';
 import {Text, FormControl, Button, Pressable, Input, Icon} from 'native-base';
 import {newColorTheme} from '../../constants/Colors';
@@ -9,8 +9,10 @@ import {useForm, Controller} from 'react-hook-form';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {apimiddleWare} from '../../utilities/HelperFunctions';
 import {useDispatch} from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 const NewPassword = () => {
+  const {t} = useTranslation();
   const [show, setShow] = useState<boolean>(false);
   const [show1, setShow1] = useState<boolean>(false);
 
@@ -32,51 +34,53 @@ const NewPassword = () => {
     },
   });
   const changePass = async (details: any) => {
-    console.log({details});
+    console.log({ details });
     if (details.password === details.confirmPassword) {
       const datas = {
         emailOrPhone: data.email ? data.email : data.phone,
         newPassword: details.password,
       };
       const response = await apimiddleWare({
-        url: '/auth/forget-password',
-        method: 'put',
+        url: "/auth/forget-password",
+        method: "put",
         data: datas,
         reduxDispatch: dispatch,
       });
       if (response) {
-        console.log({response});
-        navigation.replace('AuthStack', {
-          screen: 'LoginScreen',
+        console.log({ response });
+        navigation.replace("AuthStack", {
+          screen: "LoginScreen",
         });
       }
     } else {
-      Alert.alert('Password must match confirm Password');
+      Alert.alert("Password must match confirm Password");
     }
   };
   return (
     <View style={styles.container}>
       <View
         style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-        <Pressable
-          onPress={() => {
-            navigation.goBack();
-          }}>
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Pressable onPress={() => navigation.goBack()}>
           <Images.BackButton
-            wdith={horizontalScale(50)}
+            width={horizontalScale(50)}
             height={verticalScale(50)}
+            style={{
+              transform: [{ rotateY: I18nManager.isRTL ? "180deg" : "0deg" }],
+            }}
           />
         </Pressable>
         <Text
           fontSize="xl"
           color="BLACK_COLOR"
-          ml={'2'}
-          textAlign={'center'}
-          fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-          Set New Password
+          ml={"2"}
+          textAlign={"center"}
+          fontFamily={Fonts.POPPINS_SEMI_BOLD}
+        >
+          {t("set_new_password")}
         </Text>
       </View>
       <Text
@@ -84,19 +88,20 @@ const NewPassword = () => {
         fontSize="sm"
         letterSpacing="0.32"
         mt={verticalScale(10)}
-        fontFamily={Fonts.POPPINS_MEDIUM}>
-        Set a strong new password for your account.
+        fontFamily={Fonts.POPPINS_MEDIUM}
+      >
+        {t("set_strong_password_for_your_account")}
       </Text>
       <FormControl w="100%">
         <Controller
           control={control}
           rules={{
-            required: 'Password is required',
+            required: t("password_is_required"),
             minLength: 8,
           }}
-          render={({field: {onChange, onBlur, value}}) => (
+          render={({ field: { onChange, onBlur, value } }) => (
             <Input
-              placeholder="Password"
+              placeholder={t("password")}
               w="100%"
               size="lg"
               borderRadius={16}
@@ -106,18 +111,18 @@ const NewPassword = () => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              type={show ? 'text' : 'password'}
+              type={show ? "text" : "password"}
               borderColor="BORDER_COLOR"
-              placeholderTextColor={'GREY'}
-              color={'BLACK_COLOR'}
-              fontSize={'sm'}
+              placeholderTextColor={"GREY"}
+              color={"BLACK_COLOR"}
+              fontSize={"sm"}
               fontFamily={Fonts.POPPINS_REGULAR}
               InputRightElement={
                 <Pressable onPress={() => setShow(!show)}>
                   <Icon
                     as={
                       <MaterialIcons
-                        name={show ? 'visibility' : 'visibility-off'}
+                        name={show ? "visibility" : "visibility-off"}
                       />
                     }
                     size={5}
@@ -132,21 +137,22 @@ const NewPassword = () => {
         />
         {errors.password && (
           <Text
-            color={'ERROR'}
+            color={"ERROR"}
             marginTop={verticalScale(5)}
-            fontFamily={Fonts.POPPINS_MEDIUM}>
-            Password length must be greater than 8
+            fontFamily={Fonts.POPPINS_MEDIUM}
+          >
+        {t("password_length_must_be_greater_than_8")}
           </Text>
         )}
         <Controller
           control={control}
           rules={{
-            required: 'Password is required',
+            required: t("password_is_required"),
             minLength: 8,
           }}
-          render={({field: {onChange, onBlur, value}}) => (
+          render={({ field: { onChange, onBlur, value } }) => (
             <Input
-              placeholder="Confirm Password"
+              placeholder={t("confirm_password")}
               w="100%"
               size="lg"
               borderRadius={16}
@@ -156,18 +162,18 @@ const NewPassword = () => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              type={show1 ? 'text' : 'password'}
+              type={show1 ? "text" : "password"}
               borderColor="BORDER_COLOR"
-              placeholderTextColor={'GREY'}
-              color={'BLACK_COLOR'}
-              fontSize={'sm'}
+              placeholderTextColor={"GREY"}
+              color={"BLACK_COLOR"}
+              fontSize={"sm"}
               fontFamily={Fonts.POPPINS_REGULAR}
               InputRightElement={
                 <Pressable onPress={() => setShow1(!show1)}>
                   <Icon
                     as={
                       <MaterialIcons
-                        name={show1 ? 'visibility' : 'visibility-off'}
+                        name={show1 ? "visibility" : "visibility-off"}
                       />
                     }
                     size={5}
@@ -182,42 +188,42 @@ const NewPassword = () => {
         />
         {errors.confirmPassword && (
           <Text
-            color={'ERROR'}
+            color={"ERROR"}
             marginTop={verticalScale(5)}
-            fontFamily={Fonts.POPPINS_MEDIUM}>
-            Password length must be greater than 8
+            fontFamily={Fonts.POPPINS_MEDIUM}
+          >
+            {t("password_length_must_be_greater_than_8")}
           </Text>
         )}
       </FormControl>
       <Button
         isLoading={isLoading}
-        // isLoadingText="Logging in"
         variant="solid"
         _text={{
-          color: 'WHITE_COLOR',
-
+          color: "WHITE_COLOR",
           fontFamily: Fonts.POPPINS_SEMI_BOLD,
         }}
         _loading={{
           _text: {
-            color: 'BLACK_COLOR',
+            color: "BLACK_COLOR",
             fontFamily: Fonts.POPPINS_MEDIUM,
           },
         }}
         _spinner={{
-          color: 'BLACK_COLOR',
+          color: "BLACK_COLOR",
         }}
         _pressed={{
-          backgroundColor: 'DISABLED_COLOR',
+          backgroundColor: "DISABLED_COLOR",
         }}
         spinnerPlacement="end"
-        backgroundColor={'PRIMARY_COLOR'}
-        size={'lg'}
+        backgroundColor={"PRIMARY_COLOR"}
+        size={"lg"}
         mt={verticalScale(20)}
-        p={'4'}
+        p={"4"}
         borderRadius={16}
         isPressed={isLoading}
-        onPress={handleSubmit(changePass)}>
+        onPress={handleSubmit(changePass)}
+      >
         Save
       </Button>
     </View>

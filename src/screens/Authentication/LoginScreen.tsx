@@ -1,9 +1,13 @@
-import {StyleSheet, StatusBar, TouchableOpacity, Keyboard} from 'react-native';
-import React, {useState} from 'react';
-import {Images, Fonts} from '../../constants';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {useForm, Controller} from 'react-hook-form';
-
+import {
+  StyleSheet,
+  StatusBar,
+  TouchableOpacity,
+  Keyboard,
+} from "react-native";
+import React, { useState } from "react";
+import { Images, Fonts } from "../../constants";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { useForm, Controller } from "react-hook-form";
 import {
   Text,
   Box,
@@ -13,31 +17,33 @@ import {
   Icon,
   Button,
   View,
-} from 'native-base';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
-import {newColorTheme} from '../../constants/Colors';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {requestUserPermission} from '../../firebase/Notifications';
-import {useDispatch} from 'react-redux';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+} from "native-base";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+import { newColorTheme } from "../../constants/Colors";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { requestUserPermission } from "../../firebase/Notifications";
+import { useDispatch } from "react-redux";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { useTranslation } from "react-i18next";
 
 GoogleSignin.configure({
   webClientId:
-    '425837288874-ivnre9s31uk6clo206fqaa8op0n5p5r3.apps.googleusercontent.com',
+    "425837288874-ivnre9s31uk6clo206fqaa8op0n5p5r3.apps.googleusercontent.com",
 });
 
 const LoginScreen = () => {
+  const { t } = useTranslation();
   const dispatch: any = useDispatch();
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
@@ -49,30 +55,32 @@ const LoginScreen = () => {
 
   const googleLogin = async () => {
     try {
-      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-      const {user} = await GoogleSignin.signIn();
-      const getToken: any = await AsyncStorage.getItem('fcmToken');
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
+      const { user } = await GoogleSignin.signIn();
+      const getToken: any = await AsyncStorage.getItem("fcmToken");
       const parsedFcmToken: any = await JSON.parse(getToken);
 
       const datas = {
         ...user,
         fcmToken: parsedFcmToken,
-        role: 'customer',
+        role: "customer",
       };
 
       const response = await apimiddleWare({
-        url: '/auth/login/google',
-        method: 'post',
+        url: "/auth/login/google",
+        method: "post",
         data: datas,
       });
 
       if (response) {
         const loginUserDataString = JSON.stringify(response);
-        await AsyncStorage.setItem('loginUserData', loginUserDataString);
-        navigation.replace('BottomNavigator', {
-          screen: 'HomeScreen',
+        await AsyncStorage.setItem("loginUserData", loginUserDataString);
+        navigation.replace("BottomNavigator", {
+          screen: "HomeScreen",
           params: {
-            screenName: 'Login',
+            screenName: "Login",
           },
         });
       }
@@ -84,8 +92,7 @@ const LoginScreen = () => {
   const logoutSocialLogIn = async () => {
     try {
       const data = await GoogleSignin.signOut();
-      console.log({data});
-      // Handle any additional logout steps for social login providers
+      console.log({ data });
     } catch (err) {
       console.log(err);
     }
@@ -93,7 +100,7 @@ const LoginScreen = () => {
 
   const LoginHandler = async (details: any) => {
     try {
-      const getToken: any = await AsyncStorage.getItem('fcmToken');
+      const getToken: any = await AsyncStorage.getItem("fcmToken");
       const parsedFcmToken: any = await JSON.parse(getToken);
       Keyboard.dismiss();
       setIsLoading(true);
@@ -105,8 +112,8 @@ const LoginScreen = () => {
       };
 
       const response = await apimiddleWare({
-        url: '/auth/login',
-        method: 'post',
+        url: "/auth/login",
+        method: "post",
         data: data,
         reduxDispatch: dispatch,
         navigation: navigation,
@@ -114,12 +121,12 @@ const LoginScreen = () => {
 
       if (response) {
         const loginUserDataString = JSON.stringify(response);
-        await AsyncStorage.setItem('loginUserData', loginUserDataString);
+        await AsyncStorage.setItem("loginUserData", loginUserDataString);
         await requestUserPermission();
-        navigation.replace('BottomNavigator', {
-          screen: 'HomeScreen',
+        navigation.replace("BottomNavigator", {
+          screen: "HomeScreen",
           params: {
-            screenName: 'Login',
+            screenName: "Login",
           },
         });
       }
@@ -134,31 +141,33 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <StatusBar
         backgroundColor={newColorTheme.WHITE_COLOR}
-        barStyle={'dark-content'}
+        barStyle={"dark-content"}
       />
       <Text
         fontSize="3xl"
         color="BLACK_COLOR"
         mt="10"
-        fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-        Welcome Back!
+        fontFamily={Fonts.POPPINS_SEMI_BOLD}
+      >
+        {t("welcome_back")}
       </Text>
       <Text
         color="GREY"
         fontSize="md"
         letterSpacing="0.32"
         mt={verticalScale(5)}
-        fontFamily={Fonts.POPPINS_MEDIUM}>
-        Please sign in to continue.
+        fontFamily={Fonts.POPPINS_MEDIUM}
+      >
+        {t("sign_in_to_continue")}
       </Text>
       <Box mt={verticalScale(40)}>
         <FormControl w="100%">
           <Controller
             control={control}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <View>
                 <Input
-                  placeholder="Email"
+                  placeholder={t("email")}
                   w="100%"
                   size="lg"
                   borderRadius={16}
@@ -171,29 +180,30 @@ const LoginScreen = () => {
                   onChangeText={onChange}
                   value={value}
                   borderColor="BORDER_COLOR"
-                  placeholderTextColor={'GREY'}
-                  color={'BLACK_COLOR'}
+                  placeholderTextColor={"GREY"}
+                  color={"BLACK_COLOR"}
                   fontFamily={Fonts.POPPINS_REGULAR}
-                  fontSize={'sm'}
+                  fontSize={"sm"}
                   inputMode="email"
                 />
               </View>
             )}
             name="email"
             rules={{
-              required: 'Email is required',
+              required: t("email_is_required"),
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Invalid email address',
+                message: t("email_is_invalid"),
               },
             }}
             defaultValue=""
           />
           {errors.email && (
             <Text
-              color={'ERROR'}
+              color={"ERROR"}
               marginTop={verticalScale(5)}
-              fontFamily={Fonts.POPPINS_MEDIUM}>
+              fontFamily={Fonts.POPPINS_MEDIUM}
+            >
               {errors.email.message}
             </Text>
           )}
@@ -202,12 +212,12 @@ const LoginScreen = () => {
           <Controller
             control={control}
             rules={{
-              required: 'Password is required',
+              required: t("password_is_required"),
               minLength: 8,
             }}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                placeholder="Password"
+                placeholder={t("password")}
                 w="100%"
                 size="lg"
                 borderRadius={16}
@@ -217,18 +227,18 @@ const LoginScreen = () => {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                type={show ? 'text' : 'password'}
+                type={show ? "text" : "password"}
                 borderColor="BORDER_COLOR"
-                placeholderTextColor={'GREY'}
-                color={'BLACK_COLOR'}
-                fontSize={'sm'}
+                placeholderTextColor={"GREY"}
+                color={"BLACK_COLOR"}
+                fontSize={"sm"}
                 fontFamily={Fonts.POPPINS_REGULAR}
                 InputRightElement={
                   <Pressable onPress={() => setShow(!show)}>
                     <Icon
                       as={
                         <MaterialIcons
-                          name={show ? 'visibility' : 'visibility-off'}
+                          name={show ? "visibility" : "visibility-off"}
                         />
                       }
                       size={5}
@@ -243,134 +253,148 @@ const LoginScreen = () => {
           />
           {errors.password && (
             <Text
-              color={'ERROR'}
+              color={"ERROR"}
               marginTop={verticalScale(5)}
-              fontFamily={Fonts.POPPINS_MEDIUM}>
-              Password length must be greater than 8
+              fontFamily={Fonts.POPPINS_MEDIUM}
+            >
+              {t("password_length_must_be_greater_than_8")}
             </Text>
           )}
         </FormControl>
       </Box>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Forgot');
-        }}>
+          navigation.navigate("Forgot");
+        }}
+      >
         <Text
           color="PRIMARY_COLOR"
           fontSize="sm"
           fontFamily={Fonts.POPPINS_REGULAR}
           letterSpacing="0.32"
           alignSelf="flex-end"
-          mt={verticalScale(15)}>
-          Forgot Password?
+          mt={verticalScale(15)}
+        >
+          {t("forgot_password_question")}
         </Text>
       </TouchableOpacity>
 
       <Button
         isLoading={isLoading}
-        // isLoadingText="Logging in"
         variant="solid"
         _text={{
-          color: 'WHITE_COLOR',
+          color: "WHITE_COLOR",
 
           fontFamily: Fonts.POPPINS_SEMI_BOLD,
         }}
         _loading={{
           _text: {
-            color: 'BLACK_COLOR',
+            color: "BLACK_COLOR",
             fontFamily: Fonts.POPPINS_MEDIUM,
           },
         }}
         _spinner={{
-          color: 'BLACK_COLOR',
+          color: "BLACK_COLOR",
         }}
         _pressed={{
-          backgroundColor: 'DISABLED_COLOR',
+          backgroundColor: "DISABLED_COLOR",
         }}
         spinnerPlacement="end"
-        backgroundColor={'PRIMARY_COLOR'}
-        size={'lg'}
+        backgroundColor={"PRIMARY_COLOR"}
+        size={"lg"}
         mt={verticalScale(50)}
-        p={'4'}
+        p={"4"}
         borderRadius={16}
-        // isDisabled={isLoading}
         isPressed={isLoading}
-        onPress={handleSubmit(LoginHandler)}>
-        Sign In
+        onPress={handleSubmit(LoginHandler)}
+      >
+        {t("sign_in")}
       </Button>
-      <View width={'100%'} justifyContent={'center'} mt={verticalScale(20)}>
-        <View borderWidth={0.5} borderColor={'BORDER_COLOR'} />
-        <View position={'absolute'} flexWrap={'wrap'} alignSelf="center">
+      <View width={"100%"} justifyContent={"center"} mt={verticalScale(20)}>
+        <View borderWidth={0.5} borderColor={"BORDER_COLOR"} />
+        <View position={"absolute"} flexWrap={"wrap"} alignSelf="center">
           <Text
-            textAlign={'center'}
-            bg={'WHITE_COLOR'}
+            textAlign={"center"}
+            bg={"WHITE_COLOR"}
             color="GREY"
             width="100%"
             alignSelf="center"
-            px="3">
-            OR
+            px="3"
+          >
+            {t("or")}
           </Text>
         </View>
       </View>
       <View
-        width={'100%'}
+        width={"100%"}
         height={verticalScale(100)}
         mt={verticalScale(10)}
-        flexDirection={'row'}
-        justifyContent={'space-between'}
-        alignItems={'center'}>
+        flexDirection={"row"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
         <Pressable
           style={styles.socialButton}
           onPress={googleLogin}
           _pressed={{
-            backgroundColor: 'DISABLED_COLOR',
-          }}>
+            backgroundColor: "DISABLED_COLOR",
+          }}
+        >
           <Images.Google />
           <Text
             pl="2"
             fontSize={verticalScale(16)}
-            textAlign={'center'}
-            fontFamily={Fonts.POPPINS_MEDIUM}>
-            Google
+            textAlign={"center"}
+            fontFamily={Fonts.POPPINS_MEDIUM}
+          >
+            {" "}
+            {t("google")}
           </Text>
         </Pressable>
         <Pressable
           style={styles.socialButton}
           onPress={logoutSocialLogIn}
           _pressed={{
-            backgroundColor: 'DISABLED_COLOR',
-          }}>
+            backgroundColor: "DISABLED_COLOR",
+          }}
+        >
           <Images.Facebook />
           <Text
             pl="2"
             fontSize={verticalScale(16)}
-            fontFamily={Fonts.POPPINS_MEDIUM}>
-            Facebook
+            fontFamily={Fonts.POPPINS_MEDIUM}
+          >
+            {" "}
+            {t("facebook")}
           </Text>
         </Pressable>
       </View>
       <View
-        alignItems={'center'}
-        justifyContent={'center'}
+        alignItems={"center"}
+        justifyContent={"center"}
         height={verticalScale(50)}
-        flexDirection={'row'}
-        alignSelf={'center'}>
+        flexDirection={"row"}
+        alignSelf={"center"}
+      >
         <Text
-          color={'#5A5A5C'}
+          color={"#5A5A5C"}
           letterSpacing={0.3}
-          fontFamily={Fonts.POPPINS_MEDIUM}>
-          Don't have an account?
+          fontFamily={Fonts.POPPINS_MEDIUM}
+        >
+          {t("dont_have_an_account")}
         </Text>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('SignupScreen');
-          }}>
+            navigation.navigate("SignupScreen");
+          }}
+        >
           <Text
-            color={'PRIMARY_COLOR'}
+            color={"PRIMARY_COLOR"}
             letterSpacing={0.3}
             fontFamily={Fonts.POPPINS_MEDIUM}
-            ml={1}>
-            Sign Up
+            ml={1}
+          >
+            {t("sign_up")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -388,13 +412,13 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(30),
   },
   socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: verticalScale(20),
-    borderColor: '#CCCCCC',
+    borderColor: "#CCCCCC",
     borderWidth: 1,
     borderRadius: 16,
-    width: '48%',
-    justifyContent: 'center',
+    width: "48%",
+    justifyContent: "center",
   },
 });

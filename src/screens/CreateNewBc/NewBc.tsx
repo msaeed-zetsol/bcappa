@@ -7,7 +7,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import React, {useState, useCallback, useEffect, useMemo, useRef} from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -16,23 +16,23 @@ import {
   Box,
   Pressable,
   Icon,
-} from 'native-base';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import Colors, {newColorTheme} from '../../constants/Colors';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {useForm, Controller} from 'react-hook-form';
-import {Fonts, Images} from '../../constants';
-import ToggleSwitch from 'toggle-switch-react-native';
-import Heading from '../../components/Heading';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import {BcSelectionType, BcStatus, BcType} from '../../lookups/Enums';
-import {useDispatch, useSelector} from 'react-redux';
-import TextFieldComponent from '../../components/TextFieldComponent';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {setMembers} from '../../redux/members/membersSlice';
-import {errors} from '../../redux/user/userSlice';
+} from "native-base";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import Colors, { newColorTheme } from "../../constants/Colors";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useForm, Controller } from "react-hook-form";
+import { Fonts, Images } from "../../constants";
+import ToggleSwitch from "toggle-switch-react-native";
+import Heading from "../../components/Heading";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { BcSelectionType, BcStatus, BcType } from "../../lookups/Enums";
+import { useDispatch, useSelector } from "react-redux";
+import TextFieldComponent from "../../components/TextFieldComponent";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { setMembers } from "../../redux/members/membersSlice";
+import { errors } from "../../redux/user/userSlice";
+import { useTranslation } from "react-i18next";
 
 const NewBc = () => {
   const navigation: any = useNavigation();
@@ -40,12 +40,15 @@ const NewBc = () => {
   const members = useSelector((state: any) => state.members);
   const [disabled, setIsDisabled] = useState(false);
   const [balloting, setBalloting] = useState(false);
-  const [maxUsers, setMaxUsers] = useState('');
-  const [amountPerMonth, setAmountPerMonth] = useState('');
+  const [maxUsers, setMaxUsers] = useState("");
+  const [amountPerMonth, setAmountPerMonth] = useState("");
   const [bcTotal, setBcTotal] = useState(0);
+  const { t } = useTranslation();
+
   let currentDate = new Date();
   let nextDay = new Date(currentDate);
   nextDay.setDate(currentDate.getDate() + 1);
+
   useEffect(() => {
     calculateTotal();
   }, [maxUsers, amountPerMonth]);
@@ -57,16 +60,16 @@ const NewBc = () => {
 
   const [date, setDate] = useState<any>(new Date());
   const [openDate, setOpenDate] = useState(false);
-  const [showDate, setShowDate] = useState('');
+  const [showDate, setShowDate] = useState("");
   const {
     control: newBcControl,
     handleSubmit: handleNewBcSubmit,
-    formState: {errors: newBcError},
+    formState: { errors: newBcError },
   } = useForm({
     defaultValues: {
-      title: '',
-      totalUsers: '',
-      amountPerMonth: '',
+      title: "",
+      totalUsers: "",
+      amountPerMonth: "",
     },
   });
 
@@ -75,7 +78,7 @@ const NewBc = () => {
       setIsDisabled(true);
       if (members.length >= 1) {
         console.log(
-          ' ---------------- members before delete ---------------- ',
+          " ---------------- members before delete ---------------- "
         );
         console.log(members);
 
@@ -85,7 +88,7 @@ const NewBc = () => {
           });
         }
 
-        console.log(' ---------------- members after delete ---------------- ');
+        console.log(" ---------------- members after delete ---------------- ");
         console.log(members);
 
         if (members.length <= +details.totalUsers) {
@@ -101,16 +104,16 @@ const NewBc = () => {
             commenceDate: date,
           };
 
-          console.log({sayen: data.bcMembers});
+          console.log({ sayen: data.bcMembers });
           const response = await apimiddleWare({
-            url: '/bcs',
-            method: 'post',
+            url: "/bcs",
+            method: "post",
             data: data,
             reduxDispatch: dispatch,
             navigation,
           });
           if (response) {
-            console.log({response});
+            console.log({ response });
             setIsDisabled(false);
 
             dispatch(setMembers([]));
@@ -118,30 +121,30 @@ const NewBc = () => {
           }
           setIsDisabled(false);
         } else {
-          Alert.alert('Members can not be more than max members');
+          Alert.alert("Members can not be more than max members");
           setIsDisabled(false);
         }
       } else {
-        Alert.alert('Please Add Members');
+        Alert.alert("Please Add Members");
         setIsDisabled(false);
       }
     } else {
-      dispatch(errors({message: 'Commence date is required', value: true}));
+      dispatch(errors({ message: "Starting date is required", value: true }));
     }
   };
 
   const handleDialPress = () => {
     const phoneNumberURL = `tel:03163110456`;
-    Linking.openURL(phoneNumberURL).catch(error => {
+    Linking.openURL(phoneNumberURL).catch((error) => {
       console.error(`Failed to open the phone dialer: ${error}`);
     });
   };
 
   return (
-    <View flex={1} bg={'BACKGROUND_COLOR'} px={horizontalScale(20)}>
+    <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
       <StatusBar backgroundColor={newColorTheme.BACKGROUND_COLOR} />
       <Heading
-        name={'Create New BC'}
+        name={t("create_new_bc")}
         navigation={navigation}
         onPress={() => {
           dispatch(setMembers([]));
@@ -153,10 +156,10 @@ const NewBc = () => {
         <FormControl w="100%">
           <Controller
             control={newBcControl}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <View>
                 <Input
-                  placeholder="Title"
+                  placeholder={t("title")}
                   w="100%"
                   size="lg"
                   borderRadius={16}
@@ -169,35 +172,36 @@ const NewBc = () => {
                   onChangeText={onChange}
                   value={value}
                   borderColor="BORDER_COLOR"
-                  placeholderTextColor={'GREY'}
-                  color={'BLACK_COLOR'}
+                  placeholderTextColor={"GREY"}
+                  color={"BLACK_COLOR"}
                   fontFamily={Fonts.POPPINS_REGULAR}
-                  fontSize={'sm'}
+                  fontSize={"sm"}
                   inputMode="text"
                 />
               </View>
             )}
             name="title"
             rules={{
-              required: 'Title is required',
+              required: t("title_is_required"),
             }}
             defaultValue=""
           />
           {newBcError.title && (
             <Text
-              color={'ERROR'}
+              color={"ERROR"}
               marginTop={verticalScale(5)}
-              fontFamily={Fonts.POPPINS_MEDIUM}>
-              Title is required
+              fontFamily={Fonts.POPPINS_MEDIUM}
+            >
+              {t("title_is_required")}
             </Text>
           )}
           <View mt={verticalScale(15)}>
             <Controller
               control={newBcControl}
-              render={({field: {onChange, onBlur, value}}) => (
+              render={({ field: { onChange, onBlur, value } }) => (
                 <View>
                   <Input
-                    placeholder="Max Users"
+                    placeholder={t("max_users")}
                     w="100%"
                     size="lg"
                     borderRadius={16}
@@ -207,41 +211,42 @@ const NewBc = () => {
                     keyboardType="number-pad"
                     autoCorrect={false}
                     onBlur={onBlur}
-                    onChangeText={text => {
+                    onChangeText={(text) => {
                       setMaxUsers(text);
                       onChange(text);
                     }}
                     value={value}
                     borderColor="BORDER_COLOR"
-                    placeholderTextColor={'GREY'}
-                    color={'BLACK_COLOR'}
+                    placeholderTextColor={"GREY"}
+                    color={"BLACK_COLOR"}
                     fontFamily={Fonts.POPPINS_REGULAR}
-                    fontSize={'sm'}
+                    fontSize={"sm"}
                   />
                 </View>
               )}
               name="totalUsers"
               rules={{
-                required: 'Max Users are required',
+                required: t("max_users_required"),
               }}
               defaultValue=""
             />
             {newBcError.totalUsers && (
               <Text
-                color={'ERROR'}
+                color={"ERROR"}
                 marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}>
-                Max user are required
+                fontFamily={Fonts.POPPINS_MEDIUM}
+              >
+                {t("max_users_required")}
               </Text>
             )}
           </View>
           <View mt={verticalScale(15)}>
             <Controller
               control={newBcControl}
-              render={({field: {onChange, onBlur, value}}) => (
+              render={({ field: { onChange, onBlur, value } }) => (
                 <View>
                   <Input
-                    placeholder="Amount/Month"
+                    placeholder={t("amount_per_month")}
                     w="100%"
                     size="lg"
                     borderRadius={16}
@@ -251,45 +256,47 @@ const NewBc = () => {
                     keyboardType="number-pad"
                     autoCorrect={false}
                     onBlur={onBlur}
-                    onChangeText={text => {
+                    onChangeText={(text) => {
                       setAmountPerMonth(text);
                       onChange(text);
                     }}
                     value={value}
                     borderColor="BORDER_COLOR"
-                    placeholderTextColor={'GREY'}
-                    color={'BLACK_COLOR'}
+                    placeholderTextColor={"GREY"}
+                    color={"BLACK_COLOR"}
                     fontFamily={Fonts.POPPINS_REGULAR}
-                    fontSize={'sm'}
+                    fontSize={"sm"}
                   />
                 </View>
               )}
               name="amountPerMonth"
               rules={{
-                required: 'Amount Per Month is required',
+                required: t("amount_per_month_required"),
               }}
               defaultValue=""
             />
             {newBcError.amountPerMonth && (
               <Text
-                color={'ERROR'}
+                color={"ERROR"}
                 marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}>
-                Amount Per Month is required
+                fontFamily={Fonts.POPPINS_MEDIUM}
+              >
+                {t("amount_per_month_required")}
               </Text>
             )}
           </View>
           <TouchableOpacity
             onPress={() => setOpenDate(true)}
-            style={{marginTop: verticalScale(15)}}>
+            style={{ marginTop: verticalScale(15) }}
+          >
             <TextFieldComponent
-              placeholder={'Commence Date'}
+              placeholder={t("starting_date")}
               value={showDate}
               readOnly={true}
               InputRightElement={
                 <Pressable onPress={() => setOpenDate(true)}>
                   <Icon
-                    as={<Ionicons name={'calendar'} />}
+                    as={<Ionicons name={"calendar"} />}
                     size={5}
                     mr="5"
                     color="muted.400"
@@ -301,29 +308,30 @@ const NewBc = () => {
           <Text
             fontFamily={Fonts.POPPINS_SEMI_BOLD}
             mt={verticalScale(10)}
-            fontSize={'sm'}
-            color={'GREY'}>
-            Total expected amount per BC{' '}
-            <Text color={'PRIMARY_COLOR'} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+            fontSize={"sm"}
+            color={"GREY"}
+          >
+            {t("total_expected_amount")}{" "}
+            <Text color={"PRIMARY_COLOR"} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
               {bcTotal}
             </Text>
           </Text>
         </FormControl>
-        {/*  */}
         <View
-          flexDirection={'row'}
-          justifyContent={'space-between'}
-          alignItems={'center'}
-          mt={verticalScale(35)}>
-          <Text fontFamily={Fonts.POPPINS_SEMI_BOLD} fontSize={'lg'}>
-            BC Balloting
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          mt={verticalScale(35)}
+        >
+          <Text fontFamily={Fonts.POPPINS_SEMI_BOLD} fontSize={"lg"}>
+            {t("bc_balloting")}
           </Text>
           <View>
             <ToggleSwitch
               isOn={balloting}
               onColor={Colors.PRIMARY_COLOR}
               offColor={Colors.GREY}
-              label={balloting ? 'Auto' : 'Manual'}
+              label={balloting ? "Auto" : "Manual"}
               labelStyle={{
                 color: Colors.GREY,
                 fontFamily: Fonts.POPPINS_SEMI_BOLD,
@@ -346,7 +354,7 @@ const NewBc = () => {
           <DateTimePicker
             testID="datePicker"
             value={date}
-            mode={'date'}
+            mode={"date"}
             display="default"
             minimumDate={new Date()}
             onChange={(txt: any) => {
@@ -355,48 +363,55 @@ const NewBc = () => {
               setDate(data);
               setShowDate(data.toLocaleDateString());
             }}
-            style={{flex: 1, backgroundColor: 'red'}}
-            positiveButton={{label: 'OK', textColor: Colors.PRIMARY_COLOR}}
-            negativeButton={{label: 'Cancel', textColor: Colors.PRIMARY_COLOR}}
+            style={{ flex: 1, backgroundColor: "red" }}
+            positiveButton={{ label: "OK", textColor: Colors.PRIMARY_COLOR }}
+            negativeButton={{
+              label: "Cancel",
+              textColor: Colors.PRIMARY_COLOR,
+            }}
           />
         )}
 
         <View
-          flexDirection={'row'}
-          alignItems={'center'}
-          justifyContent={'space-between'}
-          mt={verticalScale(30)}>
-          <Text fontFamily={Fonts.POPPINS_SEMI_BOLD} fontSize={'lg'}>
-            Members
+          flexDirection={"row"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          mt={verticalScale(30)}
+        >
+          <Text fontFamily={Fonts.POPPINS_SEMI_BOLD} fontSize={"lg"}>
+            {t("members")}
           </Text>
         </View>
 
         <TouchableOpacity
           style={styles.btnContainer}
           onPress={() => {
-            navigation.navigate('AddMembers', {
+            navigation.navigate("AddMembers", {
               balloting: balloting,
               members,
               maxUsers,
             });
-          }}>
+          }}
+        >
           <Images.AddUser />
           <Text
             color={Colors.PRIMARY_COLOR}
             ml={horizontalScale(5)}
-            fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-            View Members {`(${members.length})`}
+            fontFamily={Fonts.POPPINS_SEMI_BOLD}
+          >
+            {t("view_members")} {`(${members.length})`}
           </Text>
         </TouchableOpacity>
 
-        {/*  */}
-        <View justifyContent={'flex-end'} mb={verticalScale(10)}>
+
+        <View justifyContent={"flex-end"} mb={verticalScale(10)}>
           <Text
             color={Colors.BLACK_COLOR}
             fontFamily={Fonts.POPPINS_SEMI_BOLD}
             my={verticalScale(5)}
-            fontSize={'md'}>
-            Don’t know how to add?
+            fontSize={"md"}
+          >
+            {t("dont_know_how_to_add")}
           </Text>
           <TouchableOpacity
             onPress={handleDialPress}
@@ -405,15 +420,17 @@ const NewBc = () => {
               {
                 borderColor: Colors.PRIMARY_COLOR,
                 borderWidth: 2,
-                backgroundColor: 'white',
+                backgroundColor: "white",
               },
-            ]}>
+            ]}
+          >
             <Images.Call />
             <Text
               color={Colors.PRIMARY_COLOR}
               ml={horizontalScale(5)}
-              fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-              Call Our Helpline
+              fontFamily={Fonts.POPPINS_SEMI_BOLD}
+            >
+              {t("call_our_helpline")}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -427,12 +444,14 @@ const NewBc = () => {
                 borderWidth: 2,
                 marginTop: verticalScale(10),
               },
-            ]}>
+            ]}
+          >
             <Text
               color={Colors.WHITE_COLOR}
               ml={horizontalScale(5)}
-              fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-              Create
+              fontFamily={Fonts.POPPINS_SEMI_BOLD}
+            >
+              {t("create")}
             </Text>
           </TouchableOpacity>
         </View>

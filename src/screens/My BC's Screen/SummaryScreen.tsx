@@ -7,17 +7,18 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {newColorTheme} from '../../constants/Colors';
 import Heading from '../../components/Heading';
 import {apimiddleWare} from '../../utilities/HelperFunctions';
+import { useTranslation } from "react-i18next";
 
 const SummaryScreen = () => {
   const paymentMethod = [
     {
-      name: 'Credit/Debit Card',
-      value: 'credit-debit-card',
+      name: "Credit/Debit Card",
+      value: "credit-debit-card",
       ImageComponent: Images.JazzCash,
     },
     {
-      name: 'Voucher Payment',
-      value: 'voucher-payment',
+      name: "Voucher Payment",
+      value: "voucher-payment",
       ImageComponent: Images.JazzCash,
     },
   ];
@@ -29,13 +30,14 @@ const SummaryScreen = () => {
   const [error, setError] = useState(false);
 
   const route: any = useRoute();
-  const {item, member, bcData}: any = route.params;
+  const { item, member, bcData }: any = route.params;
   const navigation: any = useNavigation();
+  const { t } = useTranslation();
 
   function calculateTotal(
     monthlyAmount: number,
     bcCharges: number,
-    Tax: number,
+    Tax: number
   ) {
     let total = 0;
     total = monthlyAmount + bcCharges + Tax;
@@ -58,7 +60,7 @@ const SummaryScreen = () => {
     try {
       const response = await apimiddleWare({
         url: `/bcs/payments/${item?.id}`,
-        method: 'put',
+        method: "put",
         data: data,
       });
 
@@ -81,107 +83,116 @@ const SummaryScreen = () => {
   return (
     <View backgroundColor={newColorTheme.BACKGROUND_COLOR} flex={1}>
       <StatusBar
-        barStyle={'dark-content'}
+        barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
       <View mx={horizontalScale(20)}>
-        <Heading name={'Summary'} navigation={navigation} />
+        <Heading name={t("summary")} navigation={navigation} />
       </View>
       <ScrollView
-        contentContainerStyle={{paddingBottom: verticalScale(10)}}
-        showsVerticalScrollIndicator={false}>
+        contentContainerStyle={{ paddingBottom: verticalScale(10) }}
+        showsVerticalScrollIndicator={false}
+      >
         <View
-          bg={'WHITE_COLOR'}
+          bg={"WHITE_COLOR"}
           borderRadius={15}
           mx={horizontalScale(20)}
           mt={verticalScale(40)}
           p={5}
           style={{
             elevation: 5,
-            shadowColor: '#000',
+            shadowColor: "#000",
             shadowOpacity: 0.2,
             shadowOffset: {
               width: 10,
               height: 2,
             },
             shadowRadius: 20,
-          }}>
+          }}
+        >
           <View
             mt={3}
             flexDirection="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}>
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
             <Text color="GREY" fontFamily={Fonts.POPPINS_MEDIUM}>
-              BC Month
+              {t("bc_month")}
             </Text>
-            <Text color={'BLACK_COLOR'} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-              {new Date(item?.month).toLocaleString('default', {
-                month: 'long',
-                year: 'numeric',
+            <Text color={"BLACK_COLOR"} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+              {new Date(item?.month).toLocaleString("default", {
+                month: "long",
+                year: "numeric",
               })}
             </Text>
           </View>
           <View
             mt={3}
             flexDirection="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}>
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
             <Text color="GREY" fontFamily={Fonts.POPPINS_MEDIUM}>
-              BC Type
+              {t("bc_type")}
             </Text>
-            <Text color={'BLACK_COLOR'} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+            <Text color={"BLACK_COLOR"} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
               {bcData?.type.toUpperCase()}
             </Text>
           </View>
           <View
             mt={3}
             flexDirection="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}>
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
             <Text color="GREY" fontFamily={Fonts.POPPINS_MEDIUM}>
-              Amount
+              {t("amount")}
             </Text>
-            <Text color={'BLACK_COLOR'} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+            <Text color={"BLACK_COLOR"} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
               Rs {bcData?.amount}
             </Text>
           </View>
           <View
             mt={3}
             flexDirection="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}>
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
             <Text color="GREY" fontFamily={Fonts.POPPINS_MEDIUM}>
-              Bc charges
+              {t("bc_charges")}
             </Text>
-            <Text color={'BLACK_COLOR'} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+            <Text color={"BLACK_COLOR"} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
               Rs 0
             </Text>
           </View>
           <View
             mt={3}
             flexDirection="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}>
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
             <Text color="GREY" fontFamily={Fonts.POPPINS_MEDIUM}>
-              Tax
+              {t("tax")}
             </Text>
-            <Text color={'BLACK_COLOR'} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+            <Text color={"BLACK_COLOR"} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
               Rs 0
             </Text>
           </View>
-          <View borderWidth={0.5} borderColor={'#EEEEEE'} mt={5} />
+          <View borderWidth={0.5} borderColor={"#EEEEEE"} mt={5} />
           <View
             mt={3}
             flexDirection="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}>
-            <Text color={'BLACK_COLOR'} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-              Total
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
+            <Text color={"BLACK_COLOR"} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+              {t("total")}
             </Text>
             <Text
-              color={'PRIMARY_COLOR'}
+              color={"PRIMARY_COLOR"}
               fontFamily={Fonts.POPPINS_SEMI_BOLD}
-              fontSize={'md'}>
+              fontSize={"md"}
+            >
               Rs {calculateTotal(bcData?.amount, 0, 0)}
             </Text>
           </View>
@@ -190,21 +201,22 @@ const SummaryScreen = () => {
           color="#06202E"
           mx={horizontalScale(20)}
           fontFamily={Fonts.POPPINS_MEDIUM}
-          mt={5}>
-          Please select your payment method
+          mt={5}
+        >
+          {t("select_payment_method")}
         </Text>
         {paymentMethod.map((item, index) => {
           return (
             <View
               mx={horizontalScale(20)}
-              bg={'WHITE_COLOR'}
+              bg={"WHITE_COLOR"}
               borderRadius={15}
               mt={verticalScale(15)}
               p={3}
               px={5}
               style={{
                 elevation: 5,
-                shadowColor: '#000',
+                shadowColor: "#000",
                 shadowOpacity: 0.2,
                 shadowOffset: {
                   width: 10,
@@ -212,20 +224,23 @@ const SummaryScreen = () => {
                 },
                 shadowRadius: 20,
               }}
-              flexDirection={'row'}
-              justifyContent={'space-between'}
-              alignItems="center">
+              flexDirection={"row"}
+              justifyContent={"space-between"}
+              alignItems="center"
+            >
               <Radio.Group
                 name="Payment Radio Group"
                 value={value && value}
                 onChange={(nextValue: any) => {
                   setValue(nextValue);
                   console.log(nextValue);
-                }}>
+                }}
+              >
                 <Radio
                   value={item.value}
                   my={1}
-                  fontFamily={Fonts.POPPINS_EXTRA_BOLD}>
+                  fontFamily={Fonts.POPPINS_EXTRA_BOLD}
+                >
                   {item.name}
                 </Radio>
               </Radio.Group>
@@ -239,161 +254,172 @@ const SummaryScreen = () => {
           isDisabled={value === null}
           variant="solid"
           _text={{
-            color: 'WHITE_COLOR',
+            color: "WHITE_COLOR",
             fontFamily: Fonts.POPPINS_SEMI_BOLD,
           }}
           _loading={{
             _text: {
-              color: 'BLACK_COLOR',
+              color: "BLACK_COLOR",
               fontFamily: Fonts.POPPINS_MEDIUM,
             },
           }}
           _spinner={{
-            color: 'BLACK_COLOR',
+            color: "BLACK_COLOR",
           }}
           _pressed={{
-            backgroundColor: 'DISABLED_COLOR',
+            backgroundColor: "DISABLED_COLOR",
           }}
           spinnerPlacement="end"
-          backgroundColor={'PRIMARY_COLOR'}
-          size={'lg'}
+          backgroundColor={"PRIMARY_COLOR"}
+          size={"lg"}
           mt={verticalScale(40)}
-          p={'4'}
+          p={"4"}
           borderRadius={16}
           isPressed={isLoading}
           onPress={() => {
             openEditModal();
-          }}>
-          Pay
+          }}
+        >
+          {t("pay")}
         </Button>
         <Modal
           visible={activeModalItem}
           transparent={true}
-          animationType="slide">
+          animationType="slide"
+        >
           <StatusBar
-            backgroundColor={'rgba(0, 0, 0, 0.63)'}
-            barStyle={'dark-content'}
+            backgroundColor={"rgba(0, 0, 0, 0.63)"}
+            barStyle={"dark-content"}
           />
-          <View flex={1} bg={'rgba(0, 0, 0, 0.63)'} justifyContent={'center'}>
+          <View flex={1} bg={"rgba(0, 0, 0, 0.63)"} justifyContent={"center"}>
             <View
               mx={horizontalScale(20)}
-              bg={'WHITE_COLOR'}
+              bg={"WHITE_COLOR"}
               borderRadius={15}
-              py={verticalScale(20)}>
-              <View justifyContent={'center'} alignItems={'center'}>
+              py={verticalScale(20)}
+            >
+              <View justifyContent={"center"} alignItems={"center"}>
                 <Images.Payment />
                 <Text
                   mt={verticalScale(20)}
-                  color={'BLACK_COLOR'}
-                  fontSize={'2xl'}
+                  color={"BLACK_COLOR"}
+                  fontSize={"2xl"}
                   letterSpacing={1}
-                  fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-                  Are you sure
+                  fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                >
+                  {t("are_you_sure")}
                 </Text>
                 <Text
-                  color={'GREY'}
-                  fontSize={'sm'}
-                  fontFamily={Fonts.POPPINS_MEDIUM}>
-                  to pay the bc?
+                  color={"GREY"}
+                  fontSize={"sm"}
+                  fontFamily={Fonts.POPPINS_MEDIUM}
+                >
+                  {t("pay_bc")}
                 </Text>
               </View>
-              <View mt={5} flexDirection={'row'} justifyContent={'center'}>
+              <View mt={5} flexDirection={"row"} justifyContent={"center"}>
                 <Button
                   variant="solid"
                   _text={{
-                    color: 'BLACK_COLOR',
+                    color: "BLACK_COLOR",
                     fontFamily: Fonts.POPPINS_SEMI_BOLD,
                   }}
-                  backgroundColor={'#D3D3D3'}
-                  size={'md'}
+                  backgroundColor={"#D3D3D3"}
+                  size={"md"}
                   // py={'3'}
-                  px={'7'}
+                  px={"7"}
                   mr={2}
                   borderRadius={10}
                   onPress={() => {
                     setActiveModalItem(false);
-                  }}>
-                  Cancel
+                  }}
+                >
+                  {t("cancel")}
                 </Button>
                 <Button
                   isLoading={isLoading}
                   variant="solid"
                   _text={{
-                    color: 'WHITE_COLOR',
+                    color: "WHITE_COLOR",
                     fontFamily: Fonts.POPPINS_SEMI_BOLD,
                   }}
                   _loading={{
                     _text: {
-                      color: 'BLACK_COLOR',
+                      color: "BLACK_COLOR",
                       fontFamily: Fonts.POPPINS_MEDIUM,
                     },
                   }}
                   _spinner={{
-                    color: 'BLACK_COLOR',
+                    color: "BLACK_COLOR",
                   }}
                   _pressed={{
-                    backgroundColor: 'DISABLED_COLOR',
+                    backgroundColor: "DISABLED_COLOR",
                   }}
                   spinnerPlacement="end"
-                  backgroundColor={'PRIMARY_COLOR'}
-                  size={'lg'}
-                  px={'10'}
+                  backgroundColor={"PRIMARY_COLOR"}
+                  size={"lg"}
+                  px={"10"}
                   borderRadius={10}
                   isDisabled={value === null}
                   isPressed={isLoading}
                   onPress={async () => {
                     setActiveModalItem(false);
                     await changeStatus();
-                  }}>
-                  Pay
+                  }}
+                >
+                  {t("pay")}
                 </Button>
               </View>
             </View>
           </View>
         </Modal>
         <Modal visible={error} transparent={true} animationType="slide">
-          <View flex={1} bg={'rgba(0, 0, 0, 0.63)'} justifyContent={'center'}>
+          <View flex={1} bg={"rgba(0, 0, 0, 0.63)"} justifyContent={"center"}>
             <View
               mx={horizontalScale(20)}
-              bg={'WHITE_COLOR'}
+              bg={"WHITE_COLOR"}
               borderRadius={15}
-              py={verticalScale(20)}>
-              <View justifyContent={'center'} alignItems={'center'}>
+              py={verticalScale(20)}
+            >
+              <View justifyContent={"center"} alignItems={"center"}>
                 <Images.Err />
                 <Text
-                  textAlign={'center'}
+                  textAlign={"center"}
                   mt={verticalScale(20)}
-                  color={'BLACK_COLOR'}
-                  fontSize={'2xl'}
+                  color={"BLACK_COLOR"}
+                  fontSize={"2xl"}
                   letterSpacing={1}
-                  fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-                  Payments unsuccessful !
+                  fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                >
+                  {t("payment_unsuccessful")}
                 </Text>
                 <Text
-                  color={'GREY'}
-                  fontSize={'sm'}
-                  fontFamily={Fonts.POPPINS_MEDIUM}>
-                  Please try again.
+                  color={"GREY"}
+                  fontSize={"sm"}
+                  fontFamily={Fonts.POPPINS_MEDIUM}
+                >
+                  {t("please_try_again")}
                 </Text>
               </View>
-              <View mt={5} flexDirection={'row'} justifyContent={'center'}>
+              <View mt={5} flexDirection={"row"} justifyContent={"center"}>
                 <Button
                   variant="solid"
                   _text={{
-                    color: 'BLACK_COLOR',
+                    color: "BLACK_COLOR",
                     fontFamily: Fonts.POPPINS_SEMI_BOLD,
                   }}
-                  backgroundColor={'#D3D3D3'}
-                  size={'md'}
+                  backgroundColor={"#D3D3D3"}
+                  size={"md"}
                   // py={'3'}
-                  px={'7'}
+                  px={"7"}
                   mr={2}
                   borderRadius={10}
                   onPress={() => {
                     setError(false);
                     navigation.goBack();
-                  }}>
-                  ok
+                  }}
+                >
+                  {t("ok")}
                 </Button>
               </View>
             </View>

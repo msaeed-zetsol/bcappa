@@ -1,65 +1,48 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {useEffect, useState} from 'react';
-import {View, StyleSheet, Image} from 'react-native';
-
-import {OnboardFlow} from 'react-native-onboard';
-import {Colors} from '../../constants';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { View, StyleSheet, Image, StatusBar } from "react-native";
+import { OnboardFlow } from "react-native-onboard";
+import { Colors } from "../../constants";
+import { useTranslation } from "react-i18next";
 
 export default function OnBoardScreen() {
-  const navigation: NavigationProp<any> = useNavigation();
-  const [onboardingComplete, setOnboardingComplete] = useState(true);
-
-  useEffect(() => {
-    AsyncStorage.getItem('onboardingComplete').then(value => {
-      if (value === 'true') {
-        setOnboardingComplete(true);
-        navigation.navigate('WelcomeScreen');
-      } else {
-        setOnboardingComplete(false);
-      }
-    });
-  }, []);
-
-  if (onboardingComplete) {
-    return;
-  }
+  const navigation: any = useNavigation();
+  const { t } = useTranslation();
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
+      <StatusBar barStyle={"dark-content"} backgroundColor="white" />
       <OnboardFlow
+        style={{ backgroundColor: "white" }}
         pages={[
           {
-            title: 'Welcome to BC Appa 👋 ',
-            subtitle:
-              'Empower your savings journey! Join or create savings circles with friends and family. Experience the joy of financial collaboration.',
+            title: t("onboarding_first_title"),
+            subtitle: t("onboarding_first_description"),
             imageUri: Image.resolveAssetSource(
-              require('../../assets/OnBoarding1.png'),
+              require("../../assets/OnBoarding1.png")
             ).uri,
           },
           {
-            title: 'Start Savings Together',
-            subtitle:
-              'Create a new committee or join existing ones. Swap and create a BC with users just like you to build a financial community.',
+            title: t("onboarding_second_title"),
+            subtitle: t("onboarding_second_description"),
             imageUri: Image.resolveAssetSource(
-              require('../../assets/OnBoarding2.png'),
+              require("../../assets/OnBoarding2.png")
             ).uri,
           },
           {
-            title: 'Take Control of Your BCs',
-            subtitle:
-              'Manage your savings circle effortlessly. Track contributions and experience the thrill of achieving financial goals together.',
+            title: t("onboarding_third_title"),
+            subtitle: t("onboarding_third_description"),
             imageUri: Image.resolveAssetSource(
-              require('../../assets/OnBoarding3.png'),
+              require("../../assets/OnBoarding3.png")
             ).uri,
           },
         ]}
-        type="fullscreen" // Change to either 'fullscreen', 'bottom-sheet', or 'inline'
+        type="inline" // Change to either 'fullscreen', 'bottom-sheet', or 'inline'
         autoPlay={true}
         onDone={() => {
-          // save onboarding status
-          AsyncStorage.setItem('onboardingComplete', 'true');
-          navigation.navigate('WelcomeScreen');
+          AsyncStorage.setItem("onboardingComplete", "true").then(() => {
+            navigation.replace("LoginScreen");
+          });
         }}
         paginationColor={Colors.DISABLED_COLOR}
         paginationSelectedColor={Colors.PRIMARY_COLOR}
@@ -85,9 +68,3 @@ export default function OnBoardScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

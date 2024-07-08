@@ -15,29 +15,30 @@ import Heading from '../../components/Heading';
 import Colors, {newColorTheme} from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import {Fonts} from '../../constants';
-import {useForm, Controller} from 'react-hook-form';
-import {CountryPicker} from 'react-native-country-codes-picker';
-import DatePicker from 'react-native-date-picker';
-import TextFieldComponent from '../../components/TextFieldComponent';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useForm, Controller } from "react-hook-form";
+import DatePicker from "react-native-date-picker";
+import TextFieldComponent from "../../components/TextFieldComponent";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useTranslation } from "react-i18next";
+
 const JazzDostSignup = () => {
   const navigation: any = useNavigation();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [countryCode, setCountryCode] = useState('+92');
+  const [countryCode, setCountryCode] = useState("+92");
   const [date, setDate] = useState<any>(new Date());
   const [openDate, setOpenDate] = useState(false);
-  const [showDate, setShowDate] = useState('');
+  const [showDate, setShowDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation();
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm({
     defaultValues: {
-      phoneNumber: '',
-      cnicNumber: '',
-      carrier: '',
+      phoneNumber: "",
+      cnicNumber: "",
+      carrier: "",
     },
   });
   const signupHandler = (details: any) => {
@@ -59,20 +60,21 @@ const JazzDostSignup = () => {
   return (
     <View
       flex={1}
-      bg={'BACKGROUND_COLOR'}
+      bg={"BACKGROUND_COLOR"}
       pt={verticalScale(15)}
-      px={horizontalScale(20)}>
+      px={horizontalScale(20)}
+    >
       <StatusBar
-        barStyle={'dark-content'}
+        barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
       <Heading navigation={navigation} />
       <View mt={verticalScale(40)}>
         <Text fontSize={verticalScale(22)} fontFamily={Fonts.POPPINS_BOLD}>
-          Welcome To Dost
+          {t("welcome_to_dost")}
         </Text>
         <Text color={Colors.GREY} fontFamily={Fonts.POPPINS_REGULAR}>
-          Create a new bank account
+          {t("create_bank_account")}
         </Text>
       </View>
       <DatePicker
@@ -83,7 +85,7 @@ const JazzDostSignup = () => {
         date={new Date(date)}
         locale="en"
         theme="dark"
-        onConfirm={selectedDate => {
+        onConfirm={(selectedDate) => {
           setDate(selectedDate);
           setShowDate(selectedDate.toLocaleDateString());
           setOpenDate(false);
@@ -100,41 +102,39 @@ const JazzDostSignup = () => {
         <FormControl mt={verticalScale(15)}>
           <Controller
             control={control}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <TextFieldComponent
-                placeholder={'Enter your CNIC'}
-                // width="48%"
+                placeholder={t("enter_your_cnic")}
                 value={value}
                 onBlur={onBlur}
                 onChange={onChange}
-                keyboardType={'number-pad'}
+                keyboardType={"number-pad"}
               />
             )}
             name="cnicNumber"
             rules={{
-              required: 'CNIC is required',
+              required: t("cnic_is_required"),
               minLength: 13,
             }}
             defaultValue=""
           />
           {errors.cnicNumber && (
             <Text
-              color={'ERROR'}
+              color={"ERROR"}
               marginTop={verticalScale(5)}
-              fontFamily={Fonts.POPPINS_MEDIUM}>
-              CNIC is required
+              fontFamily={Fonts.POPPINS_MEDIUM}
+            >
+              {t("cnic_is_required")}
             </Text>
           )}
           <View mt={verticalScale(15)}>
             <TextFieldComponent
-              placeholder={'Date of Birth'}
+              placeholder={t("date_of_birth")}
               value={showDate}
-              // onBlur={onBlur}
-              // onChange={onChange}
               InputRightElement={
                 <Pressable onPress={() => setOpenDate(true)}>
                   <Icon
-                    as={<Ionicons name={'calendar'} />}
+                    as={<Ionicons name={"calendar"} />}
                     size={5}
                     mr="5"
                     color="muted.400"
@@ -155,32 +155,33 @@ const JazzDostSignup = () => {
           <View mt={verticalScale(15)}>
             <Controller
               control={control}
-              render={({field: {onChange, onBlur, value}}) => (
+              render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  placeholder={'Phone Number'}
+                  placeholder={t("phone_number")}
                   value={value}
                   onBlur={onBlur}
                   onChange={onChange}
-                  keyboardType={'number-pad'}
+                  keyboardType={"number-pad"}
                   InputLeftElement={
                     <Pressable
                       onPress={() => setShowDropdown(true)}
-                      flexDirection={'row'}
-                      alignItems={'center'}
-                      justifyContent={'center'}
-                      ml="6">
-                      <Text fontSize={'sm'} fontFamily={Fonts.POPPINS_REGULAR}>
+                      flexDirection={"row"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      ml="6"
+                    >
+                      <Text fontSize={"sm"} fontFamily={Fonts.POPPINS_REGULAR}>
                         {countryCode}
                       </Text>
                       <Icon
-                        as={<Ionicons name={'caret-down'} />}
+                        as={<Ionicons name={"caret-down"} />}
                         size={5}
                         ml="2"
                         color="BLACK_COLOR"
                       />
                       <View
                         borderWidth={0.5}
-                        borderColor={'BORDER_COLOR'}
+                        borderColor={"BORDER_COLOR"}
                         height={5}
                         ml={2}
                       />
@@ -190,37 +191,39 @@ const JazzDostSignup = () => {
               )}
               name="phoneNumber"
               rules={{
-                required: 'Phone Number is required',
+                required: t("phone_is_required"),
                 minLength: 9,
               }}
               defaultValue=""
             />
             {errors.phoneNumber && (
               <Text
-                color={'ERROR'}
+                color={"ERROR"}
                 marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}>
-                Phone Number is required
+                fontFamily={Fonts.POPPINS_MEDIUM}
+              >
+                {t("phone_is_required")}
               </Text>
             )}
           </View>
           <View mt={verticalScale(15)}>
             <Controller
               control={control}
-              render={({field: {onChange, onBlur, value}}) => (
+              render={({ field: { onChange, onBlur, value } }) => (
                 <Select
                   minWidth="200"
                   accessibilityLabel="Choose Service"
-                  placeholder="Carrier"
+                  placeholder={t("carrier")}
                   borderRadius={16}
                   borderColor="BORDER_COLOR"
                   p="3"
-                  fontSize={'sm'}
-                  placeholderTextColor={'GREY'}
+                  fontSize={"sm"}
+                  placeholderTextColor={"GREY"}
                   size="lg"
                   selectedValue={value}
-                  onValueChange={newValue => onChange(newValue)}
-                  color={'BLACK_COLOR'}>
+                  onValueChange={(newValue) => onChange(newValue)}
+                  color={"BLACK_COLOR"}
+                >
                   <Select.Item label="Jazz" value="jazz" />
                   <Select.Item label="Ufone" value="ufone" />
                   <Select.Item label="Telenor" value="telenor" />
@@ -230,51 +233,50 @@ const JazzDostSignup = () => {
               )}
               name="carrier"
               rules={{
-                required: 'Carrier is required',
-                //   minLength: 6,
+                required: t("carrier_is_required"),
               }}
               defaultValue=""
             />
             {errors.carrier && (
               <Text
-                color={'ERROR'}
+                color={"ERROR"}
                 marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}>
-                Carrier is required
+                fontFamily={Fonts.POPPINS_MEDIUM}
+              >
+                {t("carrier_is_required")}
               </Text>
             )}
           </View>
         </FormControl>
         <Button
           isLoading={isLoading}
-          // isLoadingText="Signing up"
           variant="solid"
           _text={{
-            color: 'WHITE_COLOR',
-
+            color: "WHITE_COLOR",
             fontFamily: Fonts.POPPINS_SEMI_BOLD,
           }}
           _loading={{
             _text: {
-              color: 'BLACK_COLOR',
+              color: "BLACK_COLOR",
               fontFamily: Fonts.POPPINS_MEDIUM,
             },
           }}
           _spinner={{
-            color: 'BLACK_COLOR',
+            color: "BLACK_COLOR",
           }}
           _pressed={{
-            backgroundColor: 'DISABLED_COLOR',
+            backgroundColor: "DISABLED_COLOR",
           }}
           spinnerPlacement="end"
-          backgroundColor={'PRIMARY_COLOR'}
-          size={'lg'}
+          backgroundColor={"PRIMARY_COLOR"}
+          size={"lg"}
           mt={verticalScale(50)}
-          p={'4'}
+          p={"4"}
           borderRadius={16}
           isPressed={isLoading}
-          onPress={handleSubmit(signupHandler)}>
-          Create Account
+          onPress={handleSubmit(signupHandler)}
+        >
+          {t("create_account")}
         </Button>
       </Box>
       {/*  */}

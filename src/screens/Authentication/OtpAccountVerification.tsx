@@ -4,6 +4,7 @@ import {
   TextInput,
   Keyboard,
   TouchableOpacity,
+  I18nManager,
 } from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import {View, Pressable, Heading, Text, Button} from 'native-base';
@@ -14,11 +15,12 @@ import {newColorTheme} from '../../constants/Colors';
 import {apimiddleWare} from '../../utilities/HelperFunctions';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from "react-i18next";
 
 const OtpAccountVerification = () => {
   const routes: any = useRoute();
-  const {data, show, from, hide} = routes.params;
-  const [otp, setOtp] = useState({1: '', 2: '', 3: '', 4: '', 5: ''});
+  const { data, show, from, hide } = routes.params;
+  const [otp, setOtp] = useState({ 1: "", 2: "", 3: "", 4: "", 5: "" });
   const navigation: any = useNavigation();
   const dispatch: any = useDispatch();
   const firstInput: any = useRef();
@@ -30,7 +32,8 @@ const OtpAccountVerification = () => {
   const [timer, setTimer] = useState<any>(60);
   const [resendNow, setResendNow] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [whatTosend, setWhatToSend] = useState('phoneNumber');
+  const [whatTosend, setWhatToSend] = useState("phoneNumber");
+  const { t } = useTranslation();
 
   //time format function
 
@@ -39,10 +42,10 @@ const OtpAccountVerification = () => {
     const seconds = time % 60;
 
     // Add leading zero if necessary
-    const formattedMinutes = String(minutes).padStart(2, '0');
-    const formattedSeconds = String(seconds).padStart(2, '0');
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedSeconds = String(seconds).padStart(2, "0");
     if (minutes === 0 && seconds === 0) {
-      return '00:00';
+      return "00:00";
     }
 
     return `${formattedMinutes}:${formattedSeconds}`;
@@ -50,7 +53,7 @@ const OtpAccountVerification = () => {
 
   //verify Otp
   const LoginHandler = async (details: any) => {
-    const getToken: any = await AsyncStorage.getItem('fcmToken');
+    const getToken: any = await AsyncStorage.getItem("fcmToken");
     const parsedFcmToken: any = await JSON.parse(getToken);
     Keyboard.dismiss();
     console.log(details);
@@ -62,8 +65,8 @@ const OtpAccountVerification = () => {
     };
     try {
       const response = await apimiddleWare({
-        url: '/auth/login',
-        method: 'post',
+        url: "/auth/login",
+        method: "post",
         data: data,
         reduxDispatch: dispatch,
         navigation: navigation,
@@ -71,12 +74,12 @@ const OtpAccountVerification = () => {
       console.log(response);
       if (response) {
         const loginUserDataString = await JSON.stringify(response);
-        await AsyncStorage.setItem('loginUserData', loginUserDataString);
+        await AsyncStorage.setItem("loginUserData", loginUserDataString);
         // await requestUserPermission();
-        navigation.replace('BottomNavigator', {
-          screen: 'HomeScreen',
+        navigation.replace("BottomNavigator", {
+          screen: "HomeScreen",
           params: {
-            screenName: 'Signup',
+            screenName: "Signup",
             show: true,
           },
         });
@@ -90,34 +93,34 @@ const OtpAccountVerification = () => {
   const verifyOtp = async () => {
     setIsLoading(true);
     Keyboard.dismiss();
-    const concatenatedOtp = Object.values(otp).join('');
-    console.log({whatTo: whatTosend});
+    const concatenatedOtp = Object.values(otp).join("");
+    console.log({ whatTo: whatTosend });
 
     const payloadData: any = {
       otpCode: concatenatedOtp,
       phoneNumber: data.phone,
     };
 
-    if (whatTosend === 'email') {
+    if (whatTosend === "email") {
       payloadData.email = data.email;
       delete payloadData.phoneNumber;
     }
 
-    console.log({payloadData});
+    console.log({ payloadData });
 
     const response = await apimiddleWare({
-      url: '/otp/verify',
-      method: 'post',
+      url: "/otp/verify",
+      method: "post",
       data: payloadData,
       reduxDispatch: dispatch,
       navigation,
     });
-    console.log({apikbad: data});
-    console.log({response});
+    console.log({ apikbad: data });
+    console.log({ response });
     if (response) {
       const response = await apimiddleWare({
-        url: '/auth/signup',
-        method: 'post',
+        url: "/auth/signup",
+        method: "post",
         data: data,
         reduxDispatch: dispatch,
         navigation,
@@ -133,7 +136,7 @@ const OtpAccountVerification = () => {
   const verifyToGivenInfo = async () => {
     setIsLoading(true);
     Keyboard.dismiss();
-    const concatenatedOtp = Object.values(otp).join('');
+    const concatenatedOtp = Object.values(otp).join("");
 
     if (data.email) {
       var payloadData: any = {
@@ -148,16 +151,16 @@ const OtpAccountVerification = () => {
     }
 
     const response = await apimiddleWare({
-      url: '/otp/verify',
-      method: 'post',
+      url: "/otp/verify",
+      method: "post",
       data: payloadData,
       reduxDispatch: dispatch,
       navigation,
     });
     if (response) {
-      console.log({response});
+      console.log({ response });
       setIsLoading(false);
-      navigation.navigate('NewPassword', {
+      navigation.navigate("NewPassword", {
         data,
       });
     }
@@ -165,10 +168,10 @@ const OtpAccountVerification = () => {
   };
 
   const sendOtp = async () => {
-    console.log({data});
+    console.log({ data });
     const response = await apimiddleWare({
-      url: '/otp',
-      method: 'post',
+      url: "/otp",
+      method: "post",
       data: {
         phoneNumber: data.phone,
       },
@@ -176,15 +179,15 @@ const OtpAccountVerification = () => {
       navigation,
     });
     if (response) {
-      console.log({response});
+      console.log({ response });
     }
   };
   const sendOtpViaEmail = async () => {
-    console.log({data});
+    console.log({ data });
     // setWhatToSend('email');
     const response = await apimiddleWare({
-      url: '/otp',
-      method: 'post',
+      url: "/otp",
+      method: "post",
       data: {
         email: data.email,
       },
@@ -192,13 +195,13 @@ const OtpAccountVerification = () => {
       navigation,
     });
     if (response) {
-      setWhatToSend('email');
+      setWhatToSend("email");
 
-      console.log({response});
+      console.log({ response });
     }
   };
   const sendOtpToGivenInfo = async () => {
-    console.log({data});
+    console.log({ data });
     if (data.phone) {
       await sendOtp();
     } else if (data.email) {
@@ -206,7 +209,7 @@ const OtpAccountVerification = () => {
     }
   };
   useEffect(() => {
-    from === 'forgot' ? sendOtpToGivenInfo() : sendOtp();
+    from === "forgot" ? sendOtpToGivenInfo() : sendOtp();
   }, []);
 
   useEffect(() => {
@@ -226,25 +229,26 @@ const OtpAccountVerification = () => {
     <View style={styles.container}>
       <StatusBar
         backgroundColor={newColorTheme.WHITE_COLOR}
-        barStyle={'dark-content'}
+        barStyle={"dark-content"}
       />
-      <Pressable
-        onPress={() => {
-          navigation.goBack();
-        }}>
-        <Images.BackButton />
+      <Pressable onPress={() => navigation.goBack()}>
+        <Images.BackButton
+        style={{
+          transform: [{ rotateY: I18nManager.isRTL ? "180deg" : "0deg" }],
+        }} />
       </Pressable>
-      <Heading mt={10} fontSize={'3xl'} fontFamily={Fonts.POPPINS_EXTRA_BOLD}>
-        Account Verification
+      <Heading mt={10} fontSize={"3xl"} fontFamily={Fonts.POPPINS_EXTRA_BOLD}>
+        {t("account_verification")}
       </Heading>
       <Text
-        fontSize={'sm'}
+        fontSize={"sm"}
         mt={2}
-        color={'#949494'}
+        color={"#949494"}
         fontWeight="500"
-        fontFamily={Fonts.POPPINS_MEDIUM}>
-        Enter 4-digit code that we just send to your phone number{' '}
-        <Text color={'BLACK_COLOR'}>{data.phone || data.email}</Text>
+        fontFamily={Fonts.POPPINS_MEDIUM}
+      >
+        {t("enter_4_digit_code_sent")}{" "}
+        <Text color={"BLACK_COLOR"}>{data.phone || data.email}</Text>
       </Text>
       <View style={styles.otpContainer}>
         <View style={styles.otpBox}>
@@ -253,9 +257,9 @@ const OtpAccountVerification = () => {
             keyboardType="number-pad"
             maxLength={1}
             ref={firstInput}
-            onChangeText={text => {
-              setOtp({...otp, 1: text});
-              text ? secondInput.current.focus() : '';
+            onChangeText={(text) => {
+              setOtp({ ...otp, 1: text });
+              text ? secondInput.current.focus() : "";
             }}
           />
         </View>
@@ -265,8 +269,8 @@ const OtpAccountVerification = () => {
             keyboardType="number-pad"
             maxLength={1}
             ref={secondInput}
-            onChangeText={text => {
-              setOtp({...otp, 2: text});
+            onChangeText={(text) => {
+              setOtp({ ...otp, 2: text });
 
               text ? thirdInput.current.focus() : firstInput.current.focus();
             }}
@@ -278,8 +282,8 @@ const OtpAccountVerification = () => {
             keyboardType="number-pad"
             maxLength={1}
             ref={thirdInput}
-            onChangeText={text => {
-              setOtp({...otp, 3: text});
+            onChangeText={(text) => {
+              setOtp({ ...otp, 3: text });
 
               text ? fourthInput.current.focus() : secondInput.current.focus();
             }}
@@ -291,8 +295,8 @@ const OtpAccountVerification = () => {
             keyboardType="number-pad"
             maxLength={1}
             ref={fourthInput}
-            onChangeText={text => {
-              setOtp({...otp, 4: text});
+            onChangeText={(text) => {
+              setOtp({ ...otp, 4: text });
               text ? fifthInput.current.focus() : thirdInput.current.focus();
             }}
           />
@@ -303,8 +307,8 @@ const OtpAccountVerification = () => {
             keyboardType="number-pad"
             maxLength={1}
             ref={fifthInput}
-            onChangeText={text => {
-              setOtp({...otp, 5: text});
+            onChangeText={(text) => {
+              setOtp({ ...otp, 5: text });
               text ? Keyboard.dismiss() : fourthInput.current.focus();
             }}
           />
@@ -312,9 +316,9 @@ const OtpAccountVerification = () => {
       </View>
       <View alignItems="center" mt={15}>
         {!resendNow ? (
-          <Text color={'BLACK_COLOR'} fontFamily={Fonts.POPPINS_MEDIUM}>
-            Resend Code in:{' '}
-            <Text color={'PRIMARY_COLOR'} fontFamily={Fonts.POPPINS_MEDIUM}>
+          <Text color={"BLACK_COLOR"} fontFamily={Fonts.POPPINS_MEDIUM}>
+            {t("resend_code_in")}{" "}
+            <Text color={"PRIMARY_COLOR"} fontFamily={Fonts.POPPINS_MEDIUM}>
               {formatTime(timer)}
             </Text>
           </Text>
@@ -324,53 +328,49 @@ const OtpAccountVerification = () => {
             onPress={() => {
               setResendNow(false);
               setTimer(60);
-              from === 'forgot' ? sendOtpToGivenInfo() : sendOtp();
-
-              //api call to resend to otp gain
-            }}>
-            <Text color={'WHITE_COLOR'} fontFamily={Fonts.POPPINS_MEDIUM}>
-              Resend Now
-              {/* <Text color={'PRIMARY_COLOR'}>{formatTime(timer)}</Text> */}
+              from === "forgot" ? sendOtpToGivenInfo() : sendOtp();
+            }}
+          >
+            <Text color={"WHITE_COLOR"} fontFamily={Fonts.POPPINS_MEDIUM}>
+              {t("resend_now")}
             </Text>
           </Pressable>
         )}
       </View>
       {!shows && !hide && (
         <View
-          flexDirection={'row'}
-          flexWrap={'wrap'}
+          flexDirection={"row"}
+          flexWrap={"wrap"}
           flex={1}
-          alignItems={'center'}
+          alignItems={"center"}
           mt={3}
-          alignSelf={'center'}
-          justifyContent={'center'}>
+          alignSelf={"center"}
+          justifyContent={"center"}
+        >
           <Text
-            textAlign={'center'}
-            color={'#949494'}
+            textAlign={"center"}
+            color={"#949494"}
             fontWeight="500"
-            fontFamily={Fonts.POPPINS_MEDIUM}>
-            Trouble receiving OTP! Contact
+            fontFamily={Fonts.POPPINS_MEDIUM}
+          >
+            {t("trouble_receiving_otp")}
           </Text>
-          <TouchableOpacity
-            onPress={() => {
-              // navigation.navigate('TermsAndConditions');
-            }}>
+          <TouchableOpacity>
             <Text
-              color={'PRIMARY_COLOR'}
-              // textAlign={'center'}
-              // color={'#949494'}
-              // fontWeight="500"
-              fontFamily={Fonts.POPPINS_MEDIUM}>
-              {' '}
-              Help Center
+              color={"PRIMARY_COLOR"}
+              fontFamily={Fonts.POPPINS_MEDIUM}
+            >
+              {" "}
+              {t("help_center")}
             </Text>
           </TouchableOpacity>
           <Text
-            textAlign={'center'}
-            color={'#949494'}
+            textAlign={"center"}
+            color={"#949494"}
             fontWeight="500"
-            fontFamily={Fonts.POPPINS_MEDIUM}>
-            or receive OTP via
+            fontFamily={Fonts.POPPINS_MEDIUM}
+          >
+            {t("receive_otp_via")}
           </Text>
           <TouchableOpacity
             onPress={() => {
@@ -378,47 +378,47 @@ const OtpAccountVerification = () => {
               setShows(true);
               setTimer(60);
               sendOtpViaEmail();
-              // navigation.navigate('TermsAndConditions');
-            }}>
-            <Text color={'PRIMARY_COLOR'} fontFamily={Fonts.POPPINS_MEDIUM}>
-              {' '}
-              Email
+            }}
+          >
+            <Text color={"PRIMARY_COLOR"} fontFamily={Fonts.POPPINS_MEDIUM}>
+              {" "}
+              {t("email")}
             </Text>
           </TouchableOpacity>
         </View>
       )}
       <Button
         isLoading={isLoading}
-        // isLoadingText="Verifying"
         variant="solid"
         _loading={{
           _text: {
-            color: 'BLACK_COLOR',
+            color: "BLACK_COLOR",
             fontFamily: Fonts.POPPINS_SEMI_BOLD,
           },
         }}
         _text={{
-          color: 'WHITE_COLOR',
+          color: "WHITE_COLOR",
           fontFamily: Fonts.POPPINS_MEDIUM,
         }}
         _spinner={{
-          color: 'BLACK_COLOR',
+          color: "BLACK_COLOR",
         }}
         _pressed={{
-          backgroundColor: 'DISABLED_COLOR',
+          backgroundColor: "DISABLED_COLOR",
         }}
         spinnerPlacement="end"
-        backgroundColor={'PRIMARY_COLOR'}
-        size={'lg'}
+        backgroundColor={"PRIMARY_COLOR"}
+        size={"lg"}
         mt={verticalScale(50)}
-        p={'4'}
+        p={"4"}
         borderRadius={16}
         isDisabled={isLoading}
         isPressed={isLoading}
         onPress={() => {
-          from === 'forgot' ? verifyToGivenInfo() : verifyOtp();
-        }}>
-        Verify
+          from === "forgot" ? verifyToGivenInfo() : verifyOtp();
+        }}
+      >
+        {t("verify")}
       </Button>
     </View>
   );
@@ -459,7 +459,6 @@ const styles = StyleSheet.create({
   },
   forgotButton: {
     height: verticalScale(6),
-    // backgroundColor: Colors.DEFAULT_GREEN,
     borderRadius: 8,
     marginHorizontal: 20,
     justifyContent: 'center',

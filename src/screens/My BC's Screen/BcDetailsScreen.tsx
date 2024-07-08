@@ -23,6 +23,7 @@ import {apimiddleWare} from '../../utilities/HelperFunctions';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import InfoModal from '../../components/InfoModal';
+import { useTranslation } from "react-i18next";
 
 const BcDetailsScreen = () => {
   const routes: any = useRoute();
@@ -32,26 +33,27 @@ const BcDetailsScreen = () => {
   const [userData, setUserData] = useState<any>();
   const [loadScreen, setLoadScreen] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [bcTime, setBcTime] = useState<any>('');
+  const [bcTime, setBcTime] = useState<any>("");
   const navigation: any = useNavigation();
+  const { t } = useTranslation();
 
   const [isJazzDostVerified, setIsJazzDostVerified] = useState<boolean | null>(
-    null,
+    null
   );
 
   const [isPresent, setIsPresent] = useState<boolean>(false);
   const [isButtonPressed, setButtonPressed] = useState(false);
   const dispatch: any = useDispatch();
-  const {item, deeplink} = routes.params;
+  const { item, deeplink } = routes.params;
   const currentDateISOString = new Date().toISOString();
 
   const getData = async () => {
-    const getUserData: any = await AsyncStorage.getItem('loginUserData');
+    const getUserData: any = await AsyncStorage.getItem("loginUserData");
     const parsedUserData: any = JSON.parse(getUserData);
     setUserData(parsedUserData);
     const response = await apimiddleWare({
       url: `/bcs/details/${item}`,
-      method: 'get',
+      method: "get",
       navigation,
       reduxDispatch: dispatch,
     });
@@ -63,13 +65,13 @@ const BcDetailsScreen = () => {
       const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
 
       if (daysDifference <= 0) {
-        setBcTime('Bc Started');
+        setBcTime("Bc Started");
       } else {
         setBcTime(`BC Starts in ${Math.ceil(daysDifference)} days`);
       }
 
       if (
-        response[0].type === 'private' &&
+        response[0].type === "private" &&
         response[0]?.user?.id === parsedUserData.id
       ) {
         setIsAdmin(true);
@@ -85,7 +87,7 @@ const BcDetailsScreen = () => {
       const isSignedInAdminMember = finalMembers.findIndex(
         (member: any) =>
           member?.memberType === BcMemberType.Admin &&
-          member?.user?.id === parsedUserData.id,
+          member?.user?.id === parsedUserData.id
       );
 
       // Check if logged in user is present in the bc
@@ -104,7 +106,7 @@ const BcDetailsScreen = () => {
 
         // Check if an admin member exists and move them to the second position
         const adminMemberIndex = finalMembers.findIndex(
-          (member: any) => member?.memberType === BcMemberType.Admin,
+          (member: any) => member?.memberType === BcMemberType.Admin
         );
 
         if (adminMemberIndex !== -1) {
@@ -128,20 +130,20 @@ const BcDetailsScreen = () => {
     } else {
       const response = await apimiddleWare({
         url: `/bcs/join/${item}`,
-        method: 'post',
+        method: "post",
       });
       if (response) {
-        navigation.navigate('MyBcsScreen');
+        navigation.navigate("MyBcsScreen");
       }
     }
   };
 
   useEffect(() => {
-    navigation.addListener('focus', () => {
+    navigation.addListener("focus", () => {
       getData();
     });
     return () => {
-      navigation.removeListener('focus');
+      navigation.removeListener("focus");
       setButtonPressed(false);
       setIsJazzDostVerified(null);
     };
@@ -164,7 +166,7 @@ const BcDetailsScreen = () => {
   };
 
   const handleCallback = (payload: any) => {
-    navigation.navigate('JazzDostVerification');
+    navigation.navigate("JazzDostVerification");
     setButtonPressed(false);
     setIsJazzDostVerified(null);
   };
@@ -175,13 +177,13 @@ const BcDetailsScreen = () => {
 
   const MemoizedComponent = useMemo(() => {
     return (
-      <View flex={1} bg={'BACKGROUND_COLOR'}>
+      <View flex={1} bg={"BACKGROUND_COLOR"}>
         <StatusBar
-          barStyle={'dark-content'}
+          barStyle={"dark-content"}
           backgroundColor={newColorTheme.BACKGROUND_COLOR}
         />
         <View px={horizontalScale(20)}>
-          <Heading name={'BC Details'} navigation={navigation} />
+          <Heading name={"BC Details"} navigation={navigation} />
         </View>
         {!loadScreen &&
           bcData[0].status === BcStatus.Pending &&
@@ -193,102 +195,111 @@ const BcDetailsScreen = () => {
               isLoading={isLoading}
               variant="solid"
               _text={{
-                color: 'WHITE_COLOR',
+                color: "WHITE_COLOR",
                 fontFamily: Fonts.POPPINS_SEMI_BOLD,
               }}
               _loading={{
                 _text: {
-                  color: 'BLACK_COLOR',
+                  color: "BLACK_COLOR",
                   fontFamily: Fonts.POPPINS_MEDIUM,
                 },
               }}
               _spinner={{
-                color: 'BLACK_COLOR',
+                color: "BLACK_COLOR",
               }}
               _pressed={{
-                backgroundColor: 'DISABLED_COLOR',
+                backgroundColor: "DISABLED_COLOR",
               }}
               spinnerPlacement="end"
-              backgroundColor={'PRIMARY_COLOR'}
-              size={'lg'}
+              backgroundColor={"PRIMARY_COLOR"}
+              size={"lg"}
               mt={verticalScale(40)}
-              p={'4'}
+              p={"4"}
               borderRadius={16}
               isDisabled={
                 bcData.status === BcStatus.Pending && deeplink === false
               }
               _disabled={{
-                backgroundColor: '#D3D3D3',
+                backgroundColor: "#D3D3D3",
                 _text: {
-                  color: 'BLACK_COLOR',
+                  color: "BLACK_COLOR",
                   fontFamily: Fonts.POPPINS_SEMI_BOLD,
                 },
               }}
               isPressed={isLoading}
               onPress={() => {
                 Join();
-              }}>
-              Join Now
+              }}
+            >
+              {t("join_now")}
             </Button>
           )}
 
         {!loadScreen ? (
           <ScrollView
             contentContainerStyle={{
-              maxHeight: !isAdmin && !isPresent ? '90%' : '100%',
-            }}>
+              maxHeight: !isAdmin && !isPresent ? "90%" : "100%",
+            }}
+          >
             <Text
-              color={'#06202E'}
+              color={"#06202E"}
               mx={horizontalScale(20)}
               mt={verticalScale(35)}
               fontFamily={Fonts.POPPINS_SEMI_BOLD}
-              fontSize={'lg'}>
+              fontSize={"lg"}
+            >
               {bcData[0]?.title}
             </Text>
 
             <View
               mx={horizontalScale(20)}
               flexDirection="row"
-              justifyContent={'space-between'}
-              mt={verticalScale(26)}>
-              <View flexDirection={'row'} flex={1}>
+              justifyContent={"space-between"}
+              mt={verticalScale(26)}
+            >
+              <View flexDirection={"row"} flex={1}>
                 <Images.Calender />
                 <View ml={3}>
                   <Text
-                    fontSize={'sm'}
+                    fontSize={"sm"}
                     color="#06202E"
-                    fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-                    {bcData[0].status == BcStatus.Pending && 'Commence Date'}
-                    {bcData[0].status === BcStatus.Active && 'Due Date'}
+                    fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                  >
+                    {bcData[0].status == BcStatus.Pending && "Commence Date"}
+                    {bcData[0].status === BcStatus.Active && "Due Date"}
                   </Text>
                   <Text
                     color="#5A5A5C"
                     fontFamily={Fonts.POPPINS_MEDIUM}
-                    fontSize={'sm'}>
+                    fontSize={"sm"}
+                  >
                     {new Date(bcData[0].commenceDate).toLocaleDateString(
-                      'en-US',
-                      {day: 'numeric', month: 'short', year: 'numeric'},
+                      "en-US",
+                      { day: "numeric", month: "short", year: "numeric" }
                     )}
                   </Text>
                 </View>
               </View>
               <View
-                flexDirection={'row'}
+                flexDirection={"row"}
                 alignItems="center"
                 maxWidth={150}
-                width="80%">
+                width="80%"
+              >
                 <Images.Cash />
                 <View ml={3}>
                   <Text
-                    fontSize={'sm'}
+                    fontSize={"sm"}
                     color="#06202E"
-                    fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-                    BC Amount
+                    fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                  >
+                    {t("monthly_amount")}
                   </Text>
                   <Text
                     color="PRIMARY_COLOR"
                     fontFamily={Fonts.POPPINS_MEDIUM}
-                    fontSize={'sm'}>
+                    fontSize={"sm"}
+                  >
                     RS {bcData[0]?.amount}
                   </Text>
                 </View>
@@ -297,26 +308,29 @@ const BcDetailsScreen = () => {
 
             {bcData[0].type === BcType.Private && (
               <View
-                flexDirection={'row'}
+                flexDirection={"row"}
                 alignItems="flex-start"
                 mt={verticalScale(36)}
-                mx={horizontalScale(20)}>
+                mx={horizontalScale(20)}
+              >
                 <Avatar
-                  size={'sm'}
+                  size={"sm"}
                   bg="cyan.500"
                   source={{
                     uri:
                       bcData[0]?.user?.profileImg ||
-                      'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-                  }}>
+                      "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+                  }}
+                >
                   TE
                 </Avatar>
                 <View ml={3}>
                   <Text
-                    fontSize={'sm'}
+                    fontSize={"sm"}
                     color="#06202E"
-                    fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-                    Created By
+                    fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                  >
+                    {t("created_by")}
                   </Text>
                   <Text
                     color="PRIMARY_COLOR"
@@ -325,7 +339,8 @@ const BcDetailsScreen = () => {
                     fontSize="sm"
                     isTruncated={true}
                     maxWidth={horizontalScale(250)}
-                    numberOfLines={1}>
+                    numberOfLines={1}
+                  >
                     {bcData[0]?.user?.fullName}
                   </Text>
                 </View>
@@ -333,101 +348,110 @@ const BcDetailsScreen = () => {
             )}
             <View
               mx={horizontalScale(20)}
-              justifyContent={'space-between'}
+              justifyContent={"space-between"}
               flexDirection="row"
-              mt={verticalScale(35)}>
+              mt={verticalScale(35)}
+            >
               <Text
-                color={'#06202E'}
+                color={"#06202E"}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                fontSize={'lg'}>
-                Members
+                fontSize={"lg"}
+              >
+                {t("members")}
               </Text>
               <Text
                 color="PRIMARY_COLOR"
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                fontSize={'lg'}>
+                fontSize={"lg"}
+              >
                 {bcData[0].bcMembers.length}
               </Text>
             </View>
             {/* <View height={80}> */}
             <FlatList
               data={BcMembers}
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{
                 paddingBottom: verticalScale(15),
               }}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 const check = paidOrNot(item.payments) === true;
                 return (
                   <TouchableOpacity activeOpacity={1}>
                     <View
                       key={index}
                       mx={horizontalScale(20)}
-                      bg={'WHITE_COLOR'}
+                      bg={"WHITE_COLOR"}
                       borderRadius={12}
                       p={3}
                       mt={6}
                       style={{
                         elevation: 5, // Elevation level (adjust as needed)
-                        shadowColor: '#000', // Shadow color
+                        shadowColor: "#000", // Shadow color
                         shadowOpacity: 0.2, // Shadow opacity (adjust as needed)
                         shadowOffset: {
                           width: 10, // Horizontal offset of the shadow
                           height: 2, // Vertical offset of the shadow
                         },
                         shadowRadius: 5,
-                        overflow: 'hidden',
-                      }}>
+                        overflow: "hidden",
+                      }}
+                    >
                       <View
                         flexDirection="row"
-                        justifyContent={'space-between'}
-                        alignItems={'flex-start'}
+                        justifyContent={"space-between"}
+                        alignItems={"flex-start"}
                         mb={
                           !isAdmin && item?.user?.id !== userData?.id
-                            ? '0'
-                            : '4'
-                        }>
+                            ? "0"
+                            : "4"
+                        }
+                      >
                         {(isAdmin || item?.user?.id === userData?.id) && (
                           <View
                             style={{
                               borderWidth: 1,
                               borderColor: check
                                 ? Colors.PRIMARY_COLOR
-                                : '#FAC245',
-                              backgroundColor: check ? '#F0FAFF' : '#FFF2D3',
+                                : "#FAC245",
+                              backgroundColor: check ? "#F0FAFF" : "#FFF2D3",
                               borderRadius: 5,
                               paddingHorizontal: horizontalScale(8),
                               paddingVertical: verticalScale(3),
                               marginRight: horizontalScale(8),
-                            }}>
+                            }}
+                          >
                             <Text
                               style={{
-                                color: check ? Colors.PRIMARY_COLOR : '#FAC245',
-                                textAlign: 'center',
-                              }}>
-                              {check ? 'Paid' : 'Pending'}
+                                color: check ? Colors.PRIMARY_COLOR : "#FAC245",
+                                textAlign: "center",
+                              }}
+                            >
+                              {check ? t("paid") : t("pending")}
                             </Text>
                           </View>
                         )}
                         {bcData[0].type === BcType.Private &&
-                          item.memberType === 'admin' && (
+                          item.memberType === "admin" && (
                             <View
                               mb={4}
                               style={{
                                 borderWidth: 1,
                                 borderColor: Colors.PRIMARY_COLOR,
-                                backgroundColor: '#F0FAFF',
+                                backgroundColor: "#F0FAFF",
                                 borderRadius: 5,
                                 paddingHorizontal: horizontalScale(8),
                                 paddingVertical: verticalScale(3),
-                              }}>
+                              }}
+                            >
                               <Text
                                 style={{
                                   color: Colors.PRIMARY_COLOR,
                                   fontFamily: Fonts.POPPINS_REGULAR,
-                                }}>
-                                {'Admin'}
+                                }}
+                              >
+                                {"Admin"}
                               </Text>
                             </View>
                           )}
@@ -435,53 +459,58 @@ const BcDetailsScreen = () => {
                           item?.openingPrecedence &&
                           item?.user.id === userData?.id && (
                             <Text
-                              ml={'auto'}
+                              ml={"auto"}
                               color={
                                 item?.bcMemberStatus === BcMemberStatus.Opened
                                   ? Colors.PRIMARY_COLOR
-                                  : 'grey'
+                                  : "grey"
                               }
                               fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                              fontSize={'sm'}>
+                              fontSize={"sm"}
+                            >
                               {item?.bcMemberStatus === BcMemberStatus.Opened &&
-                                item?.bcMemberStatus}{' '}
+                                item?.bcMemberStatus}{" "}
                               {`#${item?.openingPrecedence}`}
                             </Text>
                           )}
                         {isAdmin && (
                           <Text
-                            ml={'auto'}
+                            ml={"auto"}
                             color={
                               item?.bcMemberStatus === BcMemberStatus.Opened
                                 ? Colors.PRIMARY_COLOR
-                                : 'grey'
+                                : "grey"
                             }
                             fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                            fontSize={'sm'}>
+                            fontSize={"sm"}
+                          >
                             {item?.openingPrecedence &&
                             item?.bcMemberStatus === BcMemberStatus.Opened
                               ? `${item?.bcMemberStatus} #${item?.openingPrecedence}`
-                              : ''}
+                              : ""}
                           </Text>
                         )}
                       </View>
                       <View
                         flexDirection="row"
                         alignItems="center"
-                        alignContent={'center'}
-                        justifyContent={'space-between'}>
+                        alignContent={"center"}
+                        justifyContent={"space-between"}
+                      >
                         <View
                           flexDirection="row"
                           alignItems="center"
-                          width="48">
+                          width="48"
+                        >
                           <Avatar
                             bg="WHITE_COLOR"
-                            size={'sm'}
+                            size={"sm"}
                             source={{
                               uri:
                                 item.user.profileImg ||
-                                'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-                            }}>
+                                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+                            }}
+                          >
                             Image
                           </Avatar>
                           <Text
@@ -491,7 +520,8 @@ const BcDetailsScreen = () => {
                             isTruncated={true}
                             maxWidth={horizontalScale(250)}
                             numberOfLines={1}
-                            fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+                            fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                          >
                             {item?.user?.fullName}
                           </Text>
                         </View>
@@ -499,16 +529,17 @@ const BcDetailsScreen = () => {
                           item?.openingPrecedence &&
                           item?.user.id !== userData?.id && (
                             <Text
-                              ml={'auto'}
+                              ml={"auto"}
                               color={
                                 item?.bcMemberStatus === BcMemberStatus.Opened
                                   ? Colors.PRIMARY_COLOR
-                                  : 'grey'
+                                  : "grey"
                               }
                               fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                              fontSize={'sm'}>
+                              fontSize={"sm"}
+                            >
                               {item?.bcMemberStatus === BcMemberStatus.Opened &&
-                                item?.bcMemberStatus}{' '}
+                                item?.bcMemberStatus}{" "}
                               {`#${item?.openingPrecedence}`}
                             </Text>
                           )}
@@ -517,20 +548,23 @@ const BcDetailsScreen = () => {
                         <View
                           style={{
                             marginTop: verticalScale(3),
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}>
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
                           <View>
                             <Text
                               style={{
                                 fontFamily: Fonts.POPPINS_SEMI_BOLD,
-                              }}>
-                              Phone:{' '}
+                              }}
+                            >
+                              Phone:{" "}
                               <Text
                                 style={{
                                   fontFamily: Fonts.POPPINS_MEDIUM,
-                                }}>
+                                }}
+                              >
                                 {item?.user?.phone}
                               </Text>
                             </Text>
@@ -539,13 +573,15 @@ const BcDetailsScreen = () => {
                               isTruncated={true}
                               style={{
                                 fontFamily: Fonts.POPPINS_SEMI_BOLD,
-                              }}>
-                              Email:{'  '}
+                              }}
+                            >
+                              Email:{"  "}
                               <Text
                                 style={{
                                   fontFamily: Fonts.POPPINS_MEDIUM,
-                                }}>
-                                {item?.user?.email || 'N/A'}
+                                }}
+                              >
+                                {item?.user?.email || "N/A"}
                               </Text>
                             </Text>
                           </View>
@@ -555,7 +591,7 @@ const BcDetailsScreen = () => {
                         <Button
                           isDisabled={bcData[0].status === BcStatus.Pending}
                           onPress={() => {
-                            navigation.navigate('UserSchedule', {
+                            navigation.navigate("UserSchedule", {
                               member: item,
                               bcData: bcData[0],
                               userData,
@@ -565,22 +601,23 @@ const BcDetailsScreen = () => {
                           size="sm"
                           // alignSelf={'flex-end'}
                           // width={20}
-                          variant={'solid'}
+                          variant={"solid"}
                           _pressed={{
-                            backgroundColor: 'DISABLED_COLOR',
+                            backgroundColor: "DISABLED_COLOR",
                           }}
                           borderRadius={12}
                           mt={verticalScale(16)}
                           _text={{
-                            color: 'WHITE_COLOR',
+                            color: "WHITE_COLOR",
                             fontFamily: Fonts.POPPINS_MEDIUM,
                           }}
-                          backgroundColor={'PRIMARY_COLOR'}>
+                          backgroundColor={"PRIMARY_COLOR"}
+                        >
                           {bcData[0].type === BcType.Private &&
                           item?.user?.id === userData?.id &&
                           !isAdmin
-                            ? 'View Payments'
-                            : 'Pay Now'}
+                            ? t("view_payments")
+                            : t("pay_now")}
                         </Button>
                       )}
                     </View>
@@ -594,9 +631,10 @@ const BcDetailsScreen = () => {
           <View
             style={{
               flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <ActivityIndicator size="large" color={Colors.PRIMARY_COLOR} />
           </View>
         )}

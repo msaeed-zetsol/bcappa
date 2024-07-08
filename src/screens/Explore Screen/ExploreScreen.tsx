@@ -6,25 +6,22 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import React, {useRef, useState, useCallback, useEffect} from 'react';
-import {View, Text, Switch, Button} from 'native-base';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {Fonts, Images, Colors} from '../../constants';
-import {newColorTheme} from '../../constants/Colors';
-import {CardData} from '../../interface/Interface';
-import Swiper from 'react-native-deck-swiper';
-import StarRating from 'react-native-star-rating-widget';
-
-// import RangeSlider from '../../components/RangeSlider';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../redux/store';
-import {RangeSlider} from '@react-native-assets/slider';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import InfoModal from '../../components/InfoModal';
+import React, { useRef, useState, useCallback } from "react";
+import { View, Text, Switch, Button } from "native-base";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { Fonts, Images, Colors } from "../../constants";
+import { newColorTheme } from "../../constants/Colors";
+import Swiper from "react-native-deck-swiper";
+import StarRating from "react-native-star-rating-widget";
+import { useDispatch } from "react-redux";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import InfoModal from "../../components/InfoModal";
+import { useTranslation } from "react-i18next";
 
 const ExploreScreen = () => {
+  const { t } = useTranslation();
   const navigation: any = useNavigation();
   const docRef: any = useRef();
   const dispatch: any = useDispatch();
@@ -40,8 +37,8 @@ const ExploreScreen = () => {
   const [starRating, setStarRating] = useState(0);
   const [allUsers, setAllUsers] = useState<any>([]);
   const [user, setUser] = useState({
-    userOne: '',
-    userTwo: '',
+    userOne: "",
+    userTwo: "",
   });
 
   // const onSwiped = useCallback(
@@ -60,7 +57,7 @@ const ExploreScreen = () => {
     console.log(starRating, min, max, toggleSwitch);
   };
   const handleCallback = (payload: any) => {
-    navigation.navigate('PersonalInformation');
+    navigation.navigate("PersonalInformation");
     setMonthlyAmount(false);
     setButtonPressed(false);
   };
@@ -68,21 +65,21 @@ const ExploreScreen = () => {
     setJoined(false);
     setButtonPressed(true);
     setUser({
-      userOne: '',
-      userTwo: '',
+      userOne: "",
+      userTwo: "",
     });
   };
   const getAllUsers = async () => {
     setIsLoadingg(true);
-    const getUserData: any = await AsyncStorage.getItem('loginUserData');
+    const getUserData: any = await AsyncStorage.getItem("loginUserData");
     const userData = await JSON.parse(getUserData);
 
     if (!userData.monthlyAmount) {
       setMonthlyAmount(true);
     } else {
       const response = await apimiddleWare({
-        url: '/bcs/public/users',
-        method: 'get',
+        url: "/bcs/public/users",
+        method: "get",
       });
 
       if (response) {
@@ -129,21 +126,21 @@ const ExploreScreen = () => {
 
       const swipedCard: any = allUsers[index];
       // console.log({swipedCard});
-      const {id} = allUsers[index];
+      const { id } = allUsers[index];
       const data = {
         otherUserId: id,
       };
       const response = await apimiddleWare({
-        url: '/bcs/handle-swipes',
-        method: 'post',
+        url: "/bcs/handle-swipes",
+        method: "post",
         data: data,
         reduxDispatch: dispatch,
       });
 
       if (response) {
-        console.log({response});
-        if (response?.status === 'matched') {
-          console.log({status: response?.status});
+        console.log({ response });
+        if (response?.status === "matched") {
+          console.log({ status: response?.status });
           setUser({
             userOne: response.userOne.fullName,
             userTwo: response.userTwo.fullName,
@@ -152,29 +149,29 @@ const ExploreScreen = () => {
         }
       }
     },
-    [allUsers],
+    [allUsers]
   );
 
   const handleLeftSwipe = useCallback(
     (index: number) => {
       const swipedCard = allUsers[index];
       const updatedCards = [...allUsers, swipedCard];
-      console.log({up: updatedCards.length});
+      console.log({ up: updatedCards.length });
       setAllUsers(updatedCards);
       // setCurrentIndex(currentIndex === allUsers.length - 1 ? 0 : index + 1);
-      console.log({index});
+      console.log({ index });
     },
-    [allUsers],
+    [allUsers]
   );
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log('Screen1 is focused');
+      console.log("Screen1 is focused");
       getAllUsers();
       return () => {
-        console.log('Screen1 is unfocused');
+        console.log("Screen1 is unfocused");
       };
-    }, []),
+    }, [])
   );
 
   const shuffleAndMoveLastArrayItems = (array: number[]): number[] => {
@@ -187,7 +184,7 @@ const ExploreScreen = () => {
     // Determine the number of elements to replace (between 2 and 5)
     const replaceCount = Math.min(
       5,
-      Math.max(2, Math.floor(Math.random() * 4) + 2),
+      Math.max(2, Math.floor(Math.random() * 4) + 2)
     );
 
     // Take the last elements to replace
@@ -215,24 +212,26 @@ const ExploreScreen = () => {
   };
 
   return (
-    <View flex={1} bg={'BACKGROUND_COLOR'} pt={verticalScale(15)}>
+    <View flex={1} bg={"BACKGROUND_COLOR"} pt={verticalScale(15)}>
       <StatusBar
-        barStyle={'dark-content'}
+        barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
 
       <View
         mt={5}
         mx={horizontalScale(22)}
-        flexDirection={'row'}
+        flexDirection={"row"}
         justifyContent="space-between"
-        alignItems="center">
+        alignItems="center"
+      >
         <Text
           fontSize={verticalScale(22)}
-          color={'#06202E'}
+          color={"#06202E"}
           letterSpacing={0.2}
-          fontFamily={Fonts.POPPINS_BOLD}>
-          Explore
+          fontFamily={Fonts.POPPINS_BOLD}
+        >
+          {t("explore")}
         </Text>
         <TouchableOpacity onPress={() => setApplyFilters(true)}>
           <Images.Filter />
@@ -243,10 +242,11 @@ const ExploreScreen = () => {
           <View
             style={{
               flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <ActivityIndicator size={'large'} color={Colors.PRIMARY_COLOR} />
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size={"large"} color={Colors.PRIMARY_COLOR} />
           </View>
         )}
         {!isLoadingg && allUsers.length > 0 && (
@@ -256,7 +256,7 @@ const ExploreScreen = () => {
             disableLeftSwipe={allUsers.length === 1}
             // keyExtractor={(item: any) => item.id}
             renderCard={(order: any) => {
-              console.log({total: allUsers.length});
+              console.log({ total: allUsers.length });
               return (
                 <View style={[styles.card]}>
                   <ImageBackground
@@ -264,15 +264,16 @@ const ExploreScreen = () => {
                       uri:
                         order.profileImg != null
                           ? order.profileImg
-                          : 'https://res.cloudinary.com/didbvjb3m/image/upload/v1697800339/uqn2rc2plzmmzfnneqfo.png',
+                          : "https://res.cloudinary.com/didbvjb3m/image/upload/v1697800339/uqn2rc2plzmmzfnneqfo.png",
                     }}
                     resizeMode="cover"
                     style={{
-                      height: '100%',
-                      width: '100%',
+                      height: "100%",
+                      width: "100%",
                       borderRadius: 10,
-                      overflow: 'hidden',
-                    }}>
+                      overflow: "hidden",
+                    }}
+                  >
                     {/* {order.swiper.length > 0 && (
                       <View
                         style={{
@@ -296,20 +297,22 @@ const ExploreScreen = () => {
                     <View
                       position="absolute"
                       bottom={verticalScale(-30)}
-                      left={horizontalScale(20)}>
+                      left={horizontalScale(20)}
+                    >
                       <Text
-                        color={'WHITE_COLOR'}
+                        color={"WHITE_COLOR"}
                         fontFamily={Fonts.POPPINS_BOLD}
-                        fontSize={verticalScale(35)}>
+                        fontSize={verticalScale(35)}
+                      >
                         {order?.fullName}
                       </Text>
-                      <View flexDirection="row" alignItems={'center'}>
+                      <View flexDirection="row" alignItems={"center"}>
                         <StarRating
                           rating={4}
                           maxStars={5}
                           starSize={25}
                           enableHalfStar={true}
-                          emptyColor={'#D9D9D9'}
+                          emptyColor={"#D9D9D9"}
                           starStyle={{
                             marginRight: 0,
                             padding: 0,
@@ -321,8 +324,9 @@ const ExploreScreen = () => {
                         />
                         <Text
                           ml={2}
-                          color={'WHITE_COLOR'}
-                          fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+                          color={"WHITE_COLOR"}
+                          fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                        >
                           (4)
                         </Text>
                       </View>
@@ -335,10 +339,11 @@ const ExploreScreen = () => {
                       </Text> */}
                       <Text
                         mt={1}
-                        color={'WHITE_COLOR'}
+                        color={"WHITE_COLOR"}
                         fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                        fontSize={verticalScale(18)}>
-                        RS: {order?.monthlyAmount || '0'}
+                        fontSize={verticalScale(18)}
+                      >
+                        RS: {order?.monthlyAmount || "0"}
                       </Text>
                       <View height={20} />
                     </View>
@@ -373,33 +378,36 @@ const ExploreScreen = () => {
                     </View> */}
                   </ImageBackground>
                   <View
-                    bg={'WHITE_COLOR'}
+                    bg={"WHITE_COLOR"}
                     style={{
                       padding: verticalScale(8),
                       elevation: 10,
                       borderBottomLeftRadius: 10,
                       borderBottomRightRadius: 10,
-                      shadowColor: '#000',
+                      shadowColor: "#000",
                       shadowOffset: {
                         width: 0,
                         height: 10,
                       },
                       shadowOpacity: 0.3,
                       shadowRadius: 10,
-                    }}>
+                    }}
+                  >
                     <View
                       // position="absolute"
                       // bottom={5}
                       alignItems="center"
                       justifyContent="space-around"
-                      flexDirection={'row'}
+                      flexDirection={"row"}
                       alignSelf="center"
-                      width="50%">
+                      width="50%"
+                    >
                       <TouchableOpacity
                         activeOpacity={0.5}
                         onPress={() => {
                           allUsers.length > 1 && docRef.current.swipeLeft();
-                        }}>
+                        }}
+                      >
                         <Images.CardCancel
                           width={verticalScale(60)}
                           height={verticalScale(60)}
@@ -409,7 +417,8 @@ const ExploreScreen = () => {
                         activeOpacity={0.5}
                         onPress={() => {
                           docRef.current.swipeRight();
-                        }}>
+                        }}
+                      >
                         <Images.CardAdd
                           width={verticalScale(60)}
                           height={verticalScale(60)}
@@ -438,20 +447,22 @@ const ExploreScreen = () => {
             cardIndex={0}
             swipeAnimationDuration={500}
             verticalSwipe={false}
-            backgroundColor={'transparent'}
+            backgroundColor={"transparent"}
             horizontalSwipe={true}
           />
         )}
 
         {!isLoadingg && allUsers.length === 0 && (
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
             <Text
               style={{
                 fontSize: verticalScale(20),
                 fontFamily: Fonts.POPPINS_BOLD,
-              }}>
-              No user is available to swipe
+              }}
+            >
+              {t("no_user_available_swipe")}
             </Text>
           </View>
         )}
@@ -459,20 +470,21 @@ const ExploreScreen = () => {
 
       <Modal visible={applyFilters} transparent animationType="slide">
         <StatusBar
-          barStyle={'light-content'}
-          backgroundColor={'rgba(0, 0, 0, 0.63)'}
+          barStyle={"light-content"}
+          backgroundColor={"rgba(0, 0, 0, 0.63)"}
         />
 
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <View flexDirection={'row'} alignItems={'center'}>
+            <View flexDirection={"row"} alignItems={"center"}>
               <Text
                 textAlign="center"
                 flex={1}
-                color={'BLACK_COLOR'}
+                color={"BLACK_COLOR"}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                fontSize={'xl'}>
-                Filters
+                fontSize={"xl"}
+              >
+                {t("filters")}
               </Text>
               <TouchableOpacity
                 onPress={() => {
@@ -480,7 +492,8 @@ const ExploreScreen = () => {
                   // setMax(50000);
 
                   setApplyFilters(false);
-                }}>
+                }}
+              >
                 <Images.Cross />
               </TouchableOpacity>
             </View>
@@ -574,17 +587,18 @@ const ExploreScreen = () => {
             {/* range end */}
             <View mt={7}>
               <Text
-                color={'BLACK_COLOR'}
+                color={"BLACK_COLOR"}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                fontSize={'lg'}>
-                Ratings
+                fontSize={"lg"}
+              >
+                {t("ratings")}
               </Text>
               <StarRating
                 rating={starRating}
                 maxStars={5}
                 starSize={35}
                 enableHalfStar={true}
-                emptyColor={'#D9D9D9'}
+                emptyColor={"#D9D9D9"}
                 starStyle={{
                   marginRight: 0,
                   padding: 0,
@@ -592,22 +606,24 @@ const ExploreScreen = () => {
                   marginTop: 5,
                   marginBottom: 0,
                 }}
-                onChange={rating => {
-                  console.log({rating});
+                onChange={(rating) => {
+                  console.log({ rating });
                   setStarRating(rating);
                 }}
               />
             </View>
             <View
               mt={4}
-              flexDirection={'row'}
+              flexDirection={"row"}
               justifyContent="space-between"
-              alignItems="center">
+              alignItems="center"
+            >
               <Text
-                color={'BLACK_COLOR'}
+                color={"BLACK_COLOR"}
                 fontFamily={Fonts.POPPINS_MEDIUM}
-                fontSize={'md'}>
-                Only show near by users
+                fontSize={"md"}
+              >
+                {t("only_show_nearby_users")}
               </Text>
               <Switch
                 value={toggleSwitch}
@@ -624,41 +640,42 @@ const ExploreScreen = () => {
               // isLoadingText="Logging in"
               variant="solid"
               _text={{
-                color: 'WHITE_COLOR',
+                color: "WHITE_COLOR",
 
                 fontFamily: Fonts.POPPINS_SEMI_BOLD,
               }}
               _loading={{
                 _text: {
-                  color: 'BLACK_COLOR',
+                  color: "BLACK_COLOR",
                   fontFamily: Fonts.POPPINS_MEDIUM,
                 },
               }}
               _spinner={{
-                color: 'BLACK_COLOR',
+                color: "BLACK_COLOR",
               }}
               _pressed={{
-                backgroundColor: 'DISABLED_COLOR',
+                backgroundColor: "DISABLED_COLOR",
               }}
               spinnerPlacement="end"
-              backgroundColor={'PRIMARY_COLOR'}
-              size={'lg'}
+              backgroundColor={"PRIMARY_COLOR"}
+              size={"lg"}
               mt={verticalScale(50)}
-              p={'4'}
+              p={"4"}
               borderRadius={16}
               // isDisabled={isLoading}
               isPressed={isLoading}
               onPress={() => {
                 applyFiltersButton();
-              }}>
-              Apply Filters
+              }}
+            >
+              {t("apply_filters")}
             </Button>
           </View>
         </View>
       </Modal>
       {monthlyAmount && (
         <InfoModal
-          message="Please set your monthly amount!"
+          message={t("please_set_monthly_amount")}
           buttonText="OK"
           callback={handleCallback}
           Photo={Images.Err}
@@ -667,7 +684,7 @@ const ExploreScreen = () => {
       )}
       {joined && (
         <InfoModal
-          message={`You have a match with ${user.userTwo}`}
+          message={`${t("you_have_match")} ${user.userTwo}`}
           buttonText="OK"
           callback={joinedCallback}
           Photo={Images.Congratulations}

@@ -6,6 +6,7 @@ export type AuthStackNavigatorParamList = {
   Forgot: undefined;
   NewPassword: undefined;
   OnBoardScreen: undefined;
+  splash: undefined;
   // TermsAndCondition:undefined
 };
 

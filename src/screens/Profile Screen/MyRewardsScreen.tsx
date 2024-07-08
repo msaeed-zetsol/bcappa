@@ -6,91 +6,103 @@ import Colors, {newColorTheme} from '../../constants/Colors';
 import Heading from '../../components/Heading';
 import {useNavigation} from '@react-navigation/native';
 import {Fonts, Images} from '../../constants';
+import { useTranslation } from "react-i18next";
 
 const MyRewardsScreen = () => {
   const navigation: any = useNavigation();
+  const { t } = useTranslation();
+
   return (
-    <View flex={1} bg={'BACKGROUND_COLOR'}>
+    <View flex={1} bg={"BACKGROUND_COLOR"}>
       <StatusBar
-        barStyle={'dark-content'}
+        barStyle={"dark-content"}
         backgroundColor={newColorTheme.PRIMARY_COLOR}
       />
       <View
-        bg={'PRIMARY_COLOR'}
+        bg={"PRIMARY_COLOR"}
         px={horizontalScale(20)}
-        height={verticalScale(300)}>
+        height={verticalScale(300)}
+      >
         <Heading
-          name={'Rewards'}
+          name={t("rewards")}
           navigation={navigation}
           color={Colors.WHITE_COLOR}
         />
 
         <View
-          bg={'WHITE_COLOR'}
+          bg={"WHITE_COLOR"}
           mt={verticalScale(40)}
-          //   height={120}
           borderRadius={10}
-          py={verticalScale(20)}>
-          <View justifyContent={'center'} alignItems={'center'}>
+          py={verticalScale(20)}
+        >
+          <View justifyContent={"center"} alignItems={"center"}>
             <Text color={Colors.LIGHT_GREY} fontFamily={Fonts.POPPINS_MEDIUM}>
-              Current Badege
+              {t("current_badge")}
             </Text>
-            <View flexDirection={'row'} alignItems={'center'}>
+            <View flexDirection={"row"} alignItems={"center"}>
               <Text
                 color={Colors.BLACK_COLOR}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
                 fontSize={verticalScale(20)}
-                mr={1}>
-                Silver
+                mr={1}
+              >
+                {t("silver")}
               </Text>
               <Images.Trophy />
             </View>
           </View>
           <View
             mt={verticalScale(15)}
-            flexDirection={'row'}
-            justifyContent={'space-around'}
-            alignItems={'center'}
-            px={1}>
-            <View justifyContent={'center'} alignItems={'center'}>
+            flexDirection={"row"}
+            justifyContent={"space-around"}
+            alignItems={"center"}
+            px={1}
+          >
+            <View justifyContent={"center"} alignItems={"center"}>
               <Text
                 color={Colors.LIGHT_GREY}
                 fontFamily={Fonts.POPPINS_MEDIUM}
-                fontSize={verticalScale(14)}>
-                Active Goals
+                fontSize={verticalScale(14)}
+              >
+                {t("active_goals")}
               </Text>
               <Text
                 color={Colors.PRIMARY_COLOR}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                fontSize={verticalScale(25)}>
+                fontSize={verticalScale(25)}
+              >
                 02
               </Text>
             </View>
-            <View justifyContent={'center'} alignItems={'center'}>
+            <View justifyContent={"center"} alignItems={"center"}>
               <Text
                 color={Colors.LIGHT_GREY}
                 fontFamily={Fonts.POPPINS_MEDIUM}
-                fontSize={verticalScale(14)}>
-                Goals Completed
+                fontSize={verticalScale(14)}
+              >
+                {t("goals_completed")}
               </Text>
               <Text
                 color={Colors.PRIMARY_COLOR}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                fontSize={verticalScale(25)}>
+                fontSize={verticalScale(25)}
+              >
                 02
               </Text>
             </View>
-            <View justifyContent={'center'} alignItems={'center'}>
+            <View justifyContent={"center"} alignItems={"center"}>
               <Text
                 color={Colors.LIGHT_GREY}
                 fontFamily={Fonts.POPPINS_MEDIUM}
-                fontSize={verticalScale(14)}>
-                Badge Earned
+                fontSize={verticalScale(14)}
+              >
+                {t("badge_earned")}
               </Text>
               <Text
                 color={Colors.PRIMARY_COLOR}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                fontSize={verticalScale(25)}>
+                fontSize={verticalScale(25)}
+              >
                 02
               </Text>
             </View>
@@ -102,10 +114,10 @@ const MyRewardsScreen = () => {
         color={Colors.LIGHT_GREY}
         fontSize={verticalScale(22)}
         fontFamily={Fonts.POPPINS_SEMI_BOLD}
-        my={verticalScale(12)}>
-        All Goals
+        my={verticalScale(12)}
+      >
+        {t("all_goals")}
       </Text>
-      
     </View>
   );
 };

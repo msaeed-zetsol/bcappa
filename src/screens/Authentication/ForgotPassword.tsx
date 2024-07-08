@@ -1,4 +1,4 @@
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, I18nManager} from 'react-native';
 import {Text, FormControl, Button} from 'native-base';
 import React, {useState} from 'react';
 import {newColorTheme} from '../../constants/Colors';
@@ -8,8 +8,10 @@ import {useNavigation} from '@react-navigation/native';
 import {Fonts, Images} from '../../constants';
 import {useForm, Controller} from 'react-hook-form';
 import TextFieldComponent from '../../components/TextFieldComponent';
+import { useTranslation } from 'react-i18next';
 
 const ForgotPassword = () => {
+  const {t} = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const navigation: any = useNavigation();
   const [isEmailSelected, setIsEmailSelected] = useState(true);
@@ -46,25 +48,29 @@ const ForgotPassword = () => {
     <View style={styles.container}>
       <View
         style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
         <Pressable
-          onPress={() => {
-            navigation.goBack();
-          }}>
+          onPress={() => navigation.goBack()}
+        >
           <Images.BackButton
-            wdith={horizontalScale(50)}
+            width={horizontalScale(50)}
             height={verticalScale(50)}
+            style={{
+              transform: [{ rotateY: I18nManager.isRTL ? "180deg" : "0deg" }],
+            }}
           />
         </Pressable>
         <Text
           fontSize="xl"
           color="BLACK_COLOR"
-          ml={'2'}
-          textAlign={'center'}
-          fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-          Forgot Password
+          ml={"2"}
+          textAlign={"center"}
+          fontFamily={Fonts.POPPINS_SEMI_BOLD}
+        >
+          {t("forgot_password")}
         </Text>
       </View>
 
@@ -73,19 +79,21 @@ const ForgotPassword = () => {
         fontSize="sm"
         letterSpacing="0.32"
         mt={verticalScale(10)}
-        fontFamily={Fonts.POPPINS_MEDIUM}>
-        Please enter your email or phone number; we will send you an OTP.
+        fontFamily={Fonts.POPPINS_MEDIUM}
+      >
+        {t("please_enter_email_phone")}
       </Text>
       <View style={styles.Togglecontainer}>
         <TouchableOpacity
           onPress={() => {
             // reset
             reset({
-              phoneNumber: '',
-              email: '',
+              phoneNumber: "",
+              email: "",
             });
             setIsEmailSelected(true);
-          }}>
+          }}
+        >
           <Text
             style={[
               styles.text,
@@ -94,18 +102,20 @@ const ForgotPassword = () => {
                 borderTopLeftRadius: 5,
                 borderBottomLeftRadius: 5,
               },
-            ]}>
-            email
+            ]}
+          >
+            {t("email_lowercase")}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             reset({
-              phoneNumber: '',
-              email: '',
+              phoneNumber: "",
+              email: "",
             });
             setIsEmailSelected(false);
-          }}>
+          }}
+        >
           <Text
             style={[
               styles.text,
@@ -114,8 +124,9 @@ const ForgotPassword = () => {
                 borderTopRightRadius: 5,
                 borderBottomRightRadius: 5,
               },
-            ]}>
-            phone
+            ]}
+          >
+            {t("phone")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -124,30 +135,31 @@ const ForgotPassword = () => {
           <>
             <Controller
               control={control}
-              render={({field: {onChange, onBlur, value}}) => (
+              render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  placeholder={'Email'}
+                  placeholder={t("email")}
                   value={value}
                   onBlur={onBlur}
                   onChange={onChange}
-                  keyboardType={'email-address'}
+                  keyboardType={"email-address"}
                 />
               )}
               name="email"
               rules={{
-                required: 'Email is required',
+                required: t("email_is_required"),
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address',
+                  message: t("email_is_invalid"),
                 },
               }}
               defaultValue=""
             />
             {errors.email && (
               <Text
-                color={'ERROR'}
+                color={"ERROR"}
                 marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}>
+                fontFamily={Fonts.POPPINS_MEDIUM}
+              >
                 {errors.email.message}
               </Text>
             )}
@@ -156,19 +168,19 @@ const ForgotPassword = () => {
           <>
             <Controller
               control={control}
-              render={({field: {onChange, onBlur, value}}) => (
+              render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  placeholder={'Phone Number'}
+                  placeholder={t("phone_number")}
                   value={value}
                   // ref={phoneRef}
                   onBlur={onBlur}
                   onChange={onChange}
-                  keyboardType={'number-pad'}
+                  keyboardType={"number-pad"}
                 />
               )}
               name="phoneNumber"
               rules={{
-                required: 'Phone must be 11 numbers long',
+                required: t("phone_is_invalid"),
                 minLength: 11,
                 maxLength: 11,
               }}
@@ -176,11 +188,11 @@ const ForgotPassword = () => {
             />
             {errors.phoneNumber && (
               <Text
-                color={'ERROR'}
+                color={"ERROR"}
                 marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}>
-                {/* Phone Number is required */}
-                Phone must be 11 numbers long
+                fontFamily={Fonts.POPPINS_MEDIUM}
+              >
+                {t("phone_is_invalid")}
               </Text>
             )}
           </>
@@ -188,34 +200,33 @@ const ForgotPassword = () => {
       </FormControl>
       <Button
         isLoading={isLoading}
-        // isLoadingText="Logging in"
         variant="solid"
         _text={{
-          color: 'WHITE_COLOR',
-
+          color: "WHITE_COLOR",
           fontFamily: Fonts.POPPINS_SEMI_BOLD,
         }}
         _loading={{
           _text: {
-            color: 'BLACK_COLOR',
+            color: "BLACK_COLOR",
             fontFamily: Fonts.POPPINS_MEDIUM,
           },
         }}
         _spinner={{
-          color: 'BLACK_COLOR',
+          color: "BLACK_COLOR",
         }}
         _pressed={{
-          backgroundColor: 'DISABLED_COLOR',
+          backgroundColor: "DISABLED_COLOR",
         }}
         spinnerPlacement="end"
-        backgroundColor={'PRIMARY_COLOR'}
-        size={'lg'}
+        backgroundColor={"PRIMARY_COLOR"}
+        size={"lg"}
         mt={verticalScale(20)}
-        p={'4'}
+        p={"4"}
         borderRadius={16}
         isPressed={isLoading}
-        onPress={handleSubmit(forgotHandler)}>
-        Send Otp
+        onPress={handleSubmit(forgotHandler)}
+      >
+        {t("send")}
       </Button>
     </View>
   );
