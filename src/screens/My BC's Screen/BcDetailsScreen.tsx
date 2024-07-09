@@ -5,24 +5,28 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-} from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
-import {Text, View, Avatar, Button} from 'native-base';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {Images, Fonts} from '../../constants';
-import {useNavigation, useRoute} from '@react-navigation/native';
+} from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { Text, View, Avatar, Button } from "native-base";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { Images, Fonts } from "../../constants";
+import {
+  CommonActions,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import {
   BcMemberStatus,
   BcMemberType,
   BcStatus,
   BcType,
-} from '../../lookups/Enums';
-import Colors, {newColorTheme} from '../../constants/Colors';
-import Heading from '../../components/Heading';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import {useDispatch} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import InfoModal from '../../components/InfoModal';
+} from "../../lookups/Enums";
+import Colors, { newColorTheme } from "../../constants/Colors";
+import Heading from "../../components/Heading";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { useDispatch } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import InfoModal from "../../components/InfoModal";
 import { useTranslation } from "react-i18next";
 
 const BcDetailsScreen = () => {
@@ -34,7 +38,7 @@ const BcDetailsScreen = () => {
   const [loadScreen, setLoadScreen] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [bcTime, setBcTime] = useState<any>("");
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const { t } = useTranslation();
 
   const [isJazzDostVerified, setIsJazzDostVerified] = useState<boolean | null>(
@@ -133,21 +137,21 @@ const BcDetailsScreen = () => {
         method: "post",
       });
       if (response) {
-        navigation.navigate("MyBcsScreen");
+        navigation.dispatch(CommonActions.navigate("MyBcsScreen"));
       }
     }
   };
 
   useEffect(() => {
-    navigation.addListener("focus", () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       getData();
     });
     return () => {
-      navigation.removeListener("focus");
+      unsubscribe();
       setButtonPressed(false);
       setIsJazzDostVerified(null);
     };
-  }, []);
+  }, [navigation]);
 
   const paidOrNot = (payments: any) => {
     const date: any = new Date(currentDateISOString);
@@ -166,7 +170,7 @@ const BcDetailsScreen = () => {
   };
 
   const handleCallback = (payload: any) => {
-    navigation.navigate("JazzDostVerification");
+    navigation.dispatch(CommonActions.navigate("JazzDostVerification"));
     setButtonPressed(false);
     setIsJazzDostVerified(null);
   };
@@ -183,7 +187,7 @@ const BcDetailsScreen = () => {
           backgroundColor={newColorTheme.BACKGROUND_COLOR}
         />
         <View px={horizontalScale(20)}>
-          <Heading name={"BC Details"} navigation={navigation} />
+          <Heading name={"BC Details"} onPress={navigation.goBack} />
         </View>
         {!loadScreen &&
           bcData[0].status === BcStatus.Pending &&
@@ -591,12 +595,14 @@ const BcDetailsScreen = () => {
                         <Button
                           isDisabled={bcData[0].status === BcStatus.Pending}
                           onPress={() => {
-                            navigation.navigate("UserSchedule", {
-                              member: item,
-                              bcData: bcData[0],
-                              userData,
-                              getData,
-                            });
+                            navigation.dispatch(
+                              CommonActions.navigate("UserSchedule", {
+                                member: item,
+                                bcData: bcData[0],
+                                userData,
+                                getData,
+                              })
+                            );
                           }}
                           size="sm"
                           // alignSelf={'flex-end'}
@@ -664,8 +670,8 @@ export default BcDetailsScreen;
 
 const styles = StyleSheet.create({
   btn: {
-    position: 'absolute',
-    width: '90%',
+    position: "absolute",
+    width: "90%",
     bottom: 20,
     zIndex: 1,
   },

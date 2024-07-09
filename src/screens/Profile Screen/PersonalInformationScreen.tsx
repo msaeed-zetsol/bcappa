@@ -19,19 +19,19 @@ import React, {useState, useEffect} from 'react';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import Colors, {newColorTheme} from '../../constants/Colors';
 import {Fonts} from '../../constants';
-import {useNavigation} from '@react-navigation/native';
-import {CountryPicker} from 'react-native-country-codes-picker';
-import TextFieldComponent from '../../components/TextFieldComponent';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Heading from '../../components/Heading';
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import { CountryPicker } from "react-native-country-codes-picker";
+import TextFieldComponent from "../../components/TextFieldComponent";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Heading from "../../components/Heading";
 import {
   apimiddleWare,
   removeEmptyProperties,
-} from '../../utilities/HelperFunctions';
-import {useDispatch} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import parsePhoneNumber, {CountryCode, PhoneNumber} from 'libphonenumber-js';
+} from "../../utilities/HelperFunctions";
+import { useDispatch } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import parsePhoneNumber, { CountryCode, PhoneNumber } from "libphonenumber-js";
 import { useTranslation } from "react-i18next";
 
 const initialDate = new Date();
@@ -39,7 +39,7 @@ initialDate.setDate(initialDate.getDate() - 1); // Set initial date to one day b
 
 const PersonalInformationScreen = () => {
   const dispatch: any = useDispatch();
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const [showDropdown, setShowDropdown] = useState(false);
   const [countryCode, setCountryCode] = useState<CountryCode>();
   const [date, setDate] = useState(initialDate);
@@ -146,8 +146,9 @@ const PersonalInformationScreen = () => {
         />
         <Heading
           name={t("personal_information")}
-          navigation={navigation}
-          onPress={() => navigation.navigate("ProfileScreen")}
+          onPress={() =>
+            navigation.dispatch(CommonActions.navigate("ProfileScreen"))
+          }
         />
 
         <Modal visible={showDropdown} transparent={true} animationType="slide">

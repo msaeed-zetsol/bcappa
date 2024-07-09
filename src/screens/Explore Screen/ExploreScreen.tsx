@@ -16,13 +16,17 @@ import StarRating from "react-native-star-rating-widget";
 import { useDispatch } from "react-redux";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  CommonActions,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import InfoModal from "../../components/InfoModal";
 import { useTranslation } from "react-i18next";
 
 const ExploreScreen = () => {
   const { t } = useTranslation();
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const docRef: any = useRef();
   const dispatch: any = useDispatch();
   const [monthlyAmount, setMonthlyAmount] = useState(false);
@@ -57,7 +61,7 @@ const ExploreScreen = () => {
     console.log(starRating, min, max, toggleSwitch);
   };
   const handleCallback = (payload: any) => {
-    navigation.navigate("PersonalInformation");
+    navigation.dispatch(CommonActions.navigate("PersonalInformation"));
     setMonthlyAmount(false);
     setButtonPressed(false);
   };

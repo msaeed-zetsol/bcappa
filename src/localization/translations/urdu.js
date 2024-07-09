@@ -1,4 +1,7 @@
 const auth = {
+  enter_email_id: "ای میل آئی ڈی درج کریں",
+  enter_phone_number: "فون نمبر درج کریں",
+  email_id: "ای میل کا پتہ",
   email: "ای میل",
   password: "پاس ورڈ",
   email_lowercase: "ای میل",
@@ -12,6 +15,7 @@ const auth = {
   phone_is_invalid: "فون نمبر 11 نمبروں کا ہونا چاہیے",
   phone_is_required: "فون نمبر ضروری ہے",
   password_is_required: "پاس ورڈ ضروری ہے",
+  password_alpha_numeric_only: "پاس ورڈ میں صرف حروف اور نمبرز ہونے چاہئیں",
   confirm_password: "پاس ورڈ کی تصدیق کریں",
   password_length_must_be_greater_than_8:
     "پاس ورڈ کی لمبائی 8 حروف سے زیادہ ہونی چاہیے",
@@ -24,9 +28,9 @@ const auth = {
   dont_have_an_account: "کیا آپ کا اکاؤنٹ نہیں ہے؟",
   sign_up: "سائن اپ کریں",
   sign_in: "سائن ان کریں",
-  send: "بھیجیں",
+  send_otp: "OTP بھیجیں",
   please_enter_email_phone:
-    "براہ کرم اپنا ای میل یا فون نمبر درج کریں؛ ہم آپ کو ایک او ٹی پی بھیجیں گے۔",
+    "براہ کرم اپنا ای میل یا فون نمبر درج کریں. ہم آپ کو ایک او ٹی پی بھیجیں گے۔",
   set_new_password: "نیا پاس ورڈ سیٹ کریں",
   set_strong_password_for_your_account:
     "اپنے اکاؤنٹ کے لیے مضبوط نیا پاس ورڈ سیٹ کریں۔",

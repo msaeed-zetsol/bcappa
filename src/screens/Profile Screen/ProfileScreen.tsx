@@ -13,7 +13,12 @@ import { Fonts, Images } from "../../constants";
 import ImagePicker from "react-native-image-crop-picker";
 import InfoModal from "../../components/InfoModal";
 import { modalEnums } from "../../lookups/Enums";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  CommonActions,
+  StackActions,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import ProfileInformationRow from "../../components/ProfileInformationRow";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Profile } from "../../interface/Interface";
@@ -29,7 +34,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useTranslation } from "react-i18next";
 
 const ProfileScreen = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const dispatch: any = useDispatch();
   const [imageModal, setImageModal] = useState(false);
   const [isButtonPressed, setButtonPressed] = useState(false);
@@ -55,7 +60,7 @@ const ProfileScreen = () => {
         ...prevData,
         notVerified: !payload.value,
       }));
-      navigation.navigate("JazzDostVerification");
+      navigation.dispatch(CommonActions.navigate("JazzDostVerification"));
     }
     if (payload.name === "close") {
       setVerificationModal((prevData) => ({
@@ -86,9 +91,11 @@ const ProfileScreen = () => {
     setIsLoading(true);
     await logoutSocialLogIn();
     await AsyncStorage.removeItem("loginUserData");
-    navigation.replace("AuthStack", {
-      screen: "LoginScreen",
-    });
+    navigation.dispatch(
+      StackActions.replace("AuthStack", {
+        screen: "LoginScreen",
+      })
+    );
   };
 
   const SelectImageFromGallery = async () => {
@@ -241,8 +248,10 @@ const ProfileScreen = () => {
 
         <ProfileInformationRow
           heading={t("personal_information")}
-          onPress={() => navigation.navigate("PersonalInformation")}
-          startIcon={{Icon: Images.Profiles}}
+          onPress={() =>
+            navigation.dispatch(CommonActions.navigate("PersonalInformation"))
+          }
+          startIcon={{ Icon: Images.Profiles }}
           endIconMode="navigation"
         />
 
@@ -250,7 +259,9 @@ const ProfileScreen = () => {
           heading={t("account_verification")}
           onPress={() => {
             if (userInfo?.settings?.isJazzDostVerified) {
-              navigation.navigate("VerifiedAccountDetails");
+              navigation.dispatch(
+                CommonActions.navigate("VerifiedAccountDetails")
+              );
             } else {
               setVerificationModal((prevData) => ({
                 ...prevData,
@@ -258,7 +269,7 @@ const ProfileScreen = () => {
               }));
             }
           }}
-          startIcon={{Icon: Images.PaymentInfo}}
+          startIcon={{ Icon: Images.PaymentInfo }}
           endIconMode={{
             isVerified: userInfo?.settings?.isJazzDostVerified ?? false,
           }}
@@ -266,26 +277,32 @@ const ProfileScreen = () => {
 
         <ProfileInformationRow
           heading={t("my_rewards")}
-          onPress={() => navigation.navigate("MyRewards")}
-          startIcon={{Icon: Images.Faq}}
+          onPress={() =>
+            navigation.dispatch(CommonActions.navigate("MyRewards"))
+          }
+          startIcon={{ Icon: Images.Faq }}
           endIconMode="navigation"
         />
 
         <ProfileInformationRow
           heading={t("faq_and_support")}
-          onPress={() => navigation.navigate("FaqAndSupport")}
-          startIcon={{Icon: Images.Faq}}
+          onPress={() =>
+            navigation.dispatch(CommonActions.navigate("FaqAndSupport"))
+          }
+          startIcon={{ Icon: Images.Faq }}
           endIconMode="navigation"
         />
 
         <ProfileInformationRow
           heading={t("terms_and_conditions")}
           onPress={() => {
-            navigation.navigate("TermsAndConditions", {
-              name: "Terms And Condition",
-            });
+            navigation.dispatch(
+              CommonActions.navigate("TermsAndConditions", {
+                name: "Terms And Condition",
+              })
+            );
           }}
-          startIcon={{Icon: Images.Faq}}
+          startIcon={{ Icon: Images.Faq }}
           endIconMode="navigation"
         />
 
@@ -300,24 +317,25 @@ const ProfileScreen = () => {
 
         <ProfileInformationRow
           heading={t("language")}
-          onPress={() => navigation.navigate("Language")}
-          startIcon={{Icon: Images.Language}}
+          onPress={() =>
+            navigation.dispatch(CommonActions.navigate("Language"))
+          }
+          startIcon={{ Icon: Images.Language }}
           endIconMode="navigation"
         />
 
         <ProfileInformationRow
           heading={t("bc_settings")}
-          startIcon={{Icon: Images.Settings}}
+          startIcon={{ Icon: Images.Settings }}
           endIconMode="navigation"
         />
 
         <ProfileInformationRow
           heading={t("log_out")}
           onPress={() => setLogoutModal(true)}
-          startIcon={{Icon: Images.Logout}}
+          startIcon={{ Icon: Images.Logout }}
           endIconMode="navigation"
         />
-
       </ScrollView>
 
       {verificationModal.notVerified && (

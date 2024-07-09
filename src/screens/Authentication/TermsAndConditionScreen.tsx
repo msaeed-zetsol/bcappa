@@ -1,4 +1,4 @@
-import { StyleSheet, StatusBar } from "react-native";
+import { StatusBar } from "react-native";
 import { View, Text } from "native-base";
 import React from "react";
 import { newColorTheme } from "../../constants/Colors";
@@ -8,7 +8,7 @@ import { Fonts } from "../../constants";
 import Heading from "../../components/Heading";
 
 const TermsAndConditionScreen = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const route: any = useRoute();
 
   return (
@@ -17,7 +17,7 @@ const TermsAndConditionScreen = () => {
         barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
-      <Heading name={route.params.name} navigation={navigation} />
+      <Heading name={route.params.name} onPress={navigation.goBack} />
 
       <Text mt={verticalScale(35)} fontFamily={Fonts.POPPINS_MEDIUM}>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
@@ -39,5 +39,3 @@ const TermsAndConditionScreen = () => {
 };
 
 export default TermsAndConditionScreen;
-
-const styles = StyleSheet.create({});

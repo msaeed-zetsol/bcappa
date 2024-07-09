@@ -90,6 +90,7 @@ const OtpAccountVerification = () => {
       setIsLoading(false);
     }
   };
+
   const verifyOtp = async () => {
     setIsLoading(true);
     Keyboard.dismiss();
@@ -233,9 +234,10 @@ const OtpAccountVerification = () => {
       />
       <Pressable onPress={() => navigation.goBack()}>
         <Images.BackButton
-        style={{
-          transform: [{ rotateY: I18nManager.isRTL ? "180deg" : "0deg" }],
-        }} />
+          style={{
+            transform: [{ rotateY: I18nManager.isRTL ? "180deg" : "0deg" }],
+          }}
+        />
       </Pressable>
       <Heading mt={10} fontSize={"3xl"} fontFamily={Fonts.POPPINS_EXTRA_BOLD}>
         {t("account_verification")}
@@ -356,10 +358,7 @@ const OtpAccountVerification = () => {
             {t("trouble_receiving_otp")}
           </Text>
           <TouchableOpacity>
-            <Text
-              color={"PRIMARY_COLOR"}
-              fontFamily={Fonts.POPPINS_MEDIUM}
-            >
+            <Text color={"PRIMARY_COLOR"} fontFamily={Fonts.POPPINS_MEDIUM}>
               {" "}
               {t("help_center")}
             </Text>

@@ -9,7 +9,7 @@ import {Fonts, Images} from '../../constants';
 import { useTranslation } from "react-i18next";
 
 const MyRewardsScreen = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const { t } = useTranslation();
 
   return (
@@ -25,7 +25,7 @@ const MyRewardsScreen = () => {
       >
         <Heading
           name={t("rewards")}
-          navigation={navigation}
+          onPress={navigation.goBack}
           color={Colors.WHITE_COLOR}
         />
 

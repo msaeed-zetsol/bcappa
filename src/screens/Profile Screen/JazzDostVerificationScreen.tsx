@@ -4,15 +4,15 @@ import {View, Text, Pressable, Icon, Button} from 'native-base';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import Colors, {newColorTheme} from '../../constants/Colors';
 import Heading from '../../components/Heading';
-import {useNavigation} from '@react-navigation/native';
-import {Fonts, Images} from '../../constants';
-import TextFieldComponent from '../../components/TextFieldComponent';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import {CountryPicker} from 'react-native-country-codes-picker';
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import { Fonts, Images } from "../../constants";
+import TextFieldComponent from "../../components/TextFieldComponent";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { CountryPicker } from "react-native-country-codes-picker";
 import { useTranslation } from "react-i18next";
 
 const JazzDostVerificationScreen = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const [countryCode, setCountryCode] = useState("+92");
   const [showDropdown, setShowDropdown] = useState(false);
   const [number, setNumber] = useState("");
@@ -31,7 +31,7 @@ const JazzDostVerificationScreen = () => {
         barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
-      <Heading name={t("jazz_dost_verification")} navigation={navigation} />
+      <Heading name={t("jazz_dost_verification")} onPress={navigation.goBack} />
       <View flexDirection={"row"} alignItems={"center"} mt={verticalScale(30)}>
         <Text
           color={Colors.GREY}
@@ -176,9 +176,6 @@ const JazzDostVerificationScreen = () => {
         _spinner={{
           color: "BLACK_COLOR",
         }}
-        // _pressed={{
-        //   backgroundColor: 'DISABLED_COLOR',
-        // }}
         spinnerPlacement="end"
         backgroundColor={"WHITE_COLOR"}
         borderColor={"BLACK_COLOR"}
@@ -187,11 +184,10 @@ const JazzDostVerificationScreen = () => {
         mt={verticalScale(20)}
         p={"4"}
         borderRadius={16}
-        // isDisabled={isLoading}
         isPressed={isLoading}
         onPress={() => {
           setDostLoading(true);
-          navigation.navigate("JazzDostSignup");
+          navigation.dispatch(CommonActions.navigate("JazzDostSignup"));
           setDostLoading(false);
         }}
       >

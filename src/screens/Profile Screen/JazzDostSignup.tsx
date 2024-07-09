@@ -22,7 +22,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 
 const JazzDostSignup = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const [showDropdown, setShowDropdown] = useState(false);
   const [countryCode, setCountryCode] = useState("+92");
   const [date, setDate] = useState<any>(new Date());
@@ -68,7 +68,7 @@ const JazzDostSignup = () => {
         barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
-      <Heading navigation={navigation} />
+      <Heading name="" onPress={navigation.goBack} />
       <View mt={verticalScale(40)}>
         <Text fontSize={verticalScale(22)} fontFamily={Fonts.POPPINS_BOLD}>
           {t("welcome_to_dost")}

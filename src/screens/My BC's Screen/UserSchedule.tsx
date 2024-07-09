@@ -11,13 +11,14 @@ import Colors, {newColorTheme} from '../../constants/Colors';
 import Heading from '../../components/Heading';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import {
+  CommonActions,
   useFocusEffect,
   useNavigation,
   useRoute,
-} from '@react-navigation/native';
-import {Fonts, Images} from '../../constants';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import {BcType} from '../../lookups/Enums';
+} from "@react-navigation/native";
+import { Fonts, Images } from "../../constants";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { BcType } from "../../lookups/Enums";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 
@@ -43,7 +44,7 @@ const getCurrentAndPreviousMonthsPayments = (data: any) => {
 
 const UserSchedule = () => {
   const route: any = useRoute();
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const { member, bcData, userData }: any = route.params;
   const [isLoading, setIsLoading] = useState(true);
   const [activeModalItem, setActiveModalItem] = useState<number | null>(null);
@@ -164,7 +165,7 @@ const UserSchedule = () => {
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
       <View px={horizontalScale(20)}>
-        <Heading name={t("user_schedule")} navigation={navigation} />
+        <Heading name={t("user_schedule")} onPress={navigation.goBack} />
       </View>
 
       {member.payments.length > 0 && (
@@ -305,11 +306,13 @@ const UserSchedule = () => {
                     <Button
                       onPress={() => {
                         if (bcData.type === BcType.Public) {
-                          navigation.navigate("SummaryScreen", {
-                            bcData: bcData,
-                            member,
-                            item,
-                          });
+                          navigation.dispatch(
+                            CommonActions.navigate("SummaryScreen", {
+                              bcData: bcData,
+                              member,
+                              item,
+                            })
+                          );
                         } else {
                           openEditModal(index);
                         }

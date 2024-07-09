@@ -19,7 +19,7 @@ import Heading from "../../components/Heading";
 import { useTranslation } from "react-i18next";
 
 const VerifiedAccountDetails = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [countryCode, setCountryCode] = useState("+92");
@@ -41,7 +41,6 @@ const VerifiedAccountDetails = () => {
             setShowDropdown(false);
           }}
           style={{
-            // Styles for whole modal [View]
             modal: {
               height: verticalScale(500),
             },
@@ -49,7 +48,7 @@ const VerifiedAccountDetails = () => {
           onBackdropPress={() => setShowDropdown(false)}
         />
       </Modal>
-      <Heading name={t("verify_account")} navigation={navigation} />
+      <Heading name={t("verify_account")} onPress={navigation.goBack} />
       <View mt={7} alignItems="center">
         <Images.Congratulations />
         <Text

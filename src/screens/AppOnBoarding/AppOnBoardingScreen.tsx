@@ -1,12 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { View, Image, StatusBar } from "react-native";
 import { OnboardFlow } from "react-native-onboard";
 import { Colors } from "../../constants";
 import { useTranslation } from "react-i18next";
 
 export default function OnBoardScreen() {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const { t } = useTranslation();
 
   return (
@@ -41,7 +41,7 @@ export default function OnBoardScreen() {
         autoPlay={true}
         onDone={() => {
           AsyncStorage.setItem("onboardingComplete", "true").then(() => {
-            navigation.replace("LoginScreen");
+            navigation.dispatch(StackActions.replace("LoginScreen"));
           });
         }}
         paginationColor={Colors.DISABLED_COLOR}

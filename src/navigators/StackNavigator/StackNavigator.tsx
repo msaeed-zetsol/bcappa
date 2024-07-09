@@ -1,24 +1,24 @@
-import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {BcDetailsScreen, SummaryScreen} from '../../screens';
-import {StackNavigatorParamList} from '../types';
-import BottomNavigator from '../BottomNavigator/BottomNavigator';
-import AuthStack from './AuthStack';
-import VerifiedAccountDetails from '../../screens/Profile Screen/VerifiedAccountDetails';
-import PersonalInformationScreen from '../../screens/Profile Screen/PersonalInformationScreen';
-import TermsAndConditionScreen from '../../screens/Authentication/TermsAndConditionScreen';
-import FaqAndSupportScreen from '../../screens/Profile Screen/FaqAndSupportScreen';
-import LanguageScreen from '../../screens/Profile Screen/LanguageScreen';
-import MyRewardsScreen from '../../screens/Profile Screen/MyRewardsScreen';
-import JazzDostVerificationScreen from '../../screens/Profile Screen/JazzDostVerificationScreen';
-import JazzDostSignup from '../../screens/Profile Screen/JazzDostSignup';
-import NewBc from '../../screens/CreateNewBc/NewBc';
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import BottomNavigator from "../BottomNavigator/BottomNavigator";
+import AuthStack from "./AuthStack";
+import VerifiedAccountDetails from "../../screens/Profile Screen/VerifiedAccountDetails";
+import PersonalInformationScreen from "../../screens/Profile Screen/PersonalInformationScreen";
+import TermsAndConditionScreen from "../../screens/Authentication/TermsAndConditionScreen";
+import FaqAndSupportScreen from "../../screens/Profile Screen/FaqAndSupportScreen";
+import LanguageScreen from "../../screens/Profile Screen/LanguageScreen";
+import MyRewardsScreen from "../../screens/Profile Screen/MyRewardsScreen";
+import JazzDostVerificationScreen from "../../screens/Profile Screen/JazzDostVerificationScreen";
+import JazzDostSignup from "../../screens/Profile Screen/JazzDostSignup";
+import NewBc from "../../screens/CreateNewBc/NewBc";
 import UserSchedule from "../../screens/My BC's Screen/UserSchedule";
-import UpdateBc from '../../screens/CreateNewBc/UpdateBc';
-import SeeAll from '../../screens/HomeScreen/SeeAll';
-import AddMembers from '../../screens/CreateNewBc/AddMembers';
+import UpdateBc from "../../screens/CreateNewBc/UpdateBc";
+import SeeAll from "../../screens/HomeScreen/SeeAll";
+import AddMembers from "../../screens/CreateNewBc/AddMembers";
+import BcDetailsScreen from "../../screens/My BC's Screen/BcDetailsScreen";
+import SummaryScreen from "../../screens/My BC's Screen/SummaryScreen";
 
-const Stack = createNativeStackNavigator<StackNavigatorParamList>();
+const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
   return (
@@ -26,7 +26,8 @@ const StackNavigator = () => {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="AuthStack">
+      initialRouteName="AuthStack"
+    >
       <Stack.Screen name="AuthStack" component={AuthStack} />
       <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
       <Stack.Screen

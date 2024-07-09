@@ -11,7 +11,7 @@ import TextFieldComponent from '../../components/TextFieldComponent';
 import { useTranslation } from 'react-i18next';
 
 const ForgotPassword = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const navigation: any = useNavigation();
   const [isEmailSelected, setIsEmailSelected] = useState(true);
@@ -19,17 +19,17 @@ const ForgotPassword = () => {
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
     reset,
   } = useForm({
     defaultValues: {
-      email: '',
-      phoneNumber: '',
+      email: "",
+      phoneNumber: "",
     },
   });
 
   const forgotHandler = async (details: any) => {
-    console.log({details});
+    console.log({ details });
     const data: any = {};
     if (isEmailSelected) {
       data.email = details.email;
@@ -37,13 +37,14 @@ const ForgotPassword = () => {
       data.phone = details.phoneNumber;
     }
 
-    navigation.navigate('OtpAccountVerification', {
+    navigation.navigate("OtpAccountVerification", {
       data: data,
       show: true,
-      from: 'forgot',
+      from: "forgot",
       hide: true,
     });
   };
+
   return (
     <View style={styles.container}>
       <View
@@ -52,9 +53,7 @@ const ForgotPassword = () => {
           alignItems: "center",
         }}
       >
-        <Pressable
-          onPress={() => navigation.goBack()}
-        >
+        <Pressable onPress={() => navigation.goBack()}>
           <Images.BackButton
             width={horizontalScale(50)}
             height={verticalScale(50)}
@@ -64,9 +63,9 @@ const ForgotPassword = () => {
           />
         </Pressable>
         <Text
+          style={{ marginStart: 22 }}
           fontSize="xl"
           color="BLACK_COLOR"
-          ml={"2"}
           textAlign={"center"}
           fontFamily={Fonts.POPPINS_SEMI_BOLD}
         >
@@ -78,15 +77,15 @@ const ForgotPassword = () => {
         color="GREY"
         fontSize="sm"
         letterSpacing="0.32"
-        mt={verticalScale(10)}
+        mt={verticalScale(16)}
         fontFamily={Fonts.POPPINS_MEDIUM}
       >
         {t("please_enter_email_phone")}
       </Text>
+
       <View style={styles.Togglecontainer}>
         <TouchableOpacity
           onPress={() => {
-            // reset
             reset({
               phoneNumber: "",
               email: "",
@@ -104,7 +103,7 @@ const ForgotPassword = () => {
               },
             ]}
           >
-            {t("email_lowercase")}
+            {t("email")}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -126,10 +125,11 @@ const ForgotPassword = () => {
               },
             ]}
           >
-            {t("phone")}
+            {t("phone_captialized")}
           </Text>
         </TouchableOpacity>
       </View>
+
       <FormControl mt={verticalScale(20)}>
         {isEmailSelected ? (
           <>
@@ -137,7 +137,7 @@ const ForgotPassword = () => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  placeholder={t("email")}
+                  placeholder={t("enter_email_id")}
                   value={value}
                   onBlur={onBlur}
                   onChange={onChange}
@@ -170,9 +170,8 @@ const ForgotPassword = () => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  placeholder={t("phone_number")}
+                  placeholder={t("enter_phone_number")}
                   value={value}
-                  // ref={phoneRef}
                   onBlur={onBlur}
                   onChange={onChange}
                   keyboardType={"number-pad"}
@@ -226,7 +225,7 @@ const ForgotPassword = () => {
         isPressed={isLoading}
         onPress={handleSubmit(forgotHandler)}
       >
-        {t("send")}
+        {t("send_otp")}
       </Button>
     </View>
   );

@@ -31,7 +31,7 @@ const SummaryScreen = () => {
 
   const route: any = useRoute();
   const { item, member, bcData }: any = route.params;
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const { t } = useTranslation();
 
   function calculateTotal(
@@ -87,7 +87,7 @@ const SummaryScreen = () => {
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
       <View mx={horizontalScale(20)}>
-        <Heading name={t("summary")} navigation={navigation} />
+        <Heading name={t("summary")} onPress={navigation.goBack} />
       </View>
       <ScrollView
         contentContainerStyle={{ paddingBottom: verticalScale(10) }}

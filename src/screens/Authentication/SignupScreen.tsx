@@ -6,12 +6,12 @@ import {
   Modal,
   Alert,
   I18nManager,
-} from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
-import {Fonts, Images} from '../../constants';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {CountryPicker} from 'react-native-country-codes-picker';
-import {useForm, Controller} from 'react-hook-form';
+} from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { Fonts, Images } from "../../constants";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { CountryPicker } from "react-native-country-codes-picker";
+import { useForm, Controller } from "react-hook-form";
 
 import {
   Text,
@@ -22,20 +22,24 @@ import {
   Button,
   View,
   Select,
-} from 'native-base';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Colors, {newColorTheme} from '../../constants/Colors';
+} from "native-base";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Colors, { newColorTheme } from "../../constants/Colors";
 
-import {useNavigation} from '@react-navigation/native';
-import TextFieldComponent from '../../components/TextFieldComponent';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import CheckBox from '@react-native-community/checkbox';
+import {
+  CommonActions,
+  StackActions,
+  useNavigation,
+} from "@react-navigation/native";
+import TextFieldComponent from "../../components/TextFieldComponent";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import CheckBox from "@react-native-community/checkbox";
 import { useDispatch } from "react-redux";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {locationPermission} from '../../service/LocationService';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { locationPermission } from "../../service/LocationService";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apply } from "../../scope-functions";
 
 const initialDate = new Date();
@@ -49,7 +53,7 @@ const SignupScreen = () => {
   const [date, setDate] = useState(new Date());
   const [openDate, setOpenDate] = useState(false);
   const [showDate, setShowDate] = useState("");
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const [toggleCheckBox, setToggleCheckBox] = useState<any>(false);
   const dispatch: any = useDispatch();
   const fullNameRef: any = useRef();
@@ -96,12 +100,14 @@ const SignupScreen = () => {
       if (response) {
         const loginUserDataString = JSON.stringify(response);
         await AsyncStorage.setItem("loginUserData", loginUserDataString);
-        navigation.replace("BottomNavigator", {
-          screen: "HomeScreen",
-          params: {
-            screenName: "Login",
-          },
-        });
+        navigation.dispatch(
+          StackActions.replace("BottomNavigator", {
+            screen: "HomeScreen",
+            params: {
+              screenName: "Login",
+            },
+          })
+        );
       }
     } catch (err) {
       console.log(err);
@@ -132,12 +138,14 @@ const SignupScreen = () => {
         role: "customer",
       };
 
-      navigation.navigate("OtpAccountVerification", {
-        data: data,
-        show: true,
-        from: "Signup",
-        hide: false,
-      });
+      navigation.dispatch(
+        CommonActions.navigate("OtpAccountVerification", {
+          data: data,
+          show: true,
+          from: "Signup",
+          hide: false,
+        })
+      );
     } else {
       if (!showDate) {
         Alert.alert("Please enter your date of birth");
@@ -560,9 +568,11 @@ const SignupScreen = () => {
             <Text>I agree the BC Appa</Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("TermsAndConditions", {
-                  name: "Terms And Condition",
-                });
+                navigation.dispatch(
+                  CommonActions.navigate("TermsAndConditions", {
+                    name: "Terms And Condition",
+                  })
+                );
               }}
             >
               <Text color={"PRIMARY_COLOR"}> Terms of Services</Text>
@@ -570,9 +580,11 @@ const SignupScreen = () => {
             <Text>and</Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("TermsAndConditions", {
-                  name: "Privacy Policy",
-                });
+                navigation.dispatch(
+                  CommonActions.navigate("TermsAndConditions", {
+                    name: "Privacy Policy",
+                  })
+                );
               }}
             >
               <Text color={"PRIMARY_COLOR"}> Privacy Policy</Text>
@@ -712,13 +724,13 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(30),
   },
   socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: verticalScale(20),
-    borderColor: '#CCCCCC',
+    borderColor: "#CCCCCC",
     borderWidth: 1,
     borderRadius: 12,
-    width: '48%',
-    justifyContent: 'center',
+    width: "48%",
+    justifyContent: "center",
   },
 });

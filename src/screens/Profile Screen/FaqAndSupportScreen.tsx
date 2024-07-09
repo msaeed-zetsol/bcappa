@@ -7,9 +7,10 @@ import { newColorTheme } from "../../constants/Colors";
 import ProfileInformationRow from "../../components/ProfileInformationRow";
 import Heading from "../../components/Heading";
 import { useTranslation } from "react-i18next";
+import { Images } from "../../constants";
 
 const FaqAndSupportScreen = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const { t } = useTranslation();
 
   return (
@@ -23,16 +24,32 @@ const FaqAndSupportScreen = () => {
         barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
-      <Heading name={t("faqs")} navigation={navigation} />
-
+      <Heading name={t("faqs")} onPress={navigation.goBack} />
       <View mt={verticalScale(30)} />
-      <ProfileInformationRow heading={t("what_is_bcappa")} onPress={() => {}} />
+      <ProfileInformationRow
+        heading={t("what_is_bcappa")}
+        onPress={() => {}}
+        startIcon={{ Icon: Images.AccountNotVerified }}
+        endIconMode={"navigation"}
+      />
       <ProfileInformationRow
         heading={t("general_information")}
         onPress={() => {}}
+        startIcon={{ Icon: Images.AccountNotVerified }}
+        endIconMode={"navigation"}
       />
-      <ProfileInformationRow heading={t("payments")} onPress={() => {}} />
-      <ProfileInformationRow heading={t("how_it_works")} onPress={() => {}} />
+      <ProfileInformationRow
+        heading={t("payments")}
+        onPress={() => {}}
+        startIcon={{ Icon: Images.AccountNotVerified }}
+        endIconMode={"navigation"}
+      />
+      <ProfileInformationRow
+        heading={t("how_it_works")}
+        onPress={() => {}}
+        startIcon={{ Icon: Images.AccountNotVerified }}
+        endIconMode={"navigation"}
+      />
     </View>
   );
 };

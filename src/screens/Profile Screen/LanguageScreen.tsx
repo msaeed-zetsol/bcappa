@@ -10,7 +10,7 @@ import i18next, { forceUpdateLanguage } from "../../localization/config";
 import { t } from "i18next";
 
 const LanguageScreen = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const [language, setLanguage] = useState(i18next.language);
 
   return (
@@ -20,7 +20,7 @@ const LanguageScreen = () => {
         barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
-      <Heading name={t("select_language")} navigation={navigation} />
+      <Heading name={t("select_language")} onPress={navigation.goBack} />
       <View style={{ marginTop: verticalScale(50) }}>
         <TouchableOpacity
           style={styles.btnContainer}

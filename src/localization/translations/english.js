@@ -1,4 +1,7 @@
 const auth = {
+  enter_email_id: "Enter Email ID",
+  enter_phone_number: "Enter Phone Number",
+  email_id: "Email ID",
   email: "Email",
   password: "Password",
   email_lowercase: "email",
@@ -7,11 +10,12 @@ const auth = {
   phone_number: "Phone Number",
   welcome_back: "Welcome Back!",
   sign_in_to_continue: "Please sign in to continue.",
-  email_is_required: "Email is required",
-  email_is_invalid: "Invalid email address",
+  email_is_required: "Email ID is required",
+  email_is_invalid: "Invalid Email ID",
   phone_is_invalid: "Phone must be 11 numbers long",
   phone_is_required: "Phone Number is required",
   password_is_required: "Password is required",
+  password_alpha_numeric_only: "Password must contain only letters and numbers",
   confirm_password: "Confirm Password",
   password_length_must_be_greater_than_8:
     "Password length must be greater than 8",
@@ -24,9 +28,9 @@ const auth = {
   dont_have_an_account: "Don't have an account?",
   sign_up: "Sign Up",
   sign_in: "Sign In",
-  send: "Send",
+  send_otp: "Send OTP",
   please_enter_email_phone:
-    "Please enter your email or phone number; we will send you an OTP.",
+    "Please enter your email or phone number. We will send you an OTP.",
   set_new_password: "Set New Password",
   set_strong_password_for_your_account:
     "Set a strong new password for your account.",

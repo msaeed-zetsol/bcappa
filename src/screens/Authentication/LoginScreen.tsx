@@ -160,6 +160,7 @@ const LoginScreen = () => {
       >
         {t("sign_in_to_continue")}
       </Text>
+
       <Box mt={verticalScale(40)}>
         <FormControl w="100%">
           <Controller
@@ -167,7 +168,7 @@ const LoginScreen = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <View>
                 <Input
-                  placeholder={t("email")}
+                  placeholder={t("email_id")}
                   w="100%"
                   size="lg"
                   borderRadius={16}
@@ -200,20 +201,29 @@ const LoginScreen = () => {
           />
           {errors.email && (
             <Text
+              style={{ marginStart: 16, fontSize: 13 }}
               color={"ERROR"}
-              marginTop={verticalScale(5)}
+              marginTop={verticalScale(3)}
               fontFamily={Fonts.POPPINS_MEDIUM}
             >
               {errors.email.message}
             </Text>
           )}
         </FormControl>
+
         <FormControl w="100%">
           <Controller
             control={control}
             rules={{
               required: t("password_is_required"),
-              minLength: 8,
+              minLength: {
+                value: 8,
+                message: t("password_length_must_be_greater_than_8"),
+              },
+              pattern: {
+                value: /^[a-zA-Z0-9]+$/,
+                message: t("password_alpha_numeric_only"),
+              },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
@@ -253,15 +263,17 @@ const LoginScreen = () => {
           />
           {errors.password && (
             <Text
+              style={{ marginStart: 16, fontSize: 13 }}
               color={"ERROR"}
-              marginTop={verticalScale(5)}
+              marginTop={verticalScale(3)}
               fontFamily={Fonts.POPPINS_MEDIUM}
             >
-              {t("password_length_must_be_greater_than_8")}
+              {errors.password.message}
             </Text>
           )}
         </FormControl>
       </Box>
+
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("Forgot");
@@ -310,6 +322,7 @@ const LoginScreen = () => {
       >
         {t("sign_in")}
       </Button>
+
       <View width={"100%"} justifyContent={"center"} mt={verticalScale(20)}>
         <View borderWidth={0.5} borderColor={"BORDER_COLOR"} />
         <View position={"absolute"} flexWrap={"wrap"} alignSelf="center">
@@ -325,6 +338,7 @@ const LoginScreen = () => {
           </Text>
         </View>
       </View>
+
       <View
         width={"100%"}
         height={verticalScale(100)}
@@ -402,8 +416,6 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -422,3 +434,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+export default LoginScreen;

@@ -1,17 +1,15 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  ExploreScreen,
-  HomeScreen,
-  MyBcsScreen,
-  NotificationScreen,
-  ProfileScreen,
-} from "../../screens";
 import { verticalScale } from "../../utilities/Dimensions";
 import { Colors, Images } from "../../constants";
 import { useTranslation } from "react-i18next";
 import BottomNavIcon from "../../components/BottomNavIcon";
+import HomeScreen from "../../screens/HomeScreen/HomeScreen";
+import MyBcsScreen from "../../screens/My BC's Screen/MyBcsScreen";
+import ExploreScreen from "../../screens/Explore Screen/ExploreScreen";
+import NotificationScreen from "../../screens/Notification Screen/NotificationScreen";
+import ProfileScreen from "../../screens/Profile Screen/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 

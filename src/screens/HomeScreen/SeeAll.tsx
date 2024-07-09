@@ -1,21 +1,26 @@
-import {StyleSheet, StatusBar, FlatList, ActivityIndicator} from 'react-native';
-import {View, Text, Avatar, Button} from 'native-base';
-import React, {useEffect, useState} from 'react';
-import {newColorTheme} from '../../constants/Colors';
-import Heading from '../../components/Heading';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {useRoute, useNavigation} from '@react-navigation/native';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import {Fonts, Colors} from '../../constants';
+import { StatusBar, FlatList, ActivityIndicator } from "react-native";
+import { View, Text, Avatar, Button } from "native-base";
+import React, { useEffect, useState } from "react";
+import { newColorTheme } from "../../constants/Colors";
+import Heading from "../../components/Heading";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import {
+  useRoute,
+  useNavigation,
+  StackActions,
+  CommonActions,
+} from "@react-navigation/native";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { Fonts, Colors } from "../../constants";
 import { useTranslation } from "react-i18next";
 
 const SeeAll = () => {
-  const [allData, setAllData] = useState<any>([]);
   const route: any = useRoute();
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
+  const { t } = useTranslation();
   const { name, api, btn } = route.params;
   const [isLoading, setIsLoading] = useState(true);
-  const { t } = useTranslation();
+  const [allData, setAllData] = useState<any>([]);
 
   const getData = async () => {
     setIsLoading(true);
@@ -29,21 +34,26 @@ const SeeAll = () => {
     }
   };
   const join = (id: any) => {
-    navigation.navigate("BcDetailsScreen", {
-      item: id,
-      deeplink: false,
-    });
+    navigation.dispatch(
+      CommonActions.navigate("BcDetailsScreen", {
+        item: id,
+        deeplink: false,
+      })
+    );
   };
   const details = (id: any) => {
-    navigation.navigate("BcDetailsScreen", {
-      item: id,
-      deeplink: false,
-    });
+    navigation.dispatch(
+      CommonActions.navigate("BcDetailsScreen", {
+        item: id,
+        deeplink: false,
+      })
+    );
   };
 
   useEffect(() => {
     getData();
   }, []);
+
   return (
     <View flex={1} bg={"BACKGROUND_COLOR"}>
       <StatusBar
@@ -51,7 +61,7 @@ const SeeAll = () => {
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
       <View px={horizontalScale(20)}>
-        <Heading name={name} navigation={navigation} />
+        <Heading name={name} onPress={navigation.goBack} />
       </View>
       {!isLoading ? (
         <FlatList
@@ -182,5 +192,3 @@ const SeeAll = () => {
 };
 
 export default SeeAll;
-
-const styles = StyleSheet.create({});

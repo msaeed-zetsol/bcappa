@@ -1,5 +1,5 @@
-import "./firebaseConfig"; // Import Firebase config and initialize
 import "react-native-gesture-handler";
+import "./firebaseConfig"; // Import Firebase config and initialize
 import { AppRegistry } from "react-native";
 import App from "./App";
 import { name as appName } from "./app.json";

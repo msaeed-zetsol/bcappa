@@ -4,8 +4,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
-} from 'react-native';
-import React, {useState, useCallback, useEffect} from 'react';
+} from "react-native";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Text,
   View,
@@ -17,16 +17,17 @@ import {
   HStack,
   VStack,
   ScrollView,
-} from 'native-base';
-import {Fonts, Images} from '../../constants';
-import {verticalScale, horizontalScale} from '../../utilities/Dimensions';
+} from "native-base";
+import { Fonts, Images } from "../../constants";
+import { verticalScale, horizontalScale } from "../../utilities/Dimensions";
 import {
+  CommonActions,
   useFocusEffect,
   useNavigation,
   useRoute,
-} from '@react-navigation/native';
-import Colors, {newColorTheme} from '../../constants/Colors';
-import InfoModal from '../../components/InfoModal';
+} from "@react-navigation/native";
+import Colors, { newColorTheme } from "../../constants/Colors";
+import InfoModal from "../../components/InfoModal";
 import { modalEnums } from "../../lookups/Enums";
 import Swiper from "react-native-swiper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -36,10 +37,8 @@ import {
   getFirstAndLastCharsUppercase,
 } from "../../utilities/HelperFunctions";
 import { useDispatch } from "react-redux";
-import i18next, { t } from "i18next";
 import { useTranslation } from "react-i18next";
-import { forceUpdateLanguage } from "../../localization/config";
-import LanguageToggle from '../../components/LanguageToggle';
+import LanguageToggle from "../../components/LanguageToggle";
 
 const HomeScreen = () => {
   const route: any = useRoute();
@@ -54,7 +53,7 @@ const HomeScreen = () => {
   const [userInfo, setUserInfo] = useState<Profile>();
   const [activeBc, setActiveBc] = useState<any>([]);
   const [load, setLoad] = useState(false);
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const [swiperData, setSwiperData] = useState<any>([]);
   const [activeLoad, setActiveLoad] = useState(false);
   const AvatarName = getFirstAndLastCharsUppercase(userInfo?.fullName || "");
@@ -69,7 +68,7 @@ const HomeScreen = () => {
         ...prevData,
         accountVerification: !payload.value,
       }));
-      navigation.navigate("JazzDostVerification");
+      navigation.dispatch(CommonActions.navigate("JazzDostVerification"));
     }
     if (payload.name === modalEnums.COMMING_SOON) {
       setButtonPressed(false);
@@ -114,10 +113,12 @@ const HomeScreen = () => {
   };
 
   const joinBc = async (id: any) => {
-    navigation.navigate("BcDetailsScreen", {
-      item: id,
-      deeplink: false,
-    });
+    navigation.dispatch(
+      CommonActions.navigate("BcDetailsScreen", {
+        item: id,
+        deeplink: false,
+      })
+    );
   };
 
   useFocusEffect(
@@ -156,7 +157,7 @@ const HomeScreen = () => {
           <TouchableOpacity
             activeOpacity={0.5}
             onPress={() => {
-              navigation.navigate("ProfileScreen");
+              navigation.dispatch(CommonActions.navigate("ProfileScreen"));
             }}
           >
             {userInfo?.profileImg ? (
@@ -200,7 +201,7 @@ const HomeScreen = () => {
             </View>
           </View>
         </View>
-        <LanguageToggle/>
+        <LanguageToggle />
       </View>
       {load && (
         <HStack
@@ -241,11 +242,13 @@ const HomeScreen = () => {
         <>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("SeeAll", {
-                name: "Public Bc",
-                api: "/bcs/ready-to-join",
-                btn: "join",
-              });
+              navigation.dispatch(
+                CommonActions.navigate("SeeAll", {
+                  name: "Public Bc",
+                  api: "/bcs/ready-to-join",
+                  btn: "join",
+                })
+              );
             }}
             style={{
               alignSelf: "flex-end",
@@ -542,11 +545,13 @@ const HomeScreen = () => {
         {!activeLoad && activeBc.length > 0 && (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("SeeAll", {
-                name: "Active Bcs",
-                api: "/bcs/active",
-                btn: "details",
-              });
+              navigation.dispatch(
+                CommonActions.navigate("SeeAll", {
+                  name: "Active Bcs",
+                  api: "/bcs/active",
+                  btn: "details",
+                })
+              );
             }}
             style={{
               alignSelf: "flex-end",
@@ -631,7 +636,7 @@ const HomeScreen = () => {
                 //   ...prevState,
                 //   accountVerification: true,
                 // }));
-                navigation.navigate("ExploreScreen");
+                navigation.dispatch(CommonActions.navigate("ExploreScreen"));
               }}
               width={"80%"}
               mt={verticalScale(5)}
@@ -742,10 +747,12 @@ const HomeScreen = () => {
                   }}> */}
                   <Button
                     onPress={() => {
-                      navigation.navigate("BcDetailsScreen", {
-                        item: item.id,
-                        deeplink: false,
-                      });
+                      navigation.dispatch(
+                        CommonActions.navigate("BcDetailsScreen", {
+                          item: item.id,
+                          deeplink: false,
+                        })
+                      );
                     }}
                     size="sm"
                     variant={"solid"}
@@ -775,7 +782,7 @@ const HomeScreen = () => {
       )}
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("NewBc");
+          navigation.dispatch(CommonActions.navigate("NewBc"));
         }}
         style={{
           position: "absolute",
@@ -861,7 +868,7 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   dot: {
-    backgroundColor: 'rgba(0, 0, 0, 0.63)',
+    backgroundColor: "rgba(0, 0, 0, 0.63)",
     width: 5,
     height: 5,
     borderRadius: 5,
@@ -879,12 +886,12 @@ const styles = StyleSheet.create({
 
   slide: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   activeBcCntainer: {
     width: horizontalScale(250),
-    backgroundColor: 'white',
+    backgroundColor: "white",
     paddingHorizontal: horizontalScale(16),
     paddingVertical: verticalScale(16),
     borderRadius: 15,

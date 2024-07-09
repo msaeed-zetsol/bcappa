@@ -4,33 +4,37 @@ import {Text, FormControl, Button, Pressable, Input, Icon} from 'native-base';
 import {newColorTheme} from '../../constants/Colors';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import {Fonts, Images} from '../../constants';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {useForm, Controller} from 'react-hook-form';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import {useDispatch} from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import {
+  StackActions,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import { useForm, Controller } from "react-hook-form";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const NewPassword = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [show, setShow] = useState<boolean>(false);
   const [show1, setShow1] = useState<boolean>(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const dispatch: any = useDispatch();
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const route: any = useRoute();
-  const {data} = route?.params;
-  console.log({data});
+  const { data } = route?.params;
+  console.log({ data });
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
     reset,
   } = useForm({
     defaultValues: {
-      password: '',
-      confirmPassword: '',
+      password: "",
+      confirmPassword: "",
     },
   });
   const changePass = async (details: any) => {
@@ -48,9 +52,11 @@ const NewPassword = () => {
       });
       if (response) {
         console.log({ response });
-        navigation.replace("AuthStack", {
-          screen: "LoginScreen",
-        });
+        navigation.dispatch(
+          StackActions.replace("AuthStack", {
+            screen: "LoginScreen",
+          })
+        );
       }
     } else {
       Alert.alert("Password must match confirm Password");
@@ -141,7 +147,7 @@ const NewPassword = () => {
             marginTop={verticalScale(5)}
             fontFamily={Fonts.POPPINS_MEDIUM}
           >
-        {t("password_length_must_be_greater_than_8")}
+            {t("password_length_must_be_greater_than_8")}
           </Text>
         )}
         <Controller

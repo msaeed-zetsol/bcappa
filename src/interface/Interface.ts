@@ -1,5 +1,3 @@
-
-
 export interface BcData {
   id: string;
   BcName: string;
@@ -31,7 +29,7 @@ export interface Notifications {
   time: string;
 }
 
-export type IFIilterType = 'eq' | 'neq' | 'like' | 'contains' | 'json';
+export type IFIilterType = "eq" | "neq" | "like" | "contains" | "json";
 
 export interface IFilter {
   field: string;

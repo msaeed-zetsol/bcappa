@@ -21,7 +21,11 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import Colors, { newColorTheme } from "../../constants/Colors";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  CommonActions,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import { Fonts, Images } from "../../constants";
 import ToggleSwitch from "toggle-switch-react-native";
@@ -39,7 +43,7 @@ import { removeMembers } from "../../redux/user/userSlice";
 import { useTranslation } from "react-i18next";
 
 const UpdateBc = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const dispatch: any = useDispatch();
   const route: any = useRoute();
   const { item } = route.params;
@@ -207,7 +211,6 @@ const UpdateBc = () => {
       <StatusBar backgroundColor={newColorTheme.BACKGROUND_COLOR} />
       <Heading
         name={t("update_bc")}
-        navigation={navigation}
         onPress={() => {
           dispatch(setMembers([]));
           navigation.goBack();
@@ -447,9 +450,11 @@ const UpdateBc = () => {
           <TouchableOpacity
             style={styles.btnContainer}
             onPress={() => {
-              navigation.navigate("AddMembers", {
-                balloting: balloting,
-              });
+              navigation.dispatch(
+                CommonActions.navigate("AddMembers", {
+                  balloting: balloting,
+                })
+              );
             }}
           >
             <Images.AddUser />
@@ -684,19 +689,19 @@ export default UpdateBc;
 
 const styles = StyleSheet.create({
   btnContainer: {
-    backgroundColor: '#F0FAFF',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#F0FAFF",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     padding: verticalScale(15),
     borderRadius: 15,
     marginVertical: verticalScale(10),
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#eee',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#eee",
 
     ...Platform.select({
       ios: {
@@ -707,7 +712,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     paddingVertical: 20,
-    color: '#999999',
+    color: "#999999",
   },
   list: {
     flex: 1,
@@ -716,7 +721,7 @@ const styles = StyleSheet.create({
     marginHorizontal: horizontalScale(10),
   },
   row: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 10,
     marginHorizontal: horizontalScale(2),
     // height: 100,
@@ -727,9 +732,9 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         // width: window.width - 30 * 2,
-        shadowColor: 'rgba(0,0,0,0.2)',
+        shadowColor: "rgba(0,0,0,0.2)",
         shadowOpacity: 1,
-        shadowOffset: {height: 2, width: 2},
+        shadowOffset: { height: 2, width: 2 },
         shadowRadius: 2,
       },
       android: {
@@ -747,12 +752,12 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 22,
-    color: '#222222',
+    color: "#222222",
   },
   memberContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   name: {
     fontFamily: Fonts.POPPINS_SEMI_BOLD,

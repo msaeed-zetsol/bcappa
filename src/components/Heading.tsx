@@ -1,9 +1,16 @@
-import React from 'react';
+import React from "react";
 import { I18nManager, TouchableOpacity } from "react-native";
 import { View, Text } from "native-base";
 import { horizontalScale, verticalScale } from "../utilities/Dimensions";
 import { Fonts, Images } from "../constants";
-const Heading = ({ name, navigation, color, onPress }: any) => {
+
+type HeadingProps = {
+  name: string;
+  color?: string;
+  onPress: () => void;
+};
+
+const Heading = ({ name, color = "#06202E", onPress }: HeadingProps) => {
   return (
     <View
       flexDirection="row"
@@ -16,14 +23,7 @@ const Heading = ({ name, navigation, color, onPress }: any) => {
           position: "absolute",
           left: 0,
         }}
-        onPress={
-          onPress
-            ? onPress
-            : () => {
-                console.log("Pressed");
-                navigation.goBack();
-              }
-        }
+        onPress={onPress}
       >
         <Images.BackButton
           width={horizontalScale(50)}
@@ -36,8 +36,7 @@ const Heading = ({ name, navigation, color, onPress }: any) => {
       <Text
         textAlign="center"
         fontSize={verticalScale(20)}
-        color={color ? color : "#06202E"}
-        // letterSpacing={0.2}
+        color={color}
         fontFamily={Fonts.POPPINS_BOLD}
       >
         {name}

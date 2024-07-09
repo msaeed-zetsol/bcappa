@@ -13,18 +13,22 @@ import {View, Text, Avatar, Button, Pressable} from 'native-base';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import {Fonts, Images} from '../../constants';
 import {BcStatus, BcType} from '../../lookups/Enums';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import Colors, {newColorTheme} from '../../constants/Colors';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import {useDispatch} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {setMembers} from '../../redux/members/membersSlice';
+import {
+  CommonActions,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
+import Colors, { newColorTheme } from "../../constants/Colors";
+import dynamicLinks from "@react-native-firebase/dynamic-links";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { useDispatch } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setMembers } from "../../redux/members/membersSlice";
 import { useTranslation } from "react-i18next";
 
 const MyBcsScreen = () => {
   const dispatch: any = useDispatch();
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const [allBc, setAllBc] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [userDatas, setUserData] = useState<any>();
@@ -148,7 +152,7 @@ const MyBcsScreen = () => {
         onPress={() => {
           dispatch(setMembers([]));
 
-          navigation.navigate("NewBc");
+          navigation.dispatch(CommonActions.navigate("NewBc"));
         }}
         style={{
           position: "absolute",
@@ -230,9 +234,11 @@ const MyBcsScreen = () => {
                       item.user.id === userDatas.id && (
                         <TouchableOpacity
                           onPress={() => {
-                            navigation.navigate("UpdateBc", {
-                              item,
-                            });
+                            navigation.dispatch(
+                              CommonActions.navigate("UpdateBc", {
+                                item,
+                              })
+                            );
                           }}
                         >
                           <Images.Pencil />
@@ -338,10 +344,12 @@ const MyBcsScreen = () => {
                     </View>
                     <Button
                       onPress={() => {
-                        navigation.navigate("BcDetailsScreen", {
-                          item: item.id,
-                          deeplink: false,
-                        });
+                        navigation.dispatch(
+                          CommonActions.navigate("BcDetailsScreen", {
+                            item: item.id,
+                            deeplink: false,
+                          })
+                        );
                       }}
                       size="md"
                       variant={"solid"}

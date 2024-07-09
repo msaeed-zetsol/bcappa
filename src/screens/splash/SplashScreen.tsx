@@ -1,13 +1,12 @@
-import { Image, View } from "native-base";
+import { Image, Text, View } from "native-base";
 import { ActivityIndicator, StatusBar, StyleSheet } from "react-native";
 import { deepSkyBlue } from "../../constants/Colors";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
-import { getSplash, saveSplash, SplashResponse } from "./SplashHooks";
+import { StackActions, useNavigation } from "@react-navigation/native";
+import useSplash, { saveSplash } from "./useSplash";
 import dynamicLinks from "@react-native-firebase/dynamic-links";
 import { notificationListener } from "../../firebase/Notifications";
-import { useDispatch } from "react-redux";
 import { getColors } from "react-native-image-colors";
 
 type Destination =
@@ -24,21 +23,13 @@ type BcDetailsScreen = {
 const DEEP_LINK_BASE_URL = "https://invertase.io/offer?id=";
 
 const SplashScreen = () => {
-  const navigation: any = useNavigation();
-  const [splash, setSplash] = useState<SplashResponse | null>(null);
-  const [loading, setLoading] = useState(true);
   const [destination, setDestination] = useState<Destination>();
   const [statusBarColor, setStatusBarColor] = useState(deepSkyBlue);
-  const dispatch = useDispatch();
+  const { splash, status } = useSplash();
+  const navigation = useNavigation();
 
   // both tasks run simultaneously; splash and destination.
-  useEffect(() => {
-    getSplash(dispatch).then((it) => {
-      setSplash(it);
-      setLoading(false);
-    });
-  }, []);
-
+  // `useSplash` hook runs code to find the splash immediately.
   useEffect(() => {
     dynamicLinks()
       .getInitialLink()
@@ -52,58 +43,72 @@ const SplashScreen = () => {
   }, []);
 
   useEffect(() => {
-    // when the splash is loaded
-    if (!loading) {
-      // if a splash object has been found
-      if (splash) {
-        if (splash.statusBarColor) {
+    /**
+     * This piece of code tries to set status bar color.
+     * according to the splash image's vibrant color.
+     * Since this is dependent on splash image,
+     * it will execute only when a splash has been found.
+     */
+    if (status === "found") {
+      if (splash.statusBarColor) {
+        setStatusBarColor(splash.statusBarColor);
+      } else {
+        getColors(splash.image, {
+          fallback: "#fff",
+          cache: true,
+          key: `${splash.id}`,
+        }).then((result) => {
+          switch (result.platform) {
+            case "android":
+              splash.statusBarColor = result.darkVibrant;
+              break;
+            case "ios":
+              splash.statusBarColor = result.secondary;
+              break;
+            case "web":
+              splash.statusBarColor = result.darkVibrant;
+              break;
+          }
           setStatusBarColor(splash.statusBarColor);
-        } else {
-          getColors(splash.image, {
-            fallback: "#fff",
-            cache: true,
-            key: `${splash.id}`,
-          }).then((result) => {
-            switch (result.platform) {
-              case "android":
-                splash.statusBarColor = result.darkVibrant;
-                break;
-              case "ios":
-                splash.statusBarColor = result.secondary;
-                break;
-              case "web":
-                splash.statusBarColor = result.darkVibrant;
-                break;
-            }
-            setStatusBarColor(splash.statusBarColor);
-            saveSplash(splash);
-          });
-        }
+          saveSplash(splash);
+        });
       }
     }
 
-    // this will only run when splash is loaded and destination is found.
-    if (!loading && destination) {
-      // the user has to wait at least 2.5 seconds after both are loaded.
+    /**
+     * This piece of code will execute only when;
+     * - The effort to find a splash is finished.
+     * - A suitable destination is found.
+     *
+     * We are checking the status here, both `found` and `not found` refers
+     * to the fact that the effort to find a splash has been finished.
+     * It doesn't matter if we found a splash or not.
+     */
+    if ((status === "found" || status === "not found") && destination) {
+      // user has to wait at-least 2.5 seconds
       setTimeout(() => {
         // Navigate to destination
         if (destination === "HomeScreen") {
-          navigation.replace("BottomNavigator", {
-            screen: "HomeScreen",
-            show: false,
-          });
+          navigation.dispatch(
+            StackActions.replace("BottomNavigator", {
+              screen: "HomeScreen",
+              show: false,
+            })
+          );
           notificationListener(navigation);
         } else if (typeof destination === "object") {
-          navigation.replace("BcDetailsScreen", {
-            item: destination.id,
-            deeplink: destination.deepLink,
-          });
+          navigation.dispatch(
+            StackActions.replace("BcDetailsScreen", {
+              item: destination.id,
+              deeplink: destination.deepLink,
+            })
+          );
         } else {
-          navigation.replace(destination);
+          navigation.dispatch(StackActions.replace(destination));
         }
-      }, 2500);
+      }, 4000);
     }
-  }, [loading, destination]);
+  }, [status, destination]);
 
   const findDestinationRoute = async () => {
     const completed = await AsyncStorage.getItem("onboardingComplete");
@@ -133,7 +138,7 @@ const SplashScreen = () => {
     }
   };
 
-  if (loading) {
+  if (status === "loading") {
     return (
       <View style={[StyleSheet.absoluteFill, style.container]}>
         <StatusBar barStyle={"light-content"} backgroundColor={deepSkyBlue} />
@@ -145,7 +150,7 @@ const SplashScreen = () => {
   return (
     <View style={[StyleSheet.absoluteFill, style.container]}>
       <StatusBar barStyle={"light-content"} backgroundColor={statusBarColor} />
-      {splash ? (
+      {status === "found" && splash.image ? (
         <Image
           source={{ uri: splash.image }}
           resizeMode="cover"

@@ -51,7 +51,7 @@ type RouteParams = {
 };
 
 const AddMembers: React.FC = () => {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation();
   const route = useRoute<any>();
   const { balloting, maxUsers } = route.params as RouteParams;
   const [openModal, setOpenModal] = useState(false);
@@ -213,7 +213,7 @@ const AddMembers: React.FC = () => {
       }}
     >
       <StatusBar backgroundColor={newColorTheme.BACKGROUND_COLOR} />
-      <Heading name={"Members"} navigation={navigation} />
+      <Heading name={t("members")} onPress={navigation.goBack} />
       <Box mb={verticalScale(20)} mt={verticalScale(30)}>
         {!balloting && (
           <Text style={styles.details}>Drag to Arrange BC Opening Number</Text>

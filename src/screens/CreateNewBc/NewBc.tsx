@@ -20,7 +20,11 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import Colors, { newColorTheme } from "../../constants/Colors";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  CommonActions,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import { Fonts, Images } from "../../constants";
 import ToggleSwitch from "toggle-switch-react-native";
@@ -35,7 +39,7 @@ import { errors } from "../../redux/user/userSlice";
 import { useTranslation } from "react-i18next";
 
 const NewBc = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const dispatch: any = useDispatch();
   const members = useSelector((state: any) => state.members);
   const [disabled, setIsDisabled] = useState(false);
@@ -145,7 +149,6 @@ const NewBc = () => {
       <StatusBar backgroundColor={newColorTheme.BACKGROUND_COLOR} />
       <Heading
         name={t("create_new_bc")}
-        navigation={navigation}
         onPress={() => {
           dispatch(setMembers([]));
           navigation.goBack();
@@ -386,11 +389,13 @@ const NewBc = () => {
         <TouchableOpacity
           style={styles.btnContainer}
           onPress={() => {
-            navigation.navigate("AddMembers", {
-              balloting: balloting,
-              members,
-              maxUsers,
-            });
+            navigation.dispatch(
+              CommonActions.navigate("AddMembers", {
+                balloting: balloting,
+                members: members,
+                maxUsers: maxUsers,
+              })
+            );
           }}
         >
           <Images.AddUser />
@@ -402,7 +407,6 @@ const NewBc = () => {
             {t("view_members")} {`(${members.length})`}
           </Text>
         </TouchableOpacity>
-
 
         <View justifyContent={"flex-end"} mb={verticalScale(10)}>
           <Text

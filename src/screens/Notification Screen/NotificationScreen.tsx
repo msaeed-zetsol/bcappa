@@ -5,7 +5,7 @@ import {
   StyleSheet,
   RefreshControl,
   ActivityIndicator,
-} from 'react-native';
+} from "react-native";
 import React, { useState } from "react";
 import { Text, View } from "native-base";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
@@ -199,10 +199,10 @@ const NotificationScreen = () => {
 export default NotificationScreen;
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
   genralContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
