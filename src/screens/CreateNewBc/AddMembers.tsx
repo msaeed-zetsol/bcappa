@@ -1,42 +1,22 @@
-import React, {useState, useCallback, useEffect, useMemo, useRef} from 'react';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {
-  StyleSheet,
-  StatusBar,
-  TouchableOpacity,
-  Animated,
-  Platform,
-  Easing,
-  View,
-} from 'react-native';
-import {
-  Text,
-  Box,
-  Modal,
-  Button,
-  FormControl,
-  Input,
-  InputLeftAddon,
-  InputGroup,
-} from 'native-base';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {useForm, Controller} from 'react-hook-form';
-import DraggableFlatList from 'react-native-draggable-flatlist';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, StatusBar, TouchableOpacity, View, Platform } from 'react-native';
+import { Text, Box, Modal, Button, FormControl, Input, InputLeftAddon, InputGroup } from 'native-base';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form';
+import Animated, { useSharedValue, useAnimatedStyle, Easing, interpolate, Extrapolate, runOnJS } from 'react-native-reanimated';
+import { addMember, removeMember, setMembers, updateMembersOrder } from '../../redux/members/membersSlice';
+import { removeMembers } from '../../redux/user/userSlice';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import Colors, {newColorTheme} from '../../constants/Colors';
-import {Fonts} from '../../constants';
+import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
+import Colors, { newColorTheme } from '../../constants/Colors';
+import { Fonts } from '../../constants';
 import Heading from '../../components/Heading';
-import {Images} from '../../constants';
-import {
-  addMember,
-  removeMember,
-  setMembers,
-  updateMembersOrder,
-} from '../../redux/members/membersSlice';
-import {removeMembers} from '../../redux/user/userSlice';
 import { useTranslation } from "react-i18next";
+import { Images } from '../../constants';
+import { withTiming } from 'react-native-reanimated';
+import { PanGestureHandler } from 'react-native-gesture-handler';
+import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 
 type Member = {
   id: any;
@@ -49,6 +29,7 @@ type RouteParams = {
   balloting: boolean;
   maxUsers: number;
 };
+
 
 const AddMembers: React.FC = () => {
   const navigation = useNavigation();
@@ -79,122 +60,81 @@ const AddMembers: React.FC = () => {
     console.log("newMember", members);
   }, [members]);
 
+  const Select = () => {
+    'worklet';
+    console.log('Executing myNonWorkletFunction');
+  };
+
   const addMemberHandler = (details: any) => {
     details.phone = `+92${details.phone}`;
     dispatch(addMember(details));
     reset();
     setOpenModal(false);
+    runOnJS(Select)();
   };
 
   const onDragEnd = ({ data }: { data: Member[] }) => {
-    let run = data.map((item, index) => {
-      item.openingPrecedence = index + 1;
-      return item;
-    });
-    dispatch(updateMembersOrder(run));
+    let updatedMembers = data.map((item, index) => ({
+      ...item,
+      openingPrecedence: index + 1,
+    }));
+    dispatch(updateMembersOrder(updatedMembers));
   };
 
-  const renderItem = ({ item, index, drag, isActive }: any) => {
-    return <Row data={item} active={isActive} index={index} />;
-  };
+  const renderItem = ({ item, drag, isActive, index }: any) => (
+    <PanGestureHandler onGestureEvent={drag}>
+      <Animated.View>
+        <Row data={item} index={index} active={isActive} style={[styles.row, isActive && { backgroundColor: 'lightgrey' }]} />
+      </Animated.View>
+    </PanGestureHandler>
+  );
 
-  const Row = ({ active, data, index }: any) => {
-    const activeAnim = useRef(new Animated.Value(0));
+
+  function Row(props: any) {
+    const { active, data, index } = props;
+    const activeAnim = useSharedValue(0);
 
     useEffect(() => {
-      Animated.timing(activeAnim.current, {
-        duration: 300,
-        easing: Easing.bounce,
-        toValue: active ? 1 : 0,
-        useNativeDriver: true,
-      }).start();
-      console.log("active", active);
+      activeAnim.value = withTiming(active ? 1 : 0, { duration: 300, easing: Easing.bounce });
     }, [active]);
 
-    const style = useMemo(
-      () => ({
-        ...Platform.select({
-          ios: {
-            transform: [
-              {
-                scale: activeAnim.current.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 1.07],
-                }),
-              },
-            ],
-            shadowRadius: activeAnim.current.interpolate({
-              inputRange: [0, 1],
-              outputRange: [2, 10],
-            }),
-          },
-          android: {
-            transform: [
-              {
-                scale: activeAnim.current.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 1.07],
-                }),
-              },
-            ],
-            elevation: activeAnim.current.interpolate({
-              inputRange: [0, 1],
-              outputRange: [2, 6],
-            }),
-          },
-        }),
-      }),
-      []
-    );
+    const style = useAnimatedStyle(() => {
+      const scale = interpolate(activeAnim.value, [0, 1], [1, 1], Extrapolate.CLAMP);
+      const shadowRadius = interpolate(activeAnim.value, [0, 1], [2, 10], Extrapolate.CLAMP);
+      const elevation = interpolate(activeAnim.value, [0, 1], [2, 6], Extrapolate.CLAMP);
 
-    const { balloting } = useRoute().params as RouteParams;
-    const dispatch = useDispatch();
-    const newMember = useSelector((state: any) => state.members);
-
+      return (
+        Platform.OS === 'ios'
+          ? { transform: [{ scale }], shadowRadius }
+          : { transform: [{ scale }], elevation }
+      );
+    });
     return (
-      <Animated.View
-        style={[styles.row, style, { marginTop: verticalScale(10) }]}
-      >
+      <Animated.View style={[styles.row, style, { marginTop: verticalScale(10) }]}>
         <View>
           <Images.DragIcon />
         </View>
-        <View style={{ flexDirection: "column", flex: 1, marginLeft: 10 }}>
+        <View style={{ flexDirection: 'column', flex: 1, marginLeft: 10 }}>
           <View style={styles.memberContainer}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                padding: 0.5,
-              }}
-            >
-              <Text style={styles.name}>
-                {`${data.fullName} ${!balloting ? `(${index + 1})` : ""}`}
-              </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 0.5 }}>
+              <Text style={styles.name}>{`${data.fullName} ${!balloting ? `(${members.indexOf(data)})` : ''} `}</Text>
             </View>
             <TouchableOpacity
               style={{ marginRight: 5 }}
               onPress={() => {
                 if (data.id) {
-                  dispatch(removeMembers(data.id));
+                  runOnJS(dispatch)(removeMembers(data.id));
                 }
-                const finalNew = newMember.filter(
-                  (item: Member) => item.phone !== data.phone
-                );
-                dispatch(setMembers(finalNew));
+                const finalNew = newMember.filter((item) => item.phone !== data.phone);
+                runOnJS(dispatch)(setMembers(finalNew));
               }}
             >
               <MaterialIcons name="close" size={25} color="red" />
             </TouchableOpacity>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <View style={{ overflow: "hidden", marginRight: 5 }}>
-              <Text fontSize={"sm"} style={styles.desc}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ overflow: 'hidden', marginRight: 5 }}>
+              <Text fontSize={'sm'} style={styles.desc}>
                 {data?.phone}
               </Text>
             </View>
@@ -219,7 +159,7 @@ const AddMembers: React.FC = () => {
           <Text style={styles.details}>Drag to Arrange BC Opening Number</Text>
         )}
       </Box>
-      <View style={{ flex: 1, height: "100%" }}>
+      <View style={{ flex: 1, height: '100%' }}>
         <View
           style={{
             flexDirection: "row",
@@ -266,25 +206,15 @@ const AddMembers: React.FC = () => {
           </Button>
         </View>
         {members.length > 0 ? (
-          <GestureHandlerRootView>
-            <DraggableFlatList
-              data={members}
-              onDragEnd={onDragEnd}
-              keyExtractor={(item, index) => `${item.phone}-${index}`}
-              renderItem={renderItem}
-              style={styles.list}
-              contentContainerStyle={{ paddingBottom: verticalScale(10) }}
-              dragItemOverflow
-            />
-          </GestureHandlerRootView>
+          <DraggableFlatList
+            data={newMember}
+            renderItem={renderItem}
+            keyExtractor={(item: Member, id) => `${item.phone} ${id}`}
+            onDragEnd={onDragEnd}
+          />
         ) : (
           <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              flex: 0.8,
-            }}
-          >
+            style={{ justifyContent: 'center', alignItems: 'center', flex: 0.8 }}>
             <Images.Not_Members_Found />
           </View>
         )}
@@ -292,9 +222,8 @@ const AddMembers: React.FC = () => {
       <Modal
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
-        backgroundColor={"rgba(0, 0, 0, 0.63)"}
-        style={{ flex: 1 }}
-      >
+        backgroundColor={'rgba(0, 0, 0, 0.63)'}
+        style={{ flex: 1 }}>
         <Modal.Content
           style={{
             width: "85%",
@@ -312,7 +241,7 @@ const AddMembers: React.FC = () => {
               {t("add_member")}
             </Text>
           </Modal.Header>
-          <Modal.Body style={{ width: "100%" }}>
+          <Modal.Body style={{ width: '100%' }}>
             <FormControl>
               <FormControl.Label>Full Name</FormControl.Label>
               <Controller
@@ -347,15 +276,12 @@ const AddMembers: React.FC = () => {
               <Controller
                 control={addMembersControl}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <InputGroup
-                    style={{ flex: 1 }}
-                    w={{ base: "86%", md: "285" }}
-                  >
-                    <InputLeftAddon children={"+92"} />
+                  <InputGroup style={{ flex: 1 }} w={{ base: '86%', md: '285' }}>
+                    <InputLeftAddon children={'+92'} />
                     <Input
-                      w={{ base: "100%", md: "100%" }}
-                      placeholder={"3XZYYYYYYY"}
-                      fontSize={"sm"}
+                      w={{ base: '100%', md: '100%' }}
+                      placeholder={'3XZYYYYYYY'}
+                      fontSize={'sm'}
                       autoCapitalize="none"
                       autoCorrect={false}
                       value={value}
@@ -435,12 +361,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#eee',
-
-    ...Platform.select({
-      ios: {
-        paddingTop: 20,
-      },
-    }),
   },
   title: {
     fontSize: 20,
@@ -456,26 +376,19 @@ const styles = StyleSheet.create({
   row: {
     backgroundColor: '#fff',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: 5,
-    marginHorizontal: horizontalScale(2),
-    // height: 100,
-    marginVertical: verticalScale(10),
-    // flex: 1,
+    padding: 10,
+    marginBottom: 10,
     borderRadius: 10,
     ...Platform.select({
       ios: {
-        // width: window.width - 30 * 2,
         shadowColor: 'rgba(0,0,0,0.2)',
         shadowOpacity: 1,
-        shadowOffset: {height: 2, width: 2},
+        shadowOffset: { height: 2, width: 2 },
         shadowRadius: 2,
       },
       android: {
-        // width: window.width - 30 * 2,
-        elevation: 12,
-        // marginHorizontal: 30,
+        elevation: 2,
       },
     }),
   },
@@ -497,7 +410,6 @@ const styles = StyleSheet.create({
   name: {
     fontFamily: Fonts.POPPINS_SEMI_BOLD,
     fontSize: verticalScale(17),
-    // marginLeft: horizontalScale(5),
   },
   details: {
     fontFamily: Fonts.POPPINS_MEDIUM,
@@ -507,4 +419,10 @@ const styles = StyleSheet.create({
     color: Colors.GREY,
     fontFamily: Fonts.POPPINS_MEDIUM,
   },
+  listContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: verticalScale(80)
+  }
 });

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">bcappa</string>
+    <string name="facebook_app_id">401512352920896</string>
+    <string name = "facebook_token">45111d4a5a5ff01ce9b3386e7a7044fb</string>
 </resources>

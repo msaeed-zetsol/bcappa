@@ -1,5 +1,5 @@
-import {StyleSheet, View, TouchableOpacity, I18nManager} from 'react-native';
-import {Text, FormControl, Button} from 'native-base';
+import {StyleSheet, View, TouchableOpacity, I18nManager, Modal} from 'react-native';
+import {Text, FormControl, Button, Icon} from 'native-base';
 import React, {useState} from 'react';
 import {newColorTheme} from '../../constants/Colors';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
@@ -9,13 +9,16 @@ import {Fonts, Images} from '../../constants';
 import {useForm, Controller} from 'react-hook-form';
 import TextFieldComponent from '../../components/TextFieldComponent';
 import { useTranslation } from 'react-i18next';
+import {CountryPicker} from 'react-native-country-codes-picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const navigation: any = useNavigation();
   const [isEmailSelected, setIsEmailSelected] = useState(true);
-
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [countryCode, setCountryCode] = useState('+92');
   const {
     control,
     handleSubmit,
@@ -47,6 +50,27 @@ const ForgotPassword = () => {
 
   return (
     <View style={styles.container}>
+           {/* country */}
+           <Modal visible={showDropdown} transparent={true} animationType="slide">
+        <CountryPicker
+          lang={'en'}
+          show={showDropdown}
+          // when picker button press you will get the country object with dial code
+          pickerButtonOnPress={(item: any) => {
+            setCountryCode(item.dial_code);
+            setShowDropdown(false);
+          }}
+          style={{
+            // Styles for whole modal [View]
+            modal: {
+              maxHeight: '75%',
+            },
+          }}
+          onBackdropPress={() => {
+            setShowDropdown(false);
+          }}
+        />
+      </Modal>
       <View
         style={{
           flexDirection: "row",
@@ -166,34 +190,64 @@ const ForgotPassword = () => {
           </>
         ) : (
           <>
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextFieldComponent
-                  placeholder={t("enter_phone_number")}
-                  value={value}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  keyboardType={"number-pad"}
-                />
+              <Controller
+                control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextFieldComponent
+                    placeholder={'3XZYYYYYYY'}
+                    value={value}
+                    // ref={phoneRef}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    keyboardType={'number-pad'}
+                    InputLeftElement={
+                      <Pressable
+                        onPress={() => setShowDropdown(true)}
+                        flexDirection={'row'}
+                        alignItems={'center'}
+                        justifyContent={'center'}
+                        ml="6">
+                        <Text
+                          fontSize={'sm'}
+                          fontFamily={Fonts.POPPINS_REGULAR}>
+                          {countryCode}
+                        </Text>
+                        <Icon
+                          as={<Ionicons name={'caret-down'} />}
+                          size={5}
+                          ml="2"
+                          color="BLACK_COLOR"
+                        />
+                        <View
+                        style={{
+                          borderWidth : 0.5,
+                          borderColor : 'BORDER_COLOR',
+                          borderRadius: 5,
+                          height: 5,
+                          marginLeft: 5
+                        }}
+                         
+                        />
+                      </Pressable>
+                    }
+                  />
+                )}
+                name="phoneNumber"
+                rules={{
+                  required: 'PhoneNumber is required',
+                  // minLength: 7,
+                  // maxLength: 15,
+                }}
+                defaultValue=""
+              />
+              {errors.phoneNumber && (
+                <Text
+                  color={'ERROR'}
+                  marginTop={verticalScale(5)}
+                  fontFamily={Fonts.POPPINS_MEDIUM}>
+                  Invalid Phone Number length
+                </Text>
               )}
-              name="phoneNumber"
-              rules={{
-                required: t("phone_is_invalid"),
-                minLength: 11,
-                maxLength: 11,
-              }}
-              defaultValue=""
-            />
-            {errors.phoneNumber && (
-              <Text
-                color={"ERROR"}
-                marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}
-              >
-                {t("phone_is_invalid")}
-              </Text>
-            )}
           </>
         )}
       </FormControl>

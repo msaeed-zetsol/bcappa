@@ -56,7 +56,8 @@ const SignupScreen = () => {
   const navigation = useNavigation();
   const [toggleCheckBox, setToggleCheckBox] = useState<any>(false);
   const dispatch: any = useDispatch();
-  const fullNameRef: any = useRef();
+  const firstNameRef: any = useRef();
+  const lastNameRef: any = useRef();
   const emailRef: any = useRef();
   const cnicRef: any = useRef();
 
@@ -67,12 +68,13 @@ const SignupScreen = () => {
     reset,
   } = useForm({
     defaultValues: {
-      fullName: "",
-      email: "",
-      phoneNumber: "",
-      cnicNumber: "",
-      password: "",
-      gender: "",
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+      cnicNumber: '',
+      password: '',
+      gender: '',
     },
   });
 
@@ -128,7 +130,8 @@ const SignupScreen = () => {
       }
 
       const data = {
-        fullName: details.fullName,
+        firstName: details.firstName,
+        lastName: details.lastName,
         email: details.email,
         phone: countryCode + details.phoneNumber,
         cnic: details.cnicNumber,
@@ -178,11 +181,12 @@ const SignupScreen = () => {
     locationPermission();
     return () => {
       reset({
-        fullName: "",
-        email: "",
-        phoneNumber: "",
-        cnicNumber: "",
-        password: "",
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+        cnicNumber: '',
+        password: '',
       });
     };
   }, []);
@@ -287,30 +291,27 @@ const SignupScreen = () => {
         <Box mt={verticalScale(20)}>
           {/* email */}
           <FormControl mt={verticalScale(15)}>
-            <Controller
+            
+           <View style={{ flexDirection: 'row', width:'48%',justifyContent: 'space-between',gap: 10 }}>
+           <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  placeholder={"Full Name (As Per CNIC) "}
+                  placeholder={'First Name'}
                   value={value}
                   onBlur={onBlur}
                   onChange={onChange}
-                  keyboardType={"ascii-capable"}
-                  ref={fullNameRef as any}
-                  onSubmitEditing={() => {
-                    console.log(emailRef);
-                    emailRef?.current?.focus();
-                  }}
-                  // ref={nameRef}
+                  keyboardType={'ascii-capable'}
+                  ref={firstNameRef as any}
                 />
               )}
-              name="fullName"
+              name="firstName"
               rules={{
-                required: "fullName is required",
+                required: 'First Name is required',
               }}
               defaultValue=""
             />
-            {errors.fullName && (
+            {errors.firstName && (
               <Text
                 color={"ERROR"}
                 marginTop={verticalScale(5)}
@@ -319,6 +320,33 @@ const SignupScreen = () => {
                 First name is required
               </Text>
             )}
+             <Controller
+              control={control}
+              render={({field: {onChange, onBlur, value}}) => (
+                <TextFieldComponent
+                  placeholder={'last Name '}
+                  value={value}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  keyboardType={'ascii-capable'}
+                  ref={lastNameRef as any}
+                />
+              )}
+              name="lastName"
+              rules={{
+                required: 'last Name is required',
+              }}
+              defaultValue=""
+            />
+            {errors.lastName && (
+              <Text
+                color={'ERROR'}
+                marginTop={verticalScale(5)}
+                fontFamily={Fonts.POPPINS_MEDIUM}>
+                Last name is required
+              </Text>
+            )}
+           </View>
 
             <View mt={verticalScale(15)}>
               <Controller

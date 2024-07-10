@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import { Images, Fonts } from "../../constants";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import { useForm, Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   Text,
   Box,
@@ -17,16 +18,23 @@ import {
   Icon,
   Button,
   View,
-} from "native-base";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useNavigation } from "@react-navigation/native";
-import { newColorTheme } from "../../constants/Colors";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { requestUserPermission } from "../../firebase/Notifications";
-import { useDispatch } from "react-redux";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { useTranslation } from "react-i18next";
+} from 'native-base';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
+import { newColorTheme } from '../../constants/Colors';
+import { apimiddleWare } from '../../utilities/HelperFunctions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { requestUserPermission } from '../../firebase/Notifications';
+import { useDispatch } from 'react-redux';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {
+  LoginManager,
+  LoginButton,
+  AccessToken,
+  GraphRequest,
+  GraphRequestManager,
+} from 'react-native-fbsdk-next';
+
 
 GoogleSignin.configure({
   webClientId:
@@ -88,6 +96,81 @@ const LoginScreen = () => {
       console.log(err);
     }
   };
+
+
+
+  // =============Facebook login===============
+  const facebookLogin = async () => {
+    try {
+      const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+      console.log('result', result)
+      if (result.isCancelled) {
+        console.log('Login cancelled');
+        return;
+      }
+      const data = await AccessToken.getCurrentAccessToken();
+
+      if (!data) {
+        throw new Error('Something went wrong obtaining access token');
+      }
+
+      const responseInfoCallback = async (error: any, result: any) => {
+        if (error) {
+          console.log('Error fetching data:', error);
+        } else {
+          try {
+            const getToken: any = await AsyncStorage.getItem('fcmToken');
+            const parsedFcmToken: any = await JSON.parse(getToken);
+
+            const datas = {
+              ...result,
+              fcmToken: parsedFcmToken,
+              role: 'customer',
+            };
+
+            const response = await apimiddleWare({
+              url: '/auth/login/facebook',
+              method: 'post',
+              data: datas,
+            });
+
+            if (response) {
+              const loginUserDataString = JSON.stringify(response);
+              await AsyncStorage.setItem('loginUserData', loginUserDataString);
+              navigation.replace('BottomNavigator', {
+                screen: 'HomeScreen',
+                params: {
+                  screenName: 'Login',
+                },
+              });
+            }
+          } catch (apiError) {
+            console.log('Error in API call:', apiError);
+          }
+        }
+      };
+
+      const infoRequest = new GraphRequest(
+        '/me',
+        {
+          accessToken: data.accessToken,
+          parameters: {
+            fields: {
+              string: 'id,name,email',
+            },
+          },
+        },
+        responseInfoCallback,
+      );
+
+
+      new GraphRequestManager().addRequest(infoRequest).start();
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+
+
 
   const logoutSocialLogIn = async () => {
     try {
@@ -367,7 +450,8 @@ const LoginScreen = () => {
         </Pressable>
         <Pressable
           style={styles.socialButton}
-          onPress={logoutSocialLogIn}
+          onPress={facebookLogin}
+          // onPress={logoutSocialLogIn}
           _pressed={{
             backgroundColor: "DISABLED_COLOR",
           }}
