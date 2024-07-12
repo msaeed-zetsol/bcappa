@@ -1,9 +1,9 @@
-import {StyleSheet, View, Alert, I18nManager} from 'react-native';
-import React, {useState} from 'react';
-import {Text, FormControl, Button, Pressable, Input, Icon} from 'native-base';
-import {newColorTheme} from '../../constants/Colors';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {Fonts, Images} from '../../constants';
+import { StyleSheet, Alert, I18nManager, Modal, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { Text, FormControl, Button, Pressable, Input, Icon } from 'native-base';
+import { newColorTheme } from '../../constants/Colors';
+import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
+import { Fonts, Colors, Images } from '../../constants';
 import {
   StackActions,
   useNavigation,
@@ -14,12 +14,14 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { View } from "react-native-animatable";
+
 
 const NewPassword = () => {
   const { t } = useTranslation();
   const [show, setShow] = useState<boolean>(false);
   const [show1, setShow1] = useState<boolean>(false);
-
+  const [isModalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch: any = useDispatch();
   const navigation = useNavigation();
@@ -37,33 +39,77 @@ const NewPassword = () => {
       confirmPassword: "",
     },
   });
-  const changePass = async (details: any) => {
+  const changePass = async (details: { password: any; confirmPassword: any; }) => {
     console.log({ details });
     if (details.password === details.confirmPassword) {
       const datas = {
         emailOrPhone: data.email ? data.email : data.phone,
         newPassword: details.password,
       };
+      setIsLoading(true);
       const response = await apimiddleWare({
         url: "/auth/forget-password",
         method: "put",
         data: datas,
         reduxDispatch: dispatch,
       });
+      setIsLoading(false);
       if (response) {
         console.log({ response });
-        navigation.dispatch(
-          StackActions.replace("AuthStack", {
-            screen: "LoginScreen",
-          })
-        );
+        setModalVisible(true);
       }
+
     } else {
       Alert.alert("Password must match confirm Password");
     }
   };
+
+  const handleLogin = () => {
+    setModalVisible(false);
+    navigation.dispatch(
+      StackActions.replace("AuthStack", {
+        screen: "LoginScreen",
+      })
+    );
+  };
+
   return (
     <View style={styles.container}>
+      <Modal
+        style={{
+          flex: 1,
+        }}
+        visible={isModalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        transparent
+      >
+        <View style={styles.centeredView}>
+          <View
+            animation={"bounceIn"}
+            style={[
+              styles.modalView,
+              {
+                paddingHorizontal: horizontalScale(22),
+                paddingVertical: verticalScale(20),
+              },
+            ]}
+          >
+            <Images.Verified
+              height={verticalScale(140)}
+              width={verticalScale(120)}
+            />
+            <Text style={styles.message}>Your password has been updated. Please login to continue.</Text>
+
+            <Button
+              colorScheme={"info"}
+              style={styles.loginButton}
+              onPress={handleLogin}
+            >
+              <Text style={styles.loginButtonLabel}>Login</Text>
+            </Button>
+          </View>
+        </View>
+      </Modal>
       <View
         style={{
           flexDirection: "row",
@@ -82,7 +128,7 @@ const NewPassword = () => {
         <Text
           fontSize="xl"
           color="BLACK_COLOR"
-          ml={"2"}
+          ml={"6"}
           textAlign={"center"}
           fontFamily={Fonts.POPPINS_SEMI_BOLD}
         >
@@ -94,6 +140,7 @@ const NewPassword = () => {
         fontSize="sm"
         letterSpacing="0.32"
         mt={verticalScale(10)}
+        ml="2"
         fontFamily={Fonts.POPPINS_MEDIUM}
       >
         {t("set_strong_password_for_your_account")}
@@ -101,13 +148,21 @@ const NewPassword = () => {
       <FormControl w="100%">
         <Controller
           control={control}
+          name="password"
           rules={{
             required: t("password_is_required"),
-            minLength: 8,
+            minLength: {
+              value: 8,
+              message: t("password_length_must_be_greater_than_8"),
+            },
+            pattern: {
+              value: /^[a-zA-Z0-9]+$/,
+              message: t("password_alpha_numeric_only"),
+            },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
-              placeholder={t("password")}
+              placeholder={t("New Password")}
               w="100%"
               size="lg"
               borderRadius={16}
@@ -132,33 +187,41 @@ const NewPassword = () => {
                       />
                     }
                     size={5}
-                    mr="2"
+                    mr="6"
                     color="muted.400"
                   />
                 </Pressable>
               }
             />
           )}
-          name="password"
         />
         {errors.password && (
           <Text
+            style={{ marginStart: 16, fontSize: 13 }}
             color={"ERROR"}
-            marginTop={verticalScale(5)}
+            marginTop={verticalScale(3)}
             fontFamily={Fonts.POPPINS_MEDIUM}
           >
-            {t("password_length_must_be_greater_than_8")}
+            {errors.password.message}
           </Text>
         )}
         <Controller
           control={control}
+          name="confirmPassword"
           rules={{
-            required: t("password_is_required"),
-            minLength: 8,
+            required: t("confirm password is required"),
+            minLength: {
+              value: 8,
+              message: t("password_length_must_be_greater_than_8"),
+            },
+            pattern: {
+              value: /^[a-zA-Z0-9]+$/,
+              message: t("password_alpha_numeric_only"),
+            },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
-              placeholder={t("confirm_password")}
+              placeholder={t("Confirm Password")}
               w="100%"
               size="lg"
               borderRadius={16}
@@ -183,22 +246,22 @@ const NewPassword = () => {
                       />
                     }
                     size={5}
-                    mr="2"
+                    mr="6"
                     color="muted.400"
                   />
                 </Pressable>
               }
             />
           )}
-          name="confirmPassword"
         />
         {errors.confirmPassword && (
           <Text
+            style={{ marginStart: 16, fontSize: 13 }}
             color={"ERROR"}
-            marginTop={verticalScale(5)}
+            marginTop={verticalScale(3)}
             fontFamily={Fonts.POPPINS_MEDIUM}
           >
-            {t("password_length_must_be_greater_than_8")}
+            {errors.confirmPassword.message}
           </Text>
         )}
       </FormControl>
@@ -244,5 +307,44 @@ const styles = StyleSheet.create({
     backgroundColor: newColorTheme.WHITE_COLOR,
     paddingHorizontal: horizontalScale(28),
     paddingVertical: verticalScale(30),
+  },
+  loginButton: {
+    height: 66,
+    width: "100%",
+    borderRadius: 16,
+    backgroundColor: Colors.PRIMARY_COLOR
+  },
+  loginButtonLabel: {
+    color: "white",
+    fontFamily: Fonts.POPPINS_BOLD,
+    fontSize: verticalScale(18),
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.63)",
+  },
+  modalView: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 10,
+    width: "90%",
+  },
+  message: {
+    paddingVertical: 24,
+    fontSize: verticalScale(18),
+    color: Colors.BLACK_COLOR,
+    lineHeight: verticalScale(25),
+    textAlign: "center",
+    fontFamily: Fonts.POPPINS_SEMI_BOLD,
   },
 });

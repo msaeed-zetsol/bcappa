@@ -56,9 +56,9 @@ const SignupScreen = () => {
   const navigation = useNavigation();
   const [toggleCheckBox, setToggleCheckBox] = useState<any>(false);
   const dispatch: any = useDispatch();
-  const firstNameRef: any = useRef();
-  const lastNameRef: any = useRef();
+  const fullNameRef: any = useRef();
   const emailRef: any = useRef();
+  const phoneNumberRef: any = useRef();
   const cnicRef: any = useRef();
 
   const {
@@ -68,8 +68,7 @@ const SignupScreen = () => {
     reset,
   } = useForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      fullName: '',
       email: '',
       phoneNumber: '',
       cnicNumber: '',
@@ -130,8 +129,7 @@ const SignupScreen = () => {
       }
 
       const data = {
-        firstName: details.firstName,
-        lastName: details.lastName,
+        fullName: details.fullName,
         email: details.email,
         phone: countryCode + details.phoneNumber,
         cnic: details.cnicNumber,
@@ -181,8 +179,7 @@ const SignupScreen = () => {
     locationPermission();
     return () => {
       reset({
-        firstName: '',
-        lastName: '',
+        fullName: '',
         email: '',
         phoneNumber: '',
         cnicNumber: '',
@@ -280,9 +277,9 @@ const SignupScreen = () => {
       </View>
       <Text
         color="GREY"
-        fontSize="md"
+        fontSize='md'
         letterSpacing="0.32"
-        mt={verticalScale(13)}
+        mt={verticalScale(10)}
         fontFamily={Fonts.POPPINS_MEDIUM}
       >
         It only takes a minute to create your account
@@ -290,75 +287,47 @@ const SignupScreen = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <Box mt={verticalScale(20)}>
           {/* email */}
-          <FormControl mt={verticalScale(15)}>
-            
-           <View style={{ flexDirection: 'row', width:'48%',justifyContent: 'space-between',gap: 10 }}>
-           <Controller
+          <FormControl mt={verticalScale(5)}>
+            <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  placeholder={'First Name'}
-                  value={value}
+                  placeholder={'Full Name'}
                   onBlur={onBlur}
                   onChange={onChange}
                   keyboardType={'ascii-capable'}
-                  ref={firstNameRef as any}
+                  ref={fullNameRef}
+                  onSubmitEditing={() => emailRef.current.focus()}
+                  value={value}
                 />
               )}
-              name="firstName"
+              name="fullName"
               rules={{
-                required: 'First Name is required',
+                required: 'Full Name is required',
               }}
               defaultValue=""
             />
-            {errors.firstName && (
+            {errors.fullName && (
               <Text
                 color={"ERROR"}
                 marginTop={verticalScale(5)}
                 fontFamily={Fonts.POPPINS_MEDIUM}
               >
-                First name is required
+                FullName is required
               </Text>
             )}
-             <Controller
-              control={control}
-              render={({field: {onChange, onBlur, value}}) => (
-                <TextFieldComponent
-                  placeholder={'last Name '}
-                  value={value}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  keyboardType={'ascii-capable'}
-                  ref={lastNameRef as any}
-                />
-              )}
-              name="lastName"
-              rules={{
-                required: 'last Name is required',
-              }}
-              defaultValue=""
-            />
-            {errors.lastName && (
-              <Text
-                color={'ERROR'}
-                marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}>
-                Last name is required
-              </Text>
-            )}
-           </View>
-
             <View mt={verticalScale(15)}>
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextFieldComponent
-                    ref={emailRef}
-                    placeholder={"Email"}
-                    value={value}
+                    placeholder={"Email address"}
                     onBlur={onBlur}
                     onChange={onChange}
+                    value={value}
                     keyboardType={"email-address"}
+                    ref={emailRef}
+                    onSubmitEditing={() => cnicRef.current.focus()}
                   />
                 )}
                 name="email"
@@ -388,10 +357,11 @@ const SignupScreen = () => {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextFieldComponent
                     placeholder={"3XZYYYYYYY"}
-                    value={value}
-                    // ref={phoneRef}
+                    ref={phoneNumberRef}
+                    onSubmitEditing={() => phoneNumberRef.current.focus()}
                     onBlur={onBlur}
                     onChange={onChange}
+                    value={value}
                     keyboardType={"number-pad"}
                     InputLeftElement={
                       <Pressable
@@ -449,10 +419,11 @@ const SignupScreen = () => {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextFieldComponent
                     placeholder={"Cnic No"}
-                    value={value}
                     onBlur={onBlur}
                     onChange={onChange}
-                    ref={cnicRef}
+                    value={value}
+                    ref={cnicRef as any}
+                    onSubmitEditing={() => cnicRef.current.focus()}
                     keyboardType={"number-pad"}
                   />
                 )}
@@ -488,7 +459,12 @@ const SignupScreen = () => {
                       fontSize={"sm"}
                       fontFamily={Fonts.POPPINS_REGULAR}
                       accessibilityLabel="Select Gender"
-                      dropdownIcon={<Icon as={""} name="caret-down" />}
+                      dropdownIcon={<Icon
+                        as={<Ionicons name={"caret-down"} />}
+                        size={5}
+                        mr={5}
+                        color="BLACK_COLOR"
+                      />}
                       placeholder="Select Gender"
                       onValueChange={(itemValue) => onChange(itemValue)}
                     >
@@ -603,7 +579,7 @@ const SignupScreen = () => {
                 );
               }}
             >
-              <Text color={"PRIMARY_COLOR"}> Terms of Services</Text>
+              <Text color={"PRIMARY_COLOR"}> Terms of Services </Text>
             </TouchableOpacity>
             <Text>and</Text>
             <TouchableOpacity

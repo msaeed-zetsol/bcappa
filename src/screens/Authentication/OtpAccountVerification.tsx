@@ -6,14 +6,14 @@ import {
   TouchableOpacity,
   I18nManager,
 } from 'react-native';
-import React, {useRef, useState, useEffect} from 'react';
-import {View, Pressable, Heading, Text, Button} from 'native-base';
-import {Colors, Images, Fonts} from '../../constants';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {newColorTheme} from '../../constants/Colors';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
-import {useDispatch} from 'react-redux';
+import React, { useRef, useState, useEffect } from 'react';
+import { View, Pressable, Heading, Text, Button } from 'native-base';
+import { Colors, Images, Fonts } from '../../constants';
+import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { newColorTheme } from '../../constants/Colors';
+import { apimiddleWare } from '../../utilities/HelperFunctions';
+import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from "react-i18next";
 
@@ -273,7 +273,6 @@ const OtpAccountVerification = () => {
             ref={secondInput}
             onChangeText={(text) => {
               setOtp({ ...otp, 2: text });
-
               text ? thirdInput.current.focus() : firstInput.current.focus();
             }}
           />

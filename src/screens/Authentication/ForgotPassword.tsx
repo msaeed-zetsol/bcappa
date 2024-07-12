@@ -1,16 +1,18 @@
-import {StyleSheet, View, TouchableOpacity, I18nManager, Modal} from 'react-native';
-import {Text, FormControl, Button, Icon} from 'native-base';
-import React, {useState} from 'react';
-import {newColorTheme} from '../../constants/Colors';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {Pressable} from 'native-base';
-import {useNavigation} from '@react-navigation/native';
-import {Fonts, Images} from '../../constants';
-import {useForm, Controller} from 'react-hook-form';
+import { StyleSheet, View, TouchableOpacity, I18nManager, Modal } from 'react-native';
+import { Text, FormControl, Button, Icon } from 'native-base';
+import React, { useState } from 'react';
+import { newColorTheme } from '../../constants/Colors';
+import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
+import { Pressable } from 'native-base';
+import { useNavigation } from '@react-navigation/native';
+import { Fonts, Images } from '../../constants';
+import { useForm, Controller } from 'react-hook-form';
 import TextFieldComponent from '../../components/TextFieldComponent';
 import { useTranslation } from 'react-i18next';
-import {CountryPicker} from 'react-native-country-codes-picker';
+import { CountryPicker } from 'react-native-country-codes-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { apimiddleWare } from '../../utilities/HelperFunctions';
+import { useDispatch } from 'react-redux';
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
@@ -19,6 +21,8 @@ const ForgotPassword = () => {
   const [isEmailSelected, setIsEmailSelected] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
   const [countryCode, setCountryCode] = useState('+92');
+  const dispatch: any = useDispatch();
+
   const {
     control,
     handleSubmit,
@@ -34,24 +38,56 @@ const ForgotPassword = () => {
   const forgotHandler = async (details: any) => {
     console.log({ details });
     const data: any = {};
-    if (isEmailSelected) {
-      data.email = details.email;
-    } else {
-      data.phone = details.phoneNumber;
-    }
 
-    navigation.navigate("OtpAccountVerification", {
-      data: data,
-      show: true,
-      from: "forgot",
-      hide: true,
-    });
+    if (isEmailSelected) {
+      // Handling email case
+      data.email = details.email;
+      const response = await apimiddleWare({
+        url: "/otp",
+        method: "post",
+        data: {
+          email: data.email,
+        },
+        reduxDispatch: dispatch,
+        navigation,
+      });
+      if (response) {
+        navigation.navigate("OtpAccountVerification", {
+          data: data,
+          show: true,
+          from: "forgot",
+          hide: true,
+        });
+        console.log({ response });
+      }
+    } else {
+      // Handling phone number case
+      data.phone = countryCode + details.phoneNumber;
+      const response = await apimiddleWare({
+        url: "/otp",
+        method: "post",
+        data: {
+          phoneNumber: data.phone,
+        },
+        reduxDispatch: dispatch,
+        navigation,
+      });
+      if (response) {
+        navigation.navigate("OtpAccountVerification", {
+          data: data,
+          show: true,
+          from: "forgot",
+          hide: true,
+        });
+        console.log({ response });
+      }
+    }
   };
 
   return (
     <View style={styles.container}>
-           {/* country */}
-           <Modal visible={showDropdown} transparent={true} animationType="slide">
+      {/* country */}
+      <Modal visible={showDropdown} transparent={true} animationType="slide">
         <CountryPicker
           lang={'en'}
           show={showDropdown}
@@ -190,64 +226,64 @@ const ForgotPassword = () => {
           </>
         ) : (
           <>
-              <Controller
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextFieldComponent
-                    placeholder={'3XZYYYYYYY'}
-                    value={value}
-                    // ref={phoneRef}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    keyboardType={'number-pad'}
-                    InputLeftElement={
-                      <Pressable
-                        onPress={() => setShowDropdown(true)}
-                        flexDirection={'row'}
-                        alignItems={'center'}
-                        justifyContent={'center'}
-                        ml="6">
-                        <Text
-                          fontSize={'sm'}
-                          fontFamily={Fonts.POPPINS_REGULAR}>
-                          {countryCode}
-                        </Text>
-                        <Icon
-                          as={<Ionicons name={'caret-down'} />}
-                          size={5}
-                          ml="2"
-                          color="BLACK_COLOR"
-                        />
-                        <View
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextFieldComponent
+                  placeholder={'3XZYYYYYYY'}
+                  value={value}
+                  // ref={phoneRef}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  keyboardType={'number-pad'}
+                  InputLeftElement={
+                    <Pressable
+                      onPress={() => setShowDropdown(true)}
+                      flexDirection={'row'}
+                      alignItems={'center'}
+                      justifyContent={'center'}
+                      ml="6">
+                      <Text
+                        fontSize={'sm'}
+                        fontFamily={Fonts.POPPINS_REGULAR}>
+                        {countryCode}
+                      </Text>
+                      <Icon
+                        as={<Ionicons name={'caret-down'} />}
+                        size={5}
+                        ml="2"
+                        color="BLACK_COLOR"
+                      />
+                      <View
                         style={{
-                          borderWidth : 0.5,
-                          borderColor : 'BORDER_COLOR',
+                          borderWidth: 0.5,
+                          borderColor: 'BORDER_COLOR',
                           borderRadius: 5,
                           height: 5,
                           marginLeft: 5
                         }}
-                         
-                        />
-                      </Pressable>
-                    }
-                  />
-                )}
-                name="phoneNumber"
-                rules={{
-                  required: 'PhoneNumber is required',
-                  // minLength: 7,
-                  // maxLength: 15,
-                }}
-                defaultValue=""
-              />
-              {errors.phoneNumber && (
-                <Text
-                  color={'ERROR'}
-                  marginTop={verticalScale(5)}
-                  fontFamily={Fonts.POPPINS_MEDIUM}>
-                  Invalid Phone Number length
-                </Text>
+
+                      />
+                    </Pressable>
+                  }
+                />
               )}
+              name="phoneNumber"
+              rules={{
+                required: 'PhoneNumber is required',
+                minLength: 10,
+                maxLength: 10,
+              }}
+              defaultValue=""
+            />
+            {errors.phoneNumber && (
+              <Text
+                color={'ERROR'}
+                marginTop={verticalScale(5)}
+                fontFamily={Fonts.POPPINS_MEDIUM}>
+                Invalid Phone Number length
+              </Text>
+            )}
           </>
         )}
       </FormControl>
