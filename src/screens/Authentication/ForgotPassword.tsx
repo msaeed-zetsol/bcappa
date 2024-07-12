@@ -1,28 +1,33 @@
-import { StyleSheet, View, TouchableOpacity, I18nManager, Modal } from 'react-native';
-import { Text, FormControl, Button, Icon } from 'native-base';
-import React, { useState } from 'react';
-import { newColorTheme } from '../../constants/Colors';
-import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
-import { Pressable } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
-import { Fonts, Images } from '../../constants';
-import { useForm, Controller } from 'react-hook-form';
-import TextFieldComponent from '../../components/TextFieldComponent';
-import { useTranslation } from 'react-i18next';
-import { CountryPicker } from 'react-native-country-codes-picker';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { apimiddleWare } from '../../utilities/HelperFunctions';
-import { useDispatch } from 'react-redux';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  I18nManager,
+} from "react-native";
+import { Text, FormControl, Button, Icon } from "native-base";
+import React, { useState } from "react";
+import { newColorTheme } from "../../constants/Colors";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { Pressable } from "native-base";
+import { useNavigation } from "@react-navigation/native";
+import { Fonts, Images } from "../../constants";
+import { useForm, Controller } from "react-hook-form";
+import TextFieldComponent from "../../components/TextFieldComponent";
+import { useTranslation } from "react-i18next";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import CountryCodePicker from "../../components/CountryCodePicker";
+import { useAppDispatch } from "../../hooks/hooks";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const navigation: any = useNavigation();
   const [isEmailSelected, setIsEmailSelected] = useState(true);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [countryCode, setCountryCode] = useState('+92');
-  const dispatch: any = useDispatch();
-
+  const dispatch = useAppDispatch();
+  const [showCountryCodePicker, setShowCountryCodePicker] = useState(false);
+  const [countryCode, setCountryCode] = useState("+92");
+  
   const {
     control,
     handleSubmit,
@@ -86,27 +91,15 @@ const ForgotPassword = () => {
 
   return (
     <View style={styles.container}>
-      {/* country */}
-      <Modal visible={showDropdown} transparent={true} animationType="slide">
-        <CountryPicker
-          lang={'en'}
-          show={showDropdown}
-          // when picker button press you will get the country object with dial code
-          pickerButtonOnPress={(item: any) => {
-            setCountryCode(item.dial_code);
-            setShowDropdown(false);
-          }}
-          style={{
-            // Styles for whole modal [View]
-            modal: {
-              maxHeight: '75%',
-            },
-          }}
-          onBackdropPress={() => {
-            setShowDropdown(false);
-          }}
-        />
-      </Modal>
+      <CountryCodePicker
+        visible={showCountryCodePicker}
+        onDismiss={() => setShowCountryCodePicker(false)}
+        onPicked={(item) => {
+          setCountryCode(item.dial_code);
+          setShowCountryCodePicker(false);
+        }}
+      />
+
       <View
         style={{
           flexDirection: "row",
@@ -230,26 +223,24 @@ const ForgotPassword = () => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  placeholder={'3XZYYYYYYY'}
+                  placeholder={t("phone_number")}
                   value={value}
-                  // ref={phoneRef}
                   onBlur={onBlur}
                   onChange={onChange}
-                  keyboardType={'number-pad'}
+                  keyboardType={"number-pad"}
                   InputLeftElement={
                     <Pressable
-                      onPress={() => setShowDropdown(true)}
-                      flexDirection={'row'}
-                      alignItems={'center'}
-                      justifyContent={'center'}
-                      ml="6">
-                      <Text
-                        fontSize={'sm'}
-                        fontFamily={Fonts.POPPINS_REGULAR}>
+                      onPress={() => setShowCountryCodePicker(true)}
+                      flexDirection={"row"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      ml="6"
+                    >
+                      <Text fontSize={"sm"} fontFamily={Fonts.POPPINS_REGULAR}>
                         {countryCode}
                       </Text>
                       <Icon
-                        as={<Ionicons name={'caret-down'} />}
+                        as={<Ionicons name={"caret-down"} />}
                         size={5}
                         ml="2"
                         color="BLACK_COLOR"
@@ -257,12 +248,11 @@ const ForgotPassword = () => {
                       <View
                         style={{
                           borderWidth: 0.5,
-                          borderColor: 'BORDER_COLOR',
+                          borderColor: "BORDER_COLOR",
                           borderRadius: 5,
                           height: 5,
-                          marginLeft: 5
+                          marginLeft: 5,
                         }}
-
                       />
                     </Pressable>
                   }
@@ -270,18 +260,21 @@ const ForgotPassword = () => {
               )}
               name="phoneNumber"
               rules={{
-                required: 'PhoneNumber is required',
-                minLength: 10,
-                maxLength: 10,
+                required: t("phone_is_required"),
+                maxLength: {
+                  value: 10,
+                  message: t("phone_is_invalid"),
+                },
               }}
               defaultValue=""
             />
             {errors.phoneNumber && (
               <Text
-                color={'ERROR'}
+                color={"ERROR"}
                 marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}>
-                Invalid Phone Number length
+                fontFamily={Fonts.POPPINS_MEDIUM}
+              >
+                {errors.phoneNumber.message}
               </Text>
             )}
           </>
@@ -331,17 +324,17 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(30),
   },
   Togglecontainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     marginTop: verticalScale(15),
   },
   selectedText: {
-    backgroundColor: '#02A7FD',
-    color: '#fff',
+    backgroundColor: "#02A7FD",
+    color: "#fff",
   },
   unSelectedText: {
-    backgroundColor: '#F6F6F6',
-    color: '#5A5A5C',
+    backgroundColor: "#F6F6F6",
+    color: "#5A5A5C",
   },
   text: {
     fontFamily: Fonts.POPPINS_REGULAR,

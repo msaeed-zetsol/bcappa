@@ -39,6 +39,12 @@ import {
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import LanguageToggle from "../../components/LanguageToggle";
+import ForceRestartModal from "../../components/ForceRestartModal";
+import i18next from "i18next";
+import {
+  findLanguageByCode,
+  forceUpdateLanguage,
+} from "../../localization/config";
 
 const HomeScreen = () => {
   const route: any = useRoute();
@@ -58,6 +64,8 @@ const HomeScreen = () => {
   const [activeLoad, setActiveLoad] = useState(false);
   const AvatarName = getFirstAndLastCharsUppercase(userInfo?.fullName || "");
   const { t } = useTranslation();
+  const [languageCode, setLanguageCode] = useState(i18next.language);
+  const [showRestartModal, setShowRestartModal] = useState(false);
 
   const handleCallback = (payload: any) => {
     setButtonPressed(true);
@@ -148,6 +156,15 @@ const HomeScreen = () => {
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
         animated={true}
       />
+
+      <ForceRestartModal
+        visible={showRestartModal}
+        onDismiss={() => {
+          setShowRestartModal(false);
+        }}
+        onRestart={() => forceUpdateLanguage(findLanguageByCode(languageCode))}
+      />
+
       <View
         flexDirection={"row"}
         alignItems={"center"}
@@ -201,7 +218,14 @@ const HomeScreen = () => {
             </View>
           </View>
         </View>
-        <LanguageToggle />
+        <LanguageToggle
+          onToggle={(code) => {
+            if (i18next.language !== code) {
+              setLanguageCode(code);
+              setShowRestartModal(true);
+            }
+          }}
+        />
       </View>
       {load && (
         <HStack

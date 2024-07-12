@@ -8,19 +8,26 @@ import {
 import { Fonts } from "../constants";
 import { useEffect, useState } from "react";
 import i18next from "i18next";
-import { forceUpdateLanguage } from "../localization/config";
+import {
+  findLanguageByCode,
+  forceUpdateLanguage,
+  languages,
+} from "../localization/config";
 
-const LanguageToggle = (style?: StyleProp<ViewStyle>) => {
-  const [language, setLanguage] = useState(i18next.language);
+type LanguageToggleProps = {
+  onToggle: (code: string) => void;
+  style?: StyleProp<ViewStyle>;
+};
 
-  useEffect(() => forceUpdateLanguage(language), [language]);
+const LanguageToggle = ({ onToggle: onClick, style }: LanguageToggleProps) => {
+  const selectedLanguage = i18next.language;
 
   return (
     <View style={[style, styles.container]}>
       <ToggleView
         text="Eng"
-        isSelected={language === "en"}
-        onPress={() => setLanguage("en")}
+        isSelected={selectedLanguage === "en"}
+        onPress={() => onClick("en")}
         style={{
           borderTopStartRadius: 5,
           borderBottomStartRadius: 5,
@@ -28,8 +35,8 @@ const LanguageToggle = (style?: StyleProp<ViewStyle>) => {
       />
       <ToggleView
         text="اردو"
-        isSelected={language === "ur"}
-        onPress={() => setLanguage("ur")}
+        isSelected={selectedLanguage === "ur"}
+        onPress={() => onClick("ur")}
         style={{
           borderTopEndRadius: 5,
           borderBottomEndRadius: 5,

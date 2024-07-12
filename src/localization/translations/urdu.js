@@ -1,4 +1,19 @@
 const auth = {
+  and: "اور",
+  it_only_takes_a_minute_create_account:
+    "آپ کا اکاؤنٹ بنانے میں صرف ایک منٹ لگتا ہے",
+  already_registered: "پہلے سے رجسٹرڈ ہیں؟",
+  or_continue_with: "یا جاری رکھیں",
+  privacy_policy: "پرائیویسی پالیسی",
+  terms_of_service: "خدمات کی شرائط",
+  agree_to_appa: "میں بی سی اپا سے اتفاق کرتا ہوں",
+  gender_is_required: "جنس کی ضرورت ہے",
+  cnic_must_be_13_digits_long: "شناختی کارڈ نمبر 13 ہندسوں کا ہونا چاہیے",
+  cnic_no: "شناختی کارڈ نمبر",
+  last_name_is_required: "آخری نام ضروری ہے",
+  last_name: "آخری نام",
+  first_name: "پہلا نام",
+  first_name_is_required: "پہلا نام ضروری ہے",
   enter_email_id: "ای میل آئی ڈی درج کریں",
   enter_phone_number: "فون نمبر درج کریں",
   email_id: "ای میل کا پتہ",
@@ -241,7 +256,15 @@ const bottomNav = {
   profile: "پروفائل",
 };
 
+const forceRestartModal = {
+  app_needs_to_restart:
+    "تبدیلیاں لاگو کرنے کے لیے ایپ کو دوبارہ شروع کرنے کی ضرورت ہے۔ کیا آپ کو یقین ہے؟",
+  restart: "دوبارہ شروع کریں",
+  close: "بند کریں",
+};
+
 export default {
+  ...forceRestartModal,
   ...bottomNav,
   ...onboarding,
   ...newBcForm,

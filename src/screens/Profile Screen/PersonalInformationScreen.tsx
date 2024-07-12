@@ -1,10 +1,9 @@
 import {
   StyleSheet,
   StatusBar,
-  Modal,
   ScrollView,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
 import {
   View,
   Text,
@@ -14,13 +13,12 @@ import {
   Icon,
   Button,
   Select,
-} from 'native-base';
-import React, {useState, useEffect} from 'react';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import Colors, {newColorTheme} from '../../constants/Colors';
-import {Fonts} from '../../constants';
+} from "native-base";
+import React, { useState, useEffect } from "react";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import Colors, { newColorTheme } from "../../constants/Colors";
+import { Fonts } from "../../constants";
 import { CommonActions, useNavigation } from "@react-navigation/native";
-import { CountryPicker } from "react-native-country-codes-picker";
 import TextFieldComponent from "../../components/TextFieldComponent";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Heading from "../../components/Heading";
@@ -31,8 +29,10 @@ import {
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import parsePhoneNumber, { CountryCode, PhoneNumber } from "libphonenumber-js";
+import parsePhoneNumber, { PhoneNumber } from "libphonenumber-js";
 import { useTranslation } from "react-i18next";
+import CountryCodePicker from "../../components/CountryCodePicker";
+import { apply } from "../../scope-functions";
 
 const initialDate = new Date();
 initialDate.setDate(initialDate.getDate() - 1); // Set initial date to one day before today
@@ -40,8 +40,8 @@ initialDate.setDate(initialDate.getDate() - 1); // Set initial date to one day b
 const PersonalInformationScreen = () => {
   const dispatch: any = useDispatch();
   const navigation = useNavigation();
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [countryCode, setCountryCode] = useState<CountryCode>();
+  const [showCountryCodePicker, setShowCountryCodePicker] = useState(false);
+  const [countryCode, setCountryCode] = useState("+92");
   const [date, setDate] = useState(initialDate);
   const [openDate, setOpenDate] = useState(false);
   const [showDate, setShowDate] = useState("");
@@ -79,9 +79,7 @@ const PersonalInformationScreen = () => {
 
         if (response?.phone) {
           phoneNumber = parsePhoneNumber(response?.phone);
-          setCountryCode(
-            ("+" + phoneNumber?.countryCallingCode) as CountryCode | undefined
-          );
+          setCountryCode("+" + phoneNumber?.countryCallingCode);
         }
 
         setPersonalData({
@@ -96,8 +94,13 @@ const PersonalInformationScreen = () => {
       }
     } catch (error) {
       console.error("Error fetching personal data:", error);
-      // Handle the error appropriately, e.g., show an error message to the user
     }
+  };
+
+  const getMaximumDate = (): Date => {
+    return apply(new Date(), (date) => {
+      date.setFullYear(date.getFullYear() - 18);
+    });
   };
 
   const saveDetailsHandler = async () => {
@@ -151,30 +154,14 @@ const PersonalInformationScreen = () => {
           }
         />
 
-        <Modal visible={showDropdown} transparent={true} animationType="slide">
-          <StatusBar
-            backgroundColor={"rgba(0, 0, 0, 0.63)"}
-            barStyle={"dark-content"}
-          />
-          <CountryPicker
-            lang={"en"}
-            show={showDropdown}
-            // when picker button press you will get the country object with dial code
-            pickerButtonOnPress={(item) => {
-              setCountryCode(item.dial_code as CountryCode | undefined);
-              setShowDropdown(false);
-            }}
-            style={{
-              // Styles for whole modal [View]
-              modal: {
-                maxHeight: "75%",
-              },
-            }}
-            onBackdropPress={() => {
-              setShowDropdown(false);
-            }}
-          />
-        </Modal>
+        <CountryCodePicker
+          visible={showCountryCodePicker}
+          onDismiss={() => setShowCountryCodePicker(false)}
+          onPicked={(item) => {
+            setCountryCode(item.dial_code);
+            setShowCountryCodePicker(false);
+          }}
+        />
 
         {openDate && (
           <DateTimePicker
@@ -182,8 +169,8 @@ const PersonalInformationScreen = () => {
             value={date}
             mode={"date"}
             display="default"
-            maximumDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-            onChange={(event: any, selectedDate?: Date) => {
+            maximumDate={getMaximumDate()}
+            onChange={(event, selectedDate?: Date) => {
               setOpenDate(false);
               if (selectedDate) {
                 setDate(selectedDate);
@@ -247,7 +234,7 @@ const PersonalInformationScreen = () => {
                 keyboardType={"number-pad"}
                 InputLeftElement={
                   <Pressable
-                    onPress={() => setShowDropdown(true)}
+                    onPress={() => setShowCountryCodePicker(true)}
                     flexDirection={"row"}
                     alignItems={"center"}
                     justifyContent={"center"}
@@ -276,7 +263,7 @@ const PersonalInformationScreen = () => {
             {/*  nic*/}
             <View mt={verticalScale(15)}>
               <TextFieldComponent
-                placeholder={"Cnic No"}
+                placeholder={t("cnic_no")}
                 value={personalData.cnic}
                 onChange={(txt) => {
                   setPersonalData({
@@ -342,7 +329,14 @@ const PersonalInformationScreen = () => {
                   fontSize={"sm"}
                   fontFamily={Fonts.POPPINS_REGULAR}
                   accessibilityLabel="Select Gender"
-                  dropdownIcon={<Icon as={""} name="caret-down" />}
+                  dropdownIcon={
+                    <Icon
+                      as={<Ionicons name={"caret-down"} />}
+                      size={5}
+                      mr={5}
+                      color="BLACK_COLOR"
+                    />
+                  }
                   placeholder={t("select_gender")}
                   onValueChange={(itemValue) =>
                     setPersonalData((prev: any) => ({

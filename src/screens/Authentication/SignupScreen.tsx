@@ -12,7 +12,6 @@ import { Fonts, Images } from "../../constants";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import { CountryPicker } from "react-native-country-codes-picker";
 import { useForm, Controller } from "react-hook-form";
-
 import {
   Text,
   Box,
@@ -35,31 +34,28 @@ import {
 import TextFieldComponent from "../../components/TextFieldComponent";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 import CheckBox from "@react-native-community/checkbox";
-import { useDispatch } from "react-redux";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { locationPermission } from "../../service/LocationService";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apply } from "../../scope-functions";
-
-const initialDate = new Date();
-initialDate.setDate(initialDate.getDate() - 1); // Set initial date to one day before today
+import { useTranslation } from "react-i18next";
+import globalStyles from "../../styles/global";
+import { useAppDispatch } from "../../hooks/hooks";
+import CountryCodePicker from "../../components/CountryCodePicker";
 
 const SignupScreen = () => {
-  const [show, setShow] = useState<boolean>(false);
+  const [show, setShow] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showCountryCodePicker, setShowCountryCodePicker] = useState(false);
   const [countryCode, setCountryCode] = useState("+92");
   const [date, setDate] = useState(new Date());
   const [openDate, setOpenDate] = useState(false);
   const [showDate, setShowDate] = useState("");
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [toggleCheckBox, setToggleCheckBox] = useState<any>(false);
-  const dispatch: any = useDispatch();
-  const fullNameRef: any = useRef();
-  const emailRef: any = useRef();
-  const phoneNumberRef: any = useRef();
-  const cnicRef: any = useRef();
+  const { t } = useTranslation();
 
   const {
     control,
@@ -68,12 +64,12 @@ const SignupScreen = () => {
     reset,
   } = useForm({
     defaultValues: {
-      fullName: '',
-      email: '',
-      phoneNumber: '',
-      cnicNumber: '',
-      password: '',
-      gender: '',
+      fullName: "",
+      email: "",
+      phoneNumber: "",
+      cnicNumber: "",
+      password: "",
+      gender: "",
     },
   });
 
@@ -155,6 +151,7 @@ const SignupScreen = () => {
       }
     }
   };
+
   const verifyCred = async (details: any) => {
     const data = {
       email: details.email,
@@ -179,16 +176,16 @@ const SignupScreen = () => {
     locationPermission();
     return () => {
       reset({
-        fullName: '',
-        email: '',
-        phoneNumber: '',
-        cnicNumber: '',
-        password: '',
+        fullName: "",
+        email: "",
+        phoneNumber: "",
+        cnicNumber: "",
+        password: "",
       });
     };
   }, []);
 
-  const getMazimumDate = (): Date => {
+  const getMaximumDate = (): Date => {
     return apply(new Date(), (date) => {
       date.setFullYear(date.getFullYear() - 18);
     });
@@ -201,27 +198,14 @@ const SignupScreen = () => {
         barStyle={"dark-content"}
       />
 
-      {/* country */}
-      <Modal visible={showDropdown} transparent={true} animationType="slide">
-        <CountryPicker
-          lang={"en"}
-          show={showDropdown}
-          // when picker button press you will get the country object with dial code
-          pickerButtonOnPress={(item: any) => {
-            setCountryCode(item.dial_code);
-            setShowDropdown(false);
-          }}
-          style={{
-            // Styles for whole modal [View]
-            modal: {
-              maxHeight: "75%",
-            },
-          }}
-          onBackdropPress={() => {
-            setShowDropdown(false);
-          }}
-        />
-      </Modal>
+      <CountryCodePicker
+        visible={showCountryCodePicker}
+        onDismiss={() => setShowCountryCodePicker(false)}
+        onPicked={(item) => {
+          setCountryCode(item.dial_code);
+          setShowCountryCodePicker(false);
+        }}
+      />
 
       {openDate && (
         <DateTimePicker
@@ -229,7 +213,7 @@ const SignupScreen = () => {
           value={date}
           mode={"date"}
           display="default"
-          maximumDate={getMazimumDate()}
+          maximumDate={getMaximumDate()}
           onChange={(event: any, selectedDate?: Date) => {
             setOpenDate(false);
             if (selectedDate) {
@@ -246,7 +230,6 @@ const SignupScreen = () => {
         />
       )}
 
-      {/*  */}
       <View
         style={{
           flexDirection: "row",
@@ -272,48 +255,42 @@ const SignupScreen = () => {
           ml="5"
           fontFamily={Fonts.POPPINS_SEMI_BOLD}
         >
-          Sign Up
+          {t("sign_up")}
         </Text>
       </View>
       <Text
         color="GREY"
-        fontSize='md'
+        fontSize="md"
         letterSpacing="0.32"
         mt={verticalScale(10)}
         fontFamily={Fonts.POPPINS_MEDIUM}
       >
-        It only takes a minute to create your account
+        {t("it_only_takes_a_minute_create_account")}
       </Text>
+      
       <ScrollView showsVerticalScrollIndicator={false}>
         <Box mt={verticalScale(20)}>
-          {/* email */}
           <FormControl mt={verticalScale(5)}>
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  placeholder={'Full Name'}
+                  placeholder={t("full_name")}
                   onBlur={onBlur}
                   onChange={onChange}
-                  keyboardType={'ascii-capable'}
-                  ref={fullNameRef}
-                  onSubmitEditing={() => emailRef.current.focus()}
+                  keyboardType={"ascii-capable"}
                   value={value}
                 />
               )}
               name="fullName"
               rules={{
-                required: 'Full Name is required',
+                required: t("full_name_is_required"),
               }}
               defaultValue=""
             />
             {errors.fullName && (
-              <Text
-                color={"ERROR"}
-                marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}
-              >
-                FullName is required
+              <Text style={globalStyles.errorText}>
+                {t("full_name_is_required")}
               </Text>
             )}
             <View mt={verticalScale(15)}>
@@ -321,31 +298,25 @@ const SignupScreen = () => {
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextFieldComponent
-                    placeholder={"Email address"}
+                    placeholder={t("email_id")}
+                    value={value}
                     onBlur={onBlur}
                     onChange={onChange}
-                    value={value}
                     keyboardType={"email-address"}
-                    ref={emailRef}
-                    onSubmitEditing={() => cnicRef.current.focus()}
                   />
                 )}
                 name="email"
                 rules={{
-                  required: "Email is required",
+                  required: t("email_is_required"),
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
+                    message: t("email_is_invalid"),
                   },
                 }}
                 defaultValue=""
               />
               {errors.email && (
-                <Text
-                  color={"ERROR"}
-                  marginTop={verticalScale(5)}
-                  fontFamily={Fonts.POPPINS_MEDIUM}
-                >
+                <Text style={globalStyles.errorText}>
                   {errors.email.message}
                 </Text>
               )}
@@ -356,16 +327,14 @@ const SignupScreen = () => {
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextFieldComponent
-                    placeholder={"3XZYYYYYYY"}
-                    ref={phoneNumberRef}
-                    onSubmitEditing={() => phoneNumberRef.current.focus()}
+                    placeholder={t("phone_number")}
                     onBlur={onBlur}
                     onChange={onChange}
                     value={value}
                     keyboardType={"number-pad"}
                     InputLeftElement={
                       <Pressable
-                        onPress={() => setShowDropdown(true)}
+                        onPress={() => setShowCountryCodePicker(true)}
                         flexDirection={"row"}
                         alignItems={"center"}
                         justifyContent={"center"}
@@ -395,19 +364,13 @@ const SignupScreen = () => {
                 )}
                 name="phoneNumber"
                 rules={{
-                  required: "PhoneNumber is required",
-                  // minLength: 7,
-                  // maxLength: 15,
+                  required: t("phone_is_required"),
                 }}
                 defaultValue=""
               />
               {errors.phoneNumber && (
-                <Text
-                  color={"ERROR"}
-                  marginTop={verticalScale(5)}
-                  fontFamily={Fonts.POPPINS_MEDIUM}
-                >
-                  Invalid Phone Number length
+                <Text style={globalStyles.errorText}>
+                  {t("phone_is_required")}
                 </Text>
               )}
             </View>
@@ -418,30 +381,30 @@ const SignupScreen = () => {
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextFieldComponent
-                    placeholder={"Cnic No"}
+                    placeholder={t("cnic_no")}
+                    value={value}
                     onBlur={onBlur}
                     onChange={onChange}
-                    value={value}
-                    ref={cnicRef as any}
-                    onSubmitEditing={() => cnicRef.current.focus()}
                     keyboardType={"number-pad"}
                   />
                 )}
                 name="cnicNumber"
                 rules={{
-                  required: "Cnic is required",
-                  minLength: 13,
-                  maxLength: 13,
+                  required: t("cnic_is_required"),
+                  minLength: {
+                    value: 13,
+                    message: t("cnic_must_be_13_digits_long"),
+                  },
+                  maxLength: {
+                    value: 13,
+                    message: t("cnic_must_be_13_digits_long"),
+                  },
                 }}
                 defaultValue=""
               />
               {errors.cnicNumber && (
-                <Text
-                  color={"ERROR"}
-                  marginTop={verticalScale(5)}
-                  fontFamily={Fonts.POPPINS_MEDIUM}
-                >
-                  Cnic must be 13 numbers long
+                <Text style={globalStyles.errorText}>
+                  {errors.cnicNumber.message}
                 </Text>
               )}
             </View>
@@ -451,6 +414,7 @@ const SignupScreen = () => {
                   control={control}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Select
+                      style={{ marginStart: 8 }}
                       padding={3}
                       selectedValue={value}
                       borderRadius={16}
@@ -459,30 +423,28 @@ const SignupScreen = () => {
                       fontSize={"sm"}
                       fontFamily={Fonts.POPPINS_REGULAR}
                       accessibilityLabel="Select Gender"
-                      dropdownIcon={<Icon
-                        as={<Ionicons name={"caret-down"} />}
-                        size={5}
-                        mr={5}
-                        color="BLACK_COLOR"
-                      />}
+                      dropdownIcon={
+                        <Icon
+                          as={<Ionicons name={"caret-down"} />}
+                          size={5}
+                          mr={5}
+                          color="BLACK_COLOR"
+                        />
+                      }
                       placeholder="Select Gender"
                       onValueChange={(itemValue) => onChange(itemValue)}
                     >
-                      <Select.Item label="Male" value="male" />
-                      <Select.Item label="Female" value="female" />
-                      <Select.Item label="Other" value="other" />
+                      <Select.Item label={t("male")} value="male" />
+                      <Select.Item label={t("female")} value="female" />
+                      <Select.Item label={t("other")} value="other" />
                     </Select>
                   )}
                   name="gender"
-                  rules={{ required: "Gender is required" }} // Add required validation rule
+                  rules={{ required: t("gender_is_required") }}
                 />
               </FormControl>
               {errors.gender && (
-                <Text
-                  color={"ERROR"}
-                  marginTop={verticalScale(5)}
-                  fontFamily={Fonts.POPPINS_MEDIUM}
-                >
+                <Text style={globalStyles.errorText}>
                   {errors.gender.message}
                 </Text>
               )}
@@ -493,11 +455,9 @@ const SignupScreen = () => {
               style={{ marginTop: verticalScale(15) }}
             >
               <TextFieldComponent
-                placeholder={"Date of Birth"}
+                placeholder={t("date_of_birth")}
                 value={showDate}
                 readOnly={true}
-                // onBlur={onBlur}
-                // onChange={onChange}
                 InputRightElement={
                   <Pressable onPress={() => setOpenDate(true)}>
                     <Icon
@@ -515,7 +475,7 @@ const SignupScreen = () => {
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextFieldComponent
-                    placeholder={"Password"}
+                    placeholder={t("password")}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
@@ -538,18 +498,21 @@ const SignupScreen = () => {
                 )}
                 name="password"
                 rules={{
-                  required: "Password is required",
-                  minLength: 8,
+                  required: t("password_is_required"),
+                  minLength: {
+                    value: 8,
+                    message: t("password_length_must_be_greater_than_8"),
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9]+$/,
+                    message: t("password_alpha_numeric_only"),
+                  },
                 }}
                 defaultValue=""
               />
               {errors.password && (
-                <Text
-                  color={"ERROR"}
-                  marginTop={verticalScale(5)}
-                  fontFamily={Fonts.POPPINS_MEDIUM}
-                >
-                  Password must be greater than 8
+                <Text style={globalStyles.errorText}>
+                  {errors.password.message}
                 </Text>
               )}
             </View>
@@ -569,7 +532,7 @@ const SignupScreen = () => {
             alignItems={"center"}
             ml={1}
           >
-            <Text>I agree the BC Appa</Text>
+            <Text style={{ marginEnd: 1 }}>{t("agree_to_appa")}</Text>
             <TouchableOpacity
               onPress={() => {
                 navigation.dispatch(
@@ -579,9 +542,11 @@ const SignupScreen = () => {
                 );
               }}
             >
-              <Text color={"PRIMARY_COLOR"}> Terms of Services </Text>
+              <Text color={"PRIMARY_COLOR"} style={{ marginStart: 1 }}>
+                {t("terms_of_service")}
+              </Text>
             </TouchableOpacity>
-            <Text>and</Text>
+            <Text> {t("and")} </Text>
             <TouchableOpacity
               onPress={() => {
                 navigation.dispatch(
@@ -591,7 +556,9 @@ const SignupScreen = () => {
                 );
               }}
             >
-              <Text color={"PRIMARY_COLOR"}> Privacy Policy</Text>
+              <Text color={"PRIMARY_COLOR"} style={{ marginStart: 1 }}>
+                {t("privacy_policy")}{" "}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -601,7 +568,6 @@ const SignupScreen = () => {
           variant="solid"
           _text={{
             color: "WHITE_COLOR",
-
             fontFamily: Fonts.POPPINS_SEMI_BOLD,
           }}
           _loading={{
@@ -625,7 +591,7 @@ const SignupScreen = () => {
           isPressed={isLoading}
           onPress={handleSubmit(signupHandler)}
         >
-          Sign Up
+          {t("sign_up")}
         </Button>
         <View width={"100%"} justifyContent={"center"} mt={verticalScale(25)}>
           <View borderWidth={0.5} borderColor={"BORDER_COLOR"} />
@@ -639,7 +605,7 @@ const SignupScreen = () => {
               px="3"
               fontFamily={Fonts.POPPINS_REGULAR}
             >
-              Or Continue with
+              {t("or_continue_with")}
             </Text>
           </View>
         </View>
@@ -665,7 +631,7 @@ const SignupScreen = () => {
               textAlign={"center"}
               fontFamily={Fonts.POPPINS_MEDIUM}
             >
-              Google
+              {t("google")}
             </Text>
           </Pressable>
           <Pressable
@@ -680,7 +646,7 @@ const SignupScreen = () => {
               fontSize={verticalScale(16)}
               fontFamily={Fonts.POPPINS_MEDIUM}
             >
-              Facebook
+              {t("facebook")}
             </Text>
           </Pressable>
         </View>
@@ -696,7 +662,7 @@ const SignupScreen = () => {
             letterSpacing={0.3}
             fontFamily={Fonts.POPPINS_MEDIUM}
           >
-            Already Registered?
+            {t("already_registered")}
           </Text>
           <TouchableOpacity
             onPress={() => {
@@ -709,7 +675,7 @@ const SignupScreen = () => {
               fontFamily={Fonts.POPPINS_MEDIUM}
               ml={1}
             >
-              Sign In
+              {t("sign_in")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -717,8 +683,6 @@ const SignupScreen = () => {
     </View>
   );
 };
-
-export default SignupScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -738,3 +702,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+export default SignupScreen;

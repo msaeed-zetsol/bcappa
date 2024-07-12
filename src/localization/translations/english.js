@@ -1,4 +1,19 @@
 const auth = {
+  and: "and",
+  it_only_takes_a_minute_create_account:
+    "It only takes a minute to create your account",
+  already_registered: "Already Registered?",
+  or_continue_with: "Or Continue with",
+  privacy_policy: "Privacy Policy",
+  terms_of_service: "Terms of Services",
+  agree_to_appa: "I agree the BC Appa",
+  gender_is_required: "Gender is required",
+  cnic_must_be_13_digits_long: "Cnic must be 13 numbers long",
+  cnic_no: "Cnic No",
+  last_name_is_required: "last Name is required",
+  last_name: "last Name",
+  first_name: "First Name",
+  first_name_is_required: "First Name is required",
   enter_email_id: "Enter Email ID",
   enter_phone_number: "Enter Phone Number",
   email_id: "Email ID",
@@ -18,7 +33,7 @@ const auth = {
   password_alpha_numeric_only: "Password must contain only letters and numbers",
   confirm_password: "Confirm Password",
   password_length_must_be_greater_than_8:
-    "Password length must be greater than 8",
+    "Password length musFacebook be greater than 8",
   forgot_password_question: "Forgot Password?",
   forgot_password: "Forgot Password",
   or: "OR",
@@ -240,7 +255,14 @@ const bottomNav = {
   profile: "Profile",
 };
 
+const forceRestartModal = {
+  app_needs_to_restart: "App needs to restart to apply changes.\nAre you sure?",
+  restart: "Restart",
+  close: "Close",
+};
+
 export default {
+  ...forceRestartModal,
   ...bottomNav,
   ...onboarding,
   ...newBcForm,
