@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {View, Text} from 'native-base';
-import {StatusBar, TouchableOpacity, StyleSheet} from 'react-native';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {newColorTheme} from '../../constants/Colors';
-import Heading from '../../components/Heading';
-import {useNavigation} from '@react-navigation/native';
-import {Images, Fonts} from '../../constants';
+import React, { useState } from "react";
+import { View, Text } from "native-base";
+import { StatusBar, TouchableOpacity, StyleSheet } from "react-native";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { newColorTheme } from "../../constants/Colors";
+import Heading from "../../components/Heading";
+import { useNavigation } from "@react-navigation/native";
+import { Images, Fonts } from "../../constants";
 import i18next, { forceUpdateLanguage } from "../../localization/config";
 import { t } from "i18next";
 
@@ -15,7 +15,6 @@ const LanguageScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>{i18next.language}</Text>
       <StatusBar
         barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}

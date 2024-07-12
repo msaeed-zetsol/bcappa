@@ -29,3 +29,6 @@ export const newColorTheme = {
 };
 
 export const deepSkyBlue = "#02A7FD";
+export const smoky = "#5A5A5C";
+export const blackPearl = "#06202E";
+export const freeSpeechRed = "#D20707";

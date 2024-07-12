@@ -6,8 +6,8 @@ import {
   Alert,
   Platform,
   ScrollView,
-} from 'react-native';
-import React, { useState, useEffect } from "react";
+} from "react-native";
+import React, { useState, useEffect, memo, useMemo } from "react";
 import {
   Text,
   View,
@@ -20,55 +20,48 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import Colors, { newColorTheme } from "../../constants/Colors";
-import {
-  CommonActions,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import { Fonts, Images } from "../../constants";
 import ToggleSwitch from "toggle-switch-react-native";
 import Heading from "../../components/Heading";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
-import { BcSelectionType, BcStatus, BcType } from "../../lookups/Enums";
-import { useDispatch, useSelector } from "react-redux";
+import { BcSelectionType, BcType } from "../../lookups/Enums";
 import TextFieldComponent from "../../components/TextFieldComponent";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { setMembers } from "../../redux/members/membersSlice";
 import { errors } from "../../redux/user/userSlice";
 import { useTranslation } from "react-i18next";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import globalStyles from "../../styles/global";
 
 const NewBc = () => {
-  const navigation = useNavigation();
-  const dispatch: any = useDispatch();
-  const members = useSelector((state: any) => state.members);
+  const numberformatter = useMemo(() => new Intl.NumberFormat(), []);
   const [disabled, setIsDisabled] = useState(false);
   const [balloting, setBalloting] = useState(false);
   const [maxUsers, setMaxUsers] = useState("");
   const [amountPerMonth, setAmountPerMonth] = useState("");
-  const [bcTotal, setBcTotal] = useState(0);
+  const [bcTotal, setBcTotal] = useState("0");
+  const [date, setDate] = useState(new Date());
+  const [openDate, setOpenDate] = useState(false);
+  const [showDate, setShowDate] = useState("");
+  const members = useAppSelector((state) => state.members);
+  const navigation = useNavigation();
   const { t } = useTranslation();
-
-  let currentDate = new Date();
-  let nextDay = new Date(currentDate);
-  nextDay.setDate(currentDate.getDate() + 1);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     calculateTotal();
   }, [maxUsers, amountPerMonth]);
 
   const calculateTotal = () => {
-    const total = +maxUsers * +amountPerMonth;
-    setBcTotal(total);
+    setBcTotal(numberformatter.format(+maxUsers * +amountPerMonth));
   };
 
-  const [date, setDate] = useState<any>(new Date());
-  const [openDate, setOpenDate] = useState(false);
-  const [showDate, setShowDate] = useState("");
   const {
-    control: newBcControl,
-    handleSubmit: handleNewBcSubmit,
-    formState: { errors: newBcError },
+    control,
+    handleSubmit,
+    formState: { errors: formErrors },
   } = useForm({
     defaultValues: {
       title: "",
@@ -158,7 +151,7 @@ const NewBc = () => {
       <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false}>
         <FormControl w="100%">
           <Controller
-            control={newBcControl}
+            control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <View>
                 <Input
@@ -189,18 +182,12 @@ const NewBc = () => {
             }}
             defaultValue=""
           />
-          {newBcError.title && (
-            <Text
-              color={"ERROR"}
-              marginTop={verticalScale(5)}
-              fontFamily={Fonts.POPPINS_MEDIUM}
-            >
-              {t("title_is_required")}
-            </Text>
+          {formErrors.title && (
+            <Text style={globalStyles.errorText}>{t("title_is_required")}</Text>
           )}
           <View mt={verticalScale(15)}>
             <Controller
-              control={newBcControl}
+              control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <View>
                   <Input
@@ -233,19 +220,15 @@ const NewBc = () => {
               }}
               defaultValue=""
             />
-            {newBcError.totalUsers && (
-              <Text
-                color={"ERROR"}
-                marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}
-              >
+            {formErrors.totalUsers && (
+              <Text style={globalStyles.errorText}>
                 {t("max_users_required")}
               </Text>
             )}
           </View>
           <View mt={verticalScale(15)}>
             <Controller
-              control={newBcControl}
+              control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <View>
                   <Input
@@ -278,12 +261,8 @@ const NewBc = () => {
               }}
               defaultValue=""
             />
-            {newBcError.amountPerMonth && (
-              <Text
-                color={"ERROR"}
-                marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}
-              >
+            {formErrors.amountPerMonth && (
+              <Text style={globalStyles.errorText}>
                 {t("amount_per_month_required")}
               </Text>
             )}
@@ -438,7 +417,7 @@ const NewBc = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={handleNewBcSubmit(createBc)}
+            onPress={handleSubmit(createBc)}
             disabled={disabled}
             style={[
               styles.btnContainer,
@@ -463,23 +442,24 @@ const NewBc = () => {
     </View>
   );
 };
+
 export default NewBc;
 
 const styles = StyleSheet.create({
   btnContainer: {
-    backgroundColor: '#F0FAFF',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#F0FAFF",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     padding: verticalScale(15),
     borderRadius: 15,
     marginVertical: verticalScale(10),
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#eee',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#eee",
 
     ...Platform.select({
       ios: {
@@ -490,7 +470,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     paddingVertical: 20,
-    color: '#999999',
+    color: "#999999",
   },
   list: {
     flex: 1,
@@ -499,26 +479,22 @@ const styles = StyleSheet.create({
     marginHorizontal: horizontalScale(10),
   },
   row: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 10,
     marginHorizontal: horizontalScale(2),
-    // height: 100,
     flex: 1,
     marginVertical: verticalScale(10),
 
     borderRadius: 10,
     ...Platform.select({
       ios: {
-        // width: window.width - 30 * 2,
-        shadowColor: 'rgba(0,0,0,0.2)',
+        shadowColor: "rgba(0,0,0,0.2)",
         shadowOpacity: 1,
-        shadowOffset: {height: 2, width: 2},
+        shadowOffset: { height: 2, width: 2 },
         shadowRadius: 2,
       },
       android: {
-        // width: window.width - 30 * 2,
         elevation: 12,
-        // marginHorizontal: 30,
       },
     }),
   },
@@ -530,12 +506,12 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 22,
-    color: '#222222',
+    color: "#222222",
   },
   memberContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   name: {
     fontFamily: Fonts.POPPINS_SEMI_BOLD,

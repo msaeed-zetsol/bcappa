@@ -34,10 +34,7 @@ import { apimiddleWare } from "../../utilities/HelperFunctions";
 import { BcSelectionType, BcStatus, BcType } from "../../lookups/Enums";
 import { useDispatch, useSelector } from "react-redux";
 import TextFieldComponent from "../../components/TextFieldComponent";
-import {
-  setMembers,
-  updateMembersOrder,
-} from "../../redux/members/membersSlice";
+import { setMembers } from "../../redux/members/membersSlice";
 import { RootState } from "../../redux/store";
 import { removeMembers } from "../../redux/user/userSlice";
 import { useTranslation } from "react-i18next";
@@ -96,7 +93,7 @@ const UpdateBc = () => {
         };
       });
 
-      dispatch(updateMembersOrder(mem));
+      dispatch(setMembers(mem));
       setLoad(false);
       const d = response[0].commenceDate.split("T")[0];
       setShowDate(d);
