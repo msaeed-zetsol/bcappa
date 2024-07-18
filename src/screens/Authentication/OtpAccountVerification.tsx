@@ -29,7 +29,7 @@ const OtpAccountVerification = () => {
   const fourthInput: any = useRef();
   const fifthInput: any = useRef();
   const [shows, setShows] = useState(show);
-  const [timer, setTimer] = useState<any>(60);
+  const [timer, setTimer] = useState<any>(480);
   const [resendNow, setResendNow] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const [whatTosend, setWhatToSend] = useState("phoneNumber");
