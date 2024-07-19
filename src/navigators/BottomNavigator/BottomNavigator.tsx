@@ -8,7 +8,7 @@ import BottomNavIcon from "../../components/BottomNavIcon";
 import HomeScreen from "../../screens/HomeScreen/HomeScreen";
 import MyBcsScreen from "../../screens/My BC's Screen/MyBcsScreen";
 import ExploreScreen from "../../screens/Explore Screen/ExploreScreen";
-import NotificationScreen from "../../screens/Notification Screen/NotificationScreen";
+import NotificationScreen from "../../screens/notifications/NotificationScreen";
 import ProfileScreen from "../../screens/Profile Screen/ProfileScreen";
 
 const Tab = createBottomTabNavigator();

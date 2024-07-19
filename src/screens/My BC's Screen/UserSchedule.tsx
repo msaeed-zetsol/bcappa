@@ -26,7 +26,6 @@ const getCurrentAndPreviousMonthsPayments = (data: any) => {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth() + 1; // Month is zero-based
   const currentYear = currentDate.getFullYear();
-  const { t } = useTranslation();
 
   const filteredItems = data.filter((item: any) => {
     const itemDate = new Date(item.month);
@@ -168,7 +167,7 @@ const UserSchedule = () => {
         <Heading name={t("user_schedule")} onPress={navigation.goBack} />
       </View>
 
-      {member.payments.length > 0 && (
+      {member.payments?.length > 0 && (
         <FlatList
           data={payments}
           keyExtractor={(data, index) => index.toString()}

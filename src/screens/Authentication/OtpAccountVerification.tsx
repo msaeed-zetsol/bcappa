@@ -5,35 +5,43 @@ import {
   Keyboard,
   TouchableOpacity,
   I18nManager,
-} from 'react-native';
-import React, { useRef, useState, useEffect } from 'react';
-import { View, Pressable, Heading, Text, Button } from 'native-base';
-import { Colors, Images, Fonts } from '../../constants';
-import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { newColorTheme } from '../../constants/Colors';
-import { apimiddleWare } from '../../utilities/HelperFunctions';
-import { useDispatch } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from "react-native";
+import React, { useRef, useState, useEffect } from "react";
+import { View, Pressable, Heading, Text, Button } from "native-base";
+import { Colors, Images, Fonts } from "../../constants";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import {
+  CommonActions,
+  StackActions,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import { newColorTheme } from "../../constants/Colors";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
+import { useAppDispatch } from "../../hooks/hooks";
+import OTPBox, { OTP } from "../../components/OTPBox";
 
 const OtpAccountVerification = () => {
   const routes: any = useRoute();
   const { data, show, from, hide } = routes.params;
-  const [otp, setOtp] = useState({ 1: "", 2: "", 3: "", 4: "", 5: "" });
-  const navigation: any = useNavigation();
-  const dispatch: any = useDispatch();
-  const firstInput: any = useRef();
-  const secondInput: any = useRef();
-  const thirdInput: any = useRef();
-  const fourthInput: any = useRef();
-  const fifthInput: any = useRef();
+
+  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+
   const [shows, setShows] = useState(show);
-  const [timer, setTimer] = useState<any>(480);
+  const [timer, setTimer] = useState(60);
   const [resendNow, setResendNow] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const [whatTosend, setWhatToSend] = useState("phoneNumber");
   const { t } = useTranslation();
+
+  const firstInput = useRef<TextInput>(null);
+  const secondInput = useRef<TextInput>(null);
+  const thirdInput = useRef<TextInput>(null);
+  const fourthInput = useRef<TextInput>(null);
+  const fifthInput = useRef<TextInput>(null);
 
   //time format function
 
@@ -55,14 +63,16 @@ const OtpAccountVerification = () => {
   const LoginHandler = async (details: any) => {
     const getToken: any = await AsyncStorage.getItem("fcmToken");
     const parsedFcmToken: any = await JSON.parse(getToken);
+
     Keyboard.dismiss();
-    console.log(details);
     setIsLoading(true);
+
     const data = {
       email: details.email,
       password: details.password,
       fcmToken: parsedFcmToken,
     };
+
     try {
       const response = await apimiddleWare({
         url: "/auth/login",
@@ -71,18 +81,19 @@ const OtpAccountVerification = () => {
         reduxDispatch: dispatch,
         navigation: navigation,
       });
-      console.log(response);
+
       if (response) {
         const loginUserDataString = await JSON.stringify(response);
         await AsyncStorage.setItem("loginUserData", loginUserDataString);
-        // await requestUserPermission();
-        navigation.replace("BottomNavigator", {
-          screen: "HomeScreen",
-          params: {
-            screenName: "Signup",
-            show: true,
-          },
-        });
+        navigation.dispatch(
+          StackActions.replace("BottomNavigator", {
+            screen: "HomeScreen",
+            params: {
+              screenName: "Signup",
+              show: true,
+            },
+          })
+        );
       }
     } catch (e) {
       console.log(e);
@@ -94,20 +105,17 @@ const OtpAccountVerification = () => {
   const verifyOtp = async () => {
     setIsLoading(true);
     Keyboard.dismiss();
-    const concatenatedOtp = Object.values(otp).join("");
-    console.log({ whatTo: whatTosend });
+    const concatenatedOtp = Object.values(OTP).join("");
 
     const payloadData: any = {
       otpCode: concatenatedOtp,
-      phoneNumber: data.phone,
+      phone: data.phone,
     };
 
     if (whatTosend === "email") {
       payloadData.email = data.email;
-      delete payloadData.phoneNumber;
+      delete payloadData.phone;
     }
-
-    console.log({ payloadData });
 
     const response = await apimiddleWare({
       url: "/otp/verify",
@@ -116,8 +124,7 @@ const OtpAccountVerification = () => {
       reduxDispatch: dispatch,
       navigation,
     });
-    console.log({ apikbad: data });
-    console.log({ response });
+
     if (response) {
       const response = await apimiddleWare({
         url: "/auth/signup",
@@ -137,7 +144,7 @@ const OtpAccountVerification = () => {
   const verifyToGivenInfo = async () => {
     setIsLoading(true);
     Keyboard.dismiss();
-    const concatenatedOtp = Object.values(otp).join("");
+    const concatenatedOtp = Object.values(OTP).join("");
 
     if (data.email) {
       var payloadData: any = {
@@ -147,7 +154,7 @@ const OtpAccountVerification = () => {
     } else if (data.phone) {
       var payloadData: any = {
         otpCode: concatenatedOtp,
-        phoneNumber: data.phone,
+        phone: data.phone,
       };
     }
 
@@ -158,13 +165,17 @@ const OtpAccountVerification = () => {
       reduxDispatch: dispatch,
       navigation,
     });
+
     if (response) {
       console.log({ response });
       setIsLoading(false);
-      navigation.navigate("NewPassword", {
-        data,
-      });
+      navigation.dispatch(
+        CommonActions.navigate("NewPassword", {
+          data,
+        })
+      );
     }
+
     setIsLoading(false);
   };
 
@@ -174,18 +185,17 @@ const OtpAccountVerification = () => {
       url: "/otp",
       method: "post",
       data: {
-        phoneNumber: data.phone,
+        phone: data.phone,
       },
       reduxDispatch: dispatch,
       navigation,
     });
-    if (response) {
-      console.log({ response });
-    }
+
+    console.log(`Account Verification: ${JSON.stringify(response)}`);
+
   };
+
   const sendOtpViaEmail = async () => {
-    console.log({ data });
-    // setWhatToSend('email');
     const response = await apimiddleWare({
       url: "/otp",
       method: "post",
@@ -197,20 +207,19 @@ const OtpAccountVerification = () => {
     });
     if (response) {
       setWhatToSend("email");
-
-      console.log({ response });
     }
   };
+
   const sendOtpToGivenInfo = async () => {
-    console.log({ data });
     if (data.phone) {
       await sendOtp();
     } else if (data.email) {
       sendOtpViaEmail();
     }
   };
+
   useEffect(() => {
-    from === "forgot" ? sendOtpToGivenInfo() : sendOtp();
+    from === "Signup" && sendOtp();
   }, []);
 
   useEffect(() => {
@@ -226,12 +235,21 @@ const OtpAccountVerification = () => {
     return () => clearInterval(interval);
   }, [timer]);
 
+  const [OTP, setOTP] = useState<OTP>({
+    first: "",
+    second: "",
+    third: "",
+    fourth: "",
+    fifth: "",
+  });
+
   return (
     <View style={styles.container}>
       <StatusBar
         backgroundColor={newColorTheme.WHITE_COLOR}
         barStyle={"dark-content"}
       />
+
       <Pressable onPress={() => navigation.goBack()}>
         <Images.BackButton
           style={{
@@ -239,9 +257,11 @@ const OtpAccountVerification = () => {
           }}
         />
       </Pressable>
+
       <Heading mt={10} fontSize={"3xl"} fontFamily={Fonts.POPPINS_EXTRA_BOLD}>
         {t("account_verification")}
       </Heading>
+
       <Text
         fontSize={"sm"}
         mt={2}
@@ -252,68 +272,46 @@ const OtpAccountVerification = () => {
         {t("enter_4_digit_code_sent")}{" "}
         <Text color={"BLACK_COLOR"}>{data.phone || data.email}</Text>
       </Text>
-      <View style={styles.otpContainer}>
-        <View style={styles.otpBox}>
-          <TextInput
-            style={styles.otpText}
-            keyboardType="number-pad"
-            maxLength={1}
-            ref={firstInput}
-            onChangeText={(text) => {
-              setOtp({ ...otp, 1: text });
-              text ? secondInput.current.focus() : "";
-            }}
-          />
-        </View>
-        <View style={styles.otpBox}>
-          <TextInput
-            style={styles.otpText}
-            keyboardType="number-pad"
-            maxLength={1}
-            ref={secondInput}
-            onChangeText={(text) => {
-              setOtp({ ...otp, 2: text });
-              text ? thirdInput.current.focus() : firstInput.current.focus();
-            }}
-          />
-        </View>
-        <View style={styles.otpBox}>
-          <TextInput
-            style={styles.otpText}
-            keyboardType="number-pad"
-            maxLength={1}
-            ref={thirdInput}
-            onChangeText={(text) => {
-              setOtp({ ...otp, 3: text });
 
-              text ? fourthInput.current.focus() : secondInput.current.focus();
-            }}
-          />
-        </View>
-        <View style={styles.otpBox}>
-          <TextInput
-            style={styles.otpText}
-            keyboardType="number-pad"
-            maxLength={1}
-            ref={fourthInput}
-            onChangeText={(text) => {
-              setOtp({ ...otp, 4: text });
-              text ? fifthInput.current.focus() : thirdInput.current.focus();
-            }}
-          />
-        </View>
-        <View style={styles.otpBox}>
-          <TextInput
-            style={styles.otpText}
-            keyboardType="number-pad"
-            maxLength={1}
-            ref={fifthInput}
-            onChangeText={(text) => {
-              setOtp({ ...otp, 5: text });
-              text ? Keyboard.dismiss() : fourthInput.current.focus();
-            }}
-          />
-        </View>
+      <View style={styles.otpContainer}>
+        <OTPBox
+          otp={OTP}
+          onChange={(it) => setOTP(it)}
+          index="first"
+          next={secondInput}
+          ref={firstInput}
+        />
+        <OTPBox
+          otp={OTP}
+          onChange={(it) => setOTP(it)}
+          index="second"
+          previous={firstInput}
+          next={thirdInput}
+          ref={secondInput}
+        />
+        <OTPBox
+          otp={OTP}
+          onChange={(it) => setOTP(it)}
+          index="third"
+          previous={secondInput}
+          next={fourthInput}
+          ref={thirdInput}
+        />
+        <OTPBox
+          otp={OTP}
+          onChange={(it) => setOTP(it)}
+          index="fourth"
+          previous={thirdInput}
+          next={fifthInput}
+          ref={fourthInput}
+        />
+        <OTPBox
+          otp={OTP}
+          onChange={(it) => setOTP(it)}
+          index="fifth"
+          previous={fourthInput}
+          ref={fifthInput}
+        />
       </View>
       <View alignItems="center" mt={15}>
         {!resendNow ? (
@@ -422,8 +420,6 @@ const OtpAccountVerification = () => {
   );
 };
 
-export default OtpAccountVerification;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -435,33 +431,33 @@ const styles = StyleSheet.create({
   otpContainer: {
     marginHorizontal: horizontalScale(5),
     marginTop: verticalScale(35),
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    flexDirection: 'row',
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    flexDirection: "row",
   },
   otpBox: {
     borderColor: Colors.GREY,
     borderWidth: 1,
     borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: verticalScale(12),
   },
   otpText: {
     fontSize: 20,
-    textAlign: 'center',
+    textAlign: "center",
     paddingHorizontal: horizontalScale(4),
     paddingVertical: verticalScale(2),
     color: Colors.BLACK_COLOR,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   forgotButton: {
     height: verticalScale(6),
     borderRadius: 8,
     marginHorizontal: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginTop: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   resend: {
     backgroundColor: Colors.PRIMARY_COLOR,
@@ -470,3 +466,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
+
+export default OtpAccountVerification;

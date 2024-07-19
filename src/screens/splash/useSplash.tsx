@@ -50,7 +50,7 @@ const isSplashExpired = (response: SplashResponse): boolean =>
   new Date() > new Date(response.endDate);
 
 const useSplash = (): UseSplashHook => {
-  const [data, start, abort] = useAxios<SplashResponse>({
+  const [data, start] = useAxios<SplashResponse>({
     url: "/splash-screen",
     method: "get",
   });
@@ -80,19 +80,20 @@ const useSplash = (): UseSplashHook => {
   }, [data]);
 
   useEffect(() => {
+    let abortController: AbortController | null = null;
     findLocalSplash().then((local) => {
       if (local) {
         if (isSplashExpired(local)) {
-          start();
+          abortController = start();
         } else {
           setState({ splash: local, status: "found" });
         }
       } else {
-        start();
+        abortController = start();
       }
     });
 
-    return abort;
+    return () => abortController?.abort();
   }, []);
 
   return state;

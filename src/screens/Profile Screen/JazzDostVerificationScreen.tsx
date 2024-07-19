@@ -1,9 +1,9 @@
-import {StyleSheet, StatusBar, Modal, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
-import {View, Text, Pressable, Icon, Button} from 'native-base';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import Colors, {newColorTheme} from '../../constants/Colors';
-import Heading from '../../components/Heading';
+import { StyleSheet, StatusBar, Modal, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Pressable, Icon, Button } from "native-base";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import Colors, { newColorTheme } from "../../constants/Colors";
+import Heading from "../../components/Heading";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { Fonts, Images } from "../../constants";
 import TextFieldComponent from "../../components/TextFieldComponent";
@@ -50,18 +50,18 @@ const JazzDostVerificationScreen = () => {
           fontSize={verticalScale(15)}
           letterSpacing={0.5}
         >
-          {t("account_with")}{" "}
+          {t("account_with")}
+        </Text>
+        <Text
+          color={Colors.PRIMARY_COLOR}
+          fontFamily={Fonts.POPPINS_SEMI_BOLD}
+          ml={1}
+          fontSize={verticalScale(16)}
+          letterSpacing={0.5}
+        >
+          {t("bc_appa")}
         </Text>
       </View>
-      <Text
-        color={Colors.PRIMARY_COLOR}
-        fontFamily={Fonts.POPPINS_SEMI_BOLD}
-        ml={1}
-        fontSize={verticalScale(16)}
-        letterSpacing={0.5}
-      >
-        {t("bc_appa")}
-      </Text>
       <View mt={verticalScale(20)} />
       <TextFieldComponent
         placeholder={"Phone Number"}

@@ -122,6 +122,7 @@ const AddMembers = () => {
             _text={{
               color: "WHITE_COLOR",
               fontFamily: Fonts.POPPINS_SEMI_BOLD,
+              fontSize: verticalScale(16),
             }}
             _loading={{
               _text: {
@@ -138,7 +139,7 @@ const AddMembers = () => {
             disabled={+maxUsers === 0 || members.length === +maxUsers}
             style={{
               width: "100%",
-              borderRadius: 10,
+              borderRadius: 16,
               height: 66,
             }}
             backgroundColor={

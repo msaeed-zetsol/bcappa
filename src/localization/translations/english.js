@@ -33,7 +33,7 @@ const auth = {
   password_alpha_numeric_only: "Password must contain only letters and numbers",
   confirm_password: "Confirm Password",
   password_length_must_be_greater_than_8:
-    "Password length musFacebook be greater than 8",
+    "Password length must be greater than 8",
   forgot_password_question: "Forgot Password?",
   forgot_password: "Forgot Password",
   or: "OR",
@@ -52,7 +52,7 @@ const auth = {
   account_verification: "Account Verification",
   resend_code_in: "Resend Code in:",
   resend_now: "Resend Now",
-  trouble_receiving_otp: "Trouble receiving OTP! Contact",
+  trouble_receiving_otp: "Trouble receiving OTP? Contact",
   help_center: "Help Center",
   receive_otp_via: "or receive OTP via",
   verify: "Verify",
@@ -85,7 +85,7 @@ const newBcForm = {
   amount_per_month: "Amount/Month",
   amount_per_month_required: "Amount Per Month is required",
   starting_date: "Starting Date",
-  total_expected_amount: "Total expected amount per BC",
+  total_expected_bc_amount: "Total expected BC amount",
   bc_balloting: "BC Balloting",
   members: "Members",
   view_members: "View Members",
@@ -170,7 +170,7 @@ const userSchedules = {
 };
 
 const notificationScreen = {
-  notification: "Notification",
+  notification: "Notifications",
   notification_not_found: "Notifications Not Found",
 };
 

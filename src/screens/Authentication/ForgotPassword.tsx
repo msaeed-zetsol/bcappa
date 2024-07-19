@@ -1,9 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  I18nManager,
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity, I18nManager } from "react-native";
 import { Text, FormControl, Button, Icon } from "native-base";
 import React, { useState } from "react";
 import { newColorTheme } from "../../constants/Colors";
@@ -19,6 +14,21 @@ import CountryCodePicker from "../../components/CountryCodePicker";
 import { useAppDispatch } from "../../hooks/hooks";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 
+type EmailVerification = {
+  email: string;
+};
+
+type PhoneVerification = {
+  phone: string;
+};
+
+type UserVerification = EmailVerification | PhoneVerification;
+
+type ForgotPasswordForm = {
+  email: string;
+  phoneNumber: string;
+};
+
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
@@ -27,66 +37,72 @@ const ForgotPassword = () => {
   const dispatch = useAppDispatch();
   const [showCountryCodePicker, setShowCountryCodePicker] = useState(false);
   const [countryCode, setCountryCode] = useState("+92");
-  
+
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
+  } = useForm<ForgotPasswordForm>({
     defaultValues: {
       email: "",
       phoneNumber: "",
     },
   });
 
-  const forgotHandler = async (details: any) => {
-    console.log({ details });
-    const data: any = {};
-
-    if (isEmailSelected) {
-      // Handling email case
-      data.email = details.email;
-      const response = await apimiddleWare({
-        url: "/otp",
-        method: "post",
-        data: {
-          email: data.email,
-        },
-        reduxDispatch: dispatch,
-        navigation,
-      });
-      if (response) {
-        navigation.navigate("OtpAccountVerification", {
-          data: data,
-          show: true,
-          from: "forgot",
-          hide: true,
-        });
-        console.log({ response });
-      }
+  const handleSendOTP = async (details: ForgotPasswordForm) => {
+    setIsLoading(true);
+    const data = isEmailSelected
+      ? { email: details.email }
+      : { phone: countryCode + details.phoneNumber };
+    const exists = await doesUserExists(data);
+    if (exists) {
+      forgotHandler(details);
     } else {
-      // Handling phone number case
-      data.phone = countryCode + details.phoneNumber;
-      const response = await apimiddleWare({
-        url: "/otp",
-        method: "post",
-        data: {
-          phoneNumber: data.phone,
-        },
-        reduxDispatch: dispatch,
-        navigation,
-      });
-      if (response) {
-        navigation.navigate("OtpAccountVerification", {
-          data: data,
-          show: true,
-          from: "forgot",
-          hide: true,
-        });
-        console.log({ response });
-      }
+      setIsLoading(false);
     }
+  };
+
+  const doesUserExists = async (data: UserVerification): Promise<boolean> => {
+    const response = await apimiddleWare({
+      url: "/auth/check-user",
+      method: "post",
+      data: data,
+      reduxDispatch: dispatch,
+      navigation,
+    });
+
+    if (response && response.message === "Success") {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const forgotHandler = async (details: ForgotPasswordForm) => {
+    const data = isEmailSelected
+      ? { email: details.email }
+      : { phone: countryCode + details.phoneNumber };
+
+    const response = await apimiddleWare({
+      url: "/otp",
+      method: "post",
+      data,
+      reduxDispatch: dispatch,
+      navigation,
+    });
+
+    console.log(`Account Verification: ${JSON.stringify(response)}`);
+
+    if (response) {
+      navigation.navigate("OtpAccountVerification", {
+        data: data,
+        show: true,
+        from: "forgot",
+        hide: true,
+      });
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -306,7 +322,7 @@ const ForgotPassword = () => {
         p={"4"}
         borderRadius={16}
         isPressed={isLoading}
-        onPress={handleSubmit(forgotHandler)}
+        onPress={handleSubmit(handleSendOTP)}
       >
         {t("send_otp")}
       </Button>

@@ -3,17 +3,9 @@
  */
 
 // bc members
-enum BcMemberType {
-  ADMIN = "admin",
-  MEMBER = "member",
-}
+type BcMemberType = "admin" | "member";
 
-enum BcMemberStatus {
-  PENDING = "pending",
-  OPENED = "opened",
-  CURRENT = "current",
-  DEFAULTER = "defaulter",
-}
+type BcMemberStatus = "pending" | "opened" | "current" | "defaulter";
 
 type BcMember = {
   id: string;
@@ -23,16 +15,9 @@ type BcMember = {
 };
 
 // users
-enum UserType {
-  INTERNAL = "internal",
-  EXTERNAL = "external",
-}
+type UserType = "internal" | "external";
 
-enum Gender {
-  MALE = "male",
-  FEMALE = "female",
-  OTHER = "other",
-}
+type Gender = "male" | "female" | "other";
 
 type User = {
   id: string;
@@ -42,11 +27,11 @@ type User = {
   cnic: string;
   dob: string;
   password: string;
-  profileImg: string;
+  profileImg: string | null;
   monthlyAmount: number;
   fcmToken: string;
   sessionToken: string;
-  googleId: string;
+  googleId: string | null;
   userType: UserType;
   gender: Gender;
 };
@@ -60,21 +45,11 @@ type UserSetting = {
 };
 
 // bcs
-enum BcStatus {
-  PENDING = "pending",
-  ACTIVE = "active",
-  COMPLETE = "complete",
-}
+type BcStatus = "pending" | "active" | "complete";
 
-enum BcType {
-  PUBLIC = "public",
-  PRIVATE = "private",
-}
+type BcType = "public" | "private";
 
-enum BcSelectionType {
-  AUTO = "auto",
-  MANUAL = "manual",
-}
+type BcSelectionType = "auto" | "manual";
 
 type BC = {
   id: string;

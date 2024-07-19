@@ -322,9 +322,10 @@ const NewBc = () => {
             fontSize={"sm"}
             color={"GREY"}
           >
-            {t("total_expected_amount")}{" "}
+            {t("total_expected_bc_amount")}
+            {": "}
             <Text color={"PRIMARY_COLOR"} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-              {bcTotal}
+              Rs. {bcTotal}
             </Text>
           </Text>
         </FormControl>

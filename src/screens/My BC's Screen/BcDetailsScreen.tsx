@@ -40,6 +40,7 @@ const BcDetailsScreen = () => {
   const [bcTime, setBcTime] = useState<any>("");
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const numberFormatter = useMemo(() => new Intl.NumberFormat(), []);
 
   const [isJazzDostVerified, setIsJazzDostVerified] = useState<boolean | null>(
     null
@@ -61,6 +62,8 @@ const BcDetailsScreen = () => {
       navigation,
       reduxDispatch: dispatch,
     });
+
+    console.log(`Details: ${JSON.stringify(response)}`);
 
     if (response) {
       const currentDate: any = new Date();
@@ -129,17 +132,18 @@ const BcDetailsScreen = () => {
   };
 
   const Join = async () => {
-    if (userData?.settings?.isJazzDostVerified === false) {
-      setIsJazzDostVerified(false);
-    } else {
-      const response = await apimiddleWare({
-        url: `/bcs/join/${item}`,
-        method: "post",
-      });
-      if (response) {
-        navigation.dispatch(CommonActions.navigate("MyBcsScreen"));
-      }
+    const response = await apimiddleWare({
+      url: `/bcs/join/${item}`,
+      method: "post",
+    });
+    if (response) {
+      navigation.dispatch(CommonActions.navigate("MyBcsScreen"));
     }
+    // if (userData?.settings?.isJazzDostVerified === false) {
+    //   setIsJazzDostVerified(false);
+    // } else {
+
+    // }
   };
 
   useEffect(() => {
@@ -304,7 +308,7 @@ const BcDetailsScreen = () => {
                     fontFamily={Fonts.POPPINS_MEDIUM}
                     fontSize={"sm"}
                   >
-                    RS {bcData[0]?.amount}
+                    Rs. {numberFormatter.format(bcData[0]?.amount ?? 0)}
                   </Text>
                 </View>
               </View>
@@ -655,6 +659,10 @@ const BcDetailsScreen = () => {
       {/* {Modal to show that account is not jazz dost verified} */}
       {isJazzDostVerified === false && (
         <InfoModal
+          onClose={() => {
+            setButtonPressed(false);
+            setIsJazzDostVerified(null);
+          }}
           message="Please verify your account to join BC!"
           buttonText="OK"
           callback={handleCallback}

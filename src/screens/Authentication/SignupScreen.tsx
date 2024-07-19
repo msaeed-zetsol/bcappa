@@ -115,7 +115,7 @@ const SignupScreen = () => {
   const signupHandler = async (details: any) => {
     setIsLoading(true);
 
-    const getCred = await verifyCred(details);
+    const getCred = await verifyCredentials(details);
     setIsLoading(false);
 
     if (showDate && toggleCheckBox && getCred.message === "Success") {
@@ -154,7 +154,7 @@ const SignupScreen = () => {
     }
   };
 
-  const verifyCred = async (details: any) => {
+  const verifyCredentials = async (details: any) => {
     const data = {
       email: details.email,
       phone: countryCode + details.phoneNumber,
@@ -162,7 +162,7 @@ const SignupScreen = () => {
     };
 
     const response = await apimiddleWare({
-      url: "/auth/verifyCredentials",
+      url: "/auth/verify-credentials",
       method: "post",
       data: data,
       reduxDispatch: dispatch,

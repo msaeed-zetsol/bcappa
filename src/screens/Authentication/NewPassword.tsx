@@ -17,7 +17,6 @@ import { useTranslation } from "react-i18next";
 import { View } from "react-native-animatable";
 import Message from '../../components/AlertMessage';
 
-
 const NewPassword = () => {
   const { t } = useTranslation();
   const [show, setShow] = useState<boolean>(false);
@@ -29,7 +28,7 @@ const NewPassword = () => {
   const navigation = useNavigation();
   const route: any = useRoute();
   const { data } = route?.params;
-  console.log({ data });
+
   const {
     control,
     handleSubmit,
@@ -41,7 +40,11 @@ const NewPassword = () => {
       confirmPassword: "",
     },
   });
-  const changePass = async (details: { password: any; confirmPassword: any; }) => {
+
+  const changePass = async (details: {
+    password: any;
+    confirmPassword: any;
+  }) => {
     console.log({ details });
     if (details.password === details.confirmPassword) {
       const datas = {
@@ -60,7 +63,6 @@ const NewPassword = () => {
         console.log({ response });
         setModalVisible(true);
       }
-
     } else {
      setModalView(true);
     }
@@ -111,7 +113,9 @@ const NewPassword = () => {
               height={verticalScale(140)}
               width={verticalScale(120)}
             />
-            <Text style={styles.message}>Your password has been updated. Please login to continue.</Text>
+            <Text style={styles.message}>
+              Your password has been updated. Please login to continue.
+            </Text>
 
             <Button
               colorScheme={"info"}

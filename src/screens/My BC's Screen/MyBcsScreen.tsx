@@ -7,12 +7,12 @@ import {
   Alert,
   ActivityIndicator,
   RefreshControl,
-} from 'react-native';
-import React, { useState } from 'react';
-import { View, Text, Avatar, Button, Pressable } from 'native-base';
-import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
-import { Fonts, Images } from '../../constants';
-import { BcStatus, BcType } from '../../lookups/Enums';
+} from "react-native";
+import React, { useState } from "react";
+import { View, Text, Avatar, Button, Pressable } from "native-base";
+import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { Fonts, Images } from "../../constants";
+import { BcStatus, BcType } from "../../lookups/Enums";
 import {
   CommonActions,
   useFocusEffect,
@@ -92,12 +92,15 @@ const MyBcsScreen = () => {
       reduxDispatch: dispatch,
     });
 
+    console.log(`All BCS: ${JSON.stringify(response)}`);
+
     if (response) {
       setAllBc(response);
       setLoading(false);
     }
     setLoading(false);
   };
+
   const handleRefresh = () => {
     getAllBc();
   };
@@ -164,7 +167,6 @@ const MyBcsScreen = () => {
       <TouchableOpacity
         onPress={() => {
           dispatch(setMembers([]));
-
           navigation.dispatch(CommonActions.navigate("NewBc"));
         }}
         style={{
@@ -410,7 +412,7 @@ export default MyBcsScreen;
 const styles = StyleSheet.create({
   genralContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

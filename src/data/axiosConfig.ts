@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: "http://bcappa-dev-apis.us-east-1.elasticbeanstalk.com/api",
+  // baseURL: "http://192.168.100.53:8000/api",
   headers: { "Content-Type": "application/json" },
 });
 
