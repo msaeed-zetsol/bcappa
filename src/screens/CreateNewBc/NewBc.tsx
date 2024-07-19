@@ -47,6 +47,7 @@ const NewBc = () => {
   const [openDate, setOpenDate] = useState(false);
   const [showDate, setShowDate] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalView, setModalView] = useState(false);
   const members = useAppSelector((state) => state.members);
   const navigation = useNavigation();
   const { t } = useTranslation();
@@ -120,7 +121,8 @@ const NewBc = () => {
           }
           setIsDisabled(false);
         } else {
-          Alert.alert("Members can not be more than max members");
+          setModalView(true);
+          // Alert.alert("Members can not be more than max members");
           setIsDisabled(false);
         }
       } else {
@@ -154,6 +156,17 @@ const NewBc = () => {
       />
       <Box mt={verticalScale(40)}></Box>
       <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false}>
+      {modalView && (
+          <Message
+          Photo={() => <Images.AccountNotVerified />}
+          message={t("Members can not be more than max members")}
+          buttonText={t("ok")}
+          callback={() => setModalVisible(false)}
+          secondButtonText={t("Cancel")}
+          secondCallback={() => setModalVisible(false)}
+          show={modalVisible}
+        />
+        )}
         {modalVisible && (
           <Message
           Photo={() => <Images.AccountNotVerified />}
