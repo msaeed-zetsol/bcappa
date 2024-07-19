@@ -8,11 +8,11 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import React, {useState} from 'react';
-import {View, Text, Avatar, Button, Pressable} from 'native-base';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {Fonts, Images} from '../../constants';
-import {BcStatus, BcType} from '../../lookups/Enums';
+import React, { useState } from 'react';
+import { View, Text, Avatar, Button, Pressable } from 'native-base';
+import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
+import { Fonts, Images } from '../../constants';
+import { BcStatus, BcType } from '../../lookups/Enums';
 import {
   CommonActions,
   useFocusEffect,
@@ -25,6 +25,7 @@ import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setMembers } from "../../redux/members/membersSlice";
 import { useTranslation } from "react-i18next";
+import Message from '../../components/AlertMessage';
 
 const MyBcsScreen = () => {
   const dispatch: any = useDispatch();
@@ -32,6 +33,7 @@ const MyBcsScreen = () => {
   const [allBc, setAllBc] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [userDatas, setUserData] = useState<any>();
+  const [modalVisible, setModalVisible] = useState(false);
   const { t } = useTranslation();
 
   const onShare = async (link: string) => {
@@ -53,7 +55,8 @@ const MyBcsScreen = () => {
         // Dismissed
       }
     } catch (error: any) {
-      Alert.alert("Error sharing:", error);
+      setModalVisible(true);
+      // Alert.alert("Error sharing:", error);
     }
   };
 
@@ -127,7 +130,7 @@ const MyBcsScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       getAllBc();
-      return () => {};
+      return () => { };
     }, [])
   );
 
@@ -137,7 +140,17 @@ const MyBcsScreen = () => {
         barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
-
+      {modalVisible && (
+        <Message
+          Photo={() => <Images.AccountNotVerified />}
+          message={t("Error sharing")}
+          buttonText={t("ok")}
+          callback={() => setModalVisible(false)}
+          secondButtonText={t("Cancel")}
+          secondCallback={() => setModalVisible(false)}
+          show={modalVisible}
+        />
+      )}
       <View mt={5} mx={horizontalScale(20)}>
         <Text
           fontSize={verticalScale(22)}

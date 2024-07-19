@@ -34,6 +34,7 @@ import { errors } from "../../redux/user/userSlice";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import globalStyles from "../../styles/global";
+import Message from "../../components/AlertMessage";
 
 const NewBc = () => {
   const numberformatter = useMemo(() => new Intl.NumberFormat(), []);
@@ -45,6 +46,7 @@ const NewBc = () => {
   const [date, setDate] = useState(new Date());
   const [openDate, setOpenDate] = useState(false);
   const [showDate, setShowDate] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   const members = useAppSelector((state) => state.members);
   const navigation = useNavigation();
   const { t } = useTranslation();
@@ -122,7 +124,7 @@ const NewBc = () => {
           setIsDisabled(false);
         }
       } else {
-        Alert.alert("Please Add Members");
+        setModalVisible(true);
         setIsDisabled(false);
       }
     } else {
@@ -137,7 +139,10 @@ const NewBc = () => {
     });
   };
 
+
+
   return (
+
     <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
       <StatusBar backgroundColor={newColorTheme.BACKGROUND_COLOR} />
       <Heading
@@ -149,6 +154,17 @@ const NewBc = () => {
       />
       <Box mt={verticalScale(40)}></Box>
       <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false}>
+        {modalVisible && (
+          <Message
+          Photo={() => <Images.AccountNotVerified />}
+          message={t("Please Add Members")}
+          buttonText={t("ok")}
+          callback={() => setModalVisible(false)}
+          secondButtonText={t("Cancel")}
+          secondCallback={() => setModalVisible(false)}
+          show={modalVisible}
+        />
+        )}
         <FormControl w="100%">
           <Controller
             control={control}

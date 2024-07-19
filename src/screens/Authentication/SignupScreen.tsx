@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
-  Alert,
   I18nManager,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
@@ -43,6 +42,7 @@ import { useTranslation } from "react-i18next";
 import globalStyles from "../../styles/global";
 import { useAppDispatch } from "../../hooks/hooks";
 import CountryCodePicker from "../../components/CountryCodePicker";
+import Message from "../../components/AlertMessage";
 
 const SignupScreen = () => {
   const [show, setShow] = useState(false);
@@ -51,6 +51,7 @@ const SignupScreen = () => {
   const [countryCode, setCountryCode] = useState("+92");
   const [date, setDate] = useState(new Date());
   const [openDate, setOpenDate] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [showDate, setShowDate] = useState("");
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const dispatch = useAppDispatch();
@@ -145,9 +146,10 @@ const SignupScreen = () => {
       );
     } else {
       if (!showDate) {
-        Alert.alert("Please enter your date of birth");
+        setModalVisible(true);
+
       } else if (!toggleCheckBox) {
-        Alert.alert("Please read Terms and Conditions and Privacy Policy");
+        setModalVisible(true);
       }
     }
   };
@@ -197,7 +199,29 @@ const SignupScreen = () => {
         backgroundColor={newColorTheme.WHITE_COLOR}
         barStyle={"dark-content"}
       />
+      {!toggleCheckBox &&
+        <Message
+          Photo={() => <Images.AccountNotVerified />}
+          message={t("Please read Terms and Conditions and Privacy Policy")}
+          buttonText={t("ok")}
+          callback={() => setModalVisible(false)}
+          secondButtonText={t("Cancel")}
+          secondCallback={() => setModalVisible(false)}
+          show={modalVisible}
+        />
 
+      }
+      {!showDate &&
+        <Message
+          Photo={() => <Images.AccountNotVerified />}
+          message={t("Please enter your date of birth")}
+          buttonText={t("ok")}
+          callback={() => setModalVisible(false)}
+          secondButtonText={t("Cancel")}
+          secondCallback={() => setModalVisible(false)}
+          show={modalVisible}
+        />
+      }
       <CountryCodePicker
         visible={showCountryCodePicker}
         onDismiss={() => setShowCountryCodePicker(false)}
@@ -267,7 +291,7 @@ const SignupScreen = () => {
       >
         {t("it_only_takes_a_minute_create_account")}
       </Text>
-      
+
       <ScrollView showsVerticalScrollIndicator={false}>
         <Box mt={verticalScale(20)}>
           <FormControl mt={verticalScale(5)}>

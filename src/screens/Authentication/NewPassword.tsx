@@ -1,4 +1,4 @@
-import { StyleSheet, Alert, I18nManager, Modal, TouchableOpacity } from 'react-native';
+import { StyleSheet, I18nManager, Modal, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { Text, FormControl, Button, Pressable, Input, Icon } from 'native-base';
 import { newColorTheme } from '../../constants/Colors';
@@ -15,6 +15,7 @@ import { apimiddleWare } from "../../utilities/HelperFunctions";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native-animatable";
+import Message from '../../components/AlertMessage';
 
 
 const NewPassword = () => {
@@ -23,6 +24,7 @@ const NewPassword = () => {
   const [show1, setShow1] = useState<boolean>(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [modalView, setModalView] = useState(false);
   const dispatch: any = useDispatch();
   const navigation = useNavigation();
   const route: any = useRoute();
@@ -60,7 +62,7 @@ const NewPassword = () => {
       }
 
     } else {
-      Alert.alert("Password must match confirm Password");
+     setModalView(true);
     }
   };
 
@@ -75,6 +77,17 @@ const NewPassword = () => {
 
   return (
     <View style={styles.container}>
+         {modalView && (
+          <Message
+          Photo={() => <Images.AccountNotVerified />}
+          message={t("Password must match confirm Password. Please try again. ")}
+          buttonText={t("ok")}
+          callback={() => setModalView(false)}
+          secondButtonText={t("Cancel")}
+          secondCallback={() => setModalView(false)}
+          show={modalView}
+        />
+        )}
       <Modal
         style={{
           flex: 1,
