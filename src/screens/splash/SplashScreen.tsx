@@ -1,4 +1,4 @@
-import { Image, Text, View } from "native-base";
+import { Image, View } from "native-base";
 import { ActivityIndicator, StatusBar, StyleSheet } from "react-native";
 import { deepSkyBlue } from "../../constants/Colors";
 import { useEffect, useState } from "react";

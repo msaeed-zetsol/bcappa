@@ -31,18 +31,18 @@ const OTPBox = forwardRef<TextInput, OTPBoxProps>(
           onChangeText={(value) => {
             if (!!value) {
               if (!isNaN(+value)) {
-                onChange({ ...otp, [`${index}`]: value });
                 next?.current?.focus();
+                onChange({ ...otp, [`${index}`]: value });
               }
             }
           }}
           onKeyPress={(event) => {
             if (event.nativeEvent.key === "Backspace") {
-              onChange({ ...otp, [`${index}`]: "" });
               previous?.current?.focus();
+              onChange({ ...otp, [`${index}`]: "" });
             } else if (!isNaN(+event.nativeEvent.key)) {
-              onChange({ ...otp, [`${index}`]: event.nativeEvent.key });
               next?.current?.focus();
+              onChange({ ...otp, [`${index}`]: event.nativeEvent.key });
             }
           }}
         />

@@ -12,7 +12,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Settings } from 'react-native-fbsdk-next';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('Message handled in the background', remoteMessage);
+  // Notification recevied in the background.
 });
 
 Settings.initializeSDK();

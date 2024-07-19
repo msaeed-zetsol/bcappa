@@ -16,7 +16,7 @@ import {
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
-import { newColorTheme } from "../../constants/Colors";
+import { deepSkyBlue, newColorTheme } from "../../constants/Colors";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
@@ -192,7 +192,6 @@ const OtpAccountVerification = () => {
     });
 
     console.log(`Account Verification: ${JSON.stringify(response)}`);
-
   };
 
   const sendOtpViaEmail = async () => {
@@ -313,29 +312,18 @@ const OtpAccountVerification = () => {
           ref={fifthInput}
         />
       </View>
-      <View alignItems="center" mt={15}>
-        {!resendNow ? (
+
+      <View alignItems="center" mt={verticalScale(15)}>
+        {!resendNow && (
           <Text color={"BLACK_COLOR"} fontFamily={Fonts.POPPINS_MEDIUM}>
             {t("resend_code_in")}{" "}
             <Text color={"PRIMARY_COLOR"} fontFamily={Fonts.POPPINS_MEDIUM}>
               {formatTime(timer)}
             </Text>
           </Text>
-        ) : (
-          <Pressable
-            style={styles.resend}
-            onPress={() => {
-              setResendNow(false);
-              setTimer(60);
-              from === "forgot" ? sendOtpToGivenInfo() : sendOtp();
-            }}
-          >
-            <Text color={"WHITE_COLOR"} fontFamily={Fonts.POPPINS_MEDIUM}>
-              {t("resend_now")}
-            </Text>
-          </Pressable>
         )}
       </View>
+
       {!shows && !hide && (
         <View
           flexDirection={"row"}
@@ -383,39 +371,79 @@ const OtpAccountVerification = () => {
           </TouchableOpacity>
         </View>
       )}
-      <Button
-        isLoading={isLoading}
-        variant="solid"
-        _loading={{
-          _text: {
+      <View style={{ flexDirection: "column" }}>
+        {resendNow && (
+          <Button
+            isLoading={isLoading}
+            variant="outline"
+            _loading={{
+              _text: {
+                color: deepSkyBlue,
+                fontFamily: Fonts.POPPINS_SEMI_BOLD,
+              },
+            }}
+            _text={{
+              color: deepSkyBlue,
+              fontFamily: Fonts.POPPINS_MEDIUM,
+            }}
+            _spinner={{
+              color: deepSkyBlue,
+            }}
+            _pressed={{
+              backgroundColor: "DISABLED_COLOR",
+            }}
+            spinnerPlacement="end"
+            size={"lg"}
+            mt={verticalScale(50)}
+            p={"4"}
+            borderRadius={16}
+            borderColor={deepSkyBlue}
+            borderWidth={2}
+            isDisabled={isLoading}
+            isPressed={isLoading}
+            onPress={() => {
+              setResendNow(false);
+              setTimer(60);
+              from === "forgot" ? sendOtpToGivenInfo() : sendOtp();
+            }}
+          >
+            {t("resend_now")}
+          </Button>
+        )}
+        <Button
+          isLoading={isLoading}
+          variant="solid"
+          _loading={{
+            _text: {
+              color: "BLACK_COLOR",
+              fontFamily: Fonts.POPPINS_SEMI_BOLD,
+            },
+          }}
+          _text={{
+            color: "WHITE_COLOR",
+            fontFamily: Fonts.POPPINS_MEDIUM,
+          }}
+          _spinner={{
             color: "BLACK_COLOR",
-            fontFamily: Fonts.POPPINS_SEMI_BOLD,
-          },
-        }}
-        _text={{
-          color: "WHITE_COLOR",
-          fontFamily: Fonts.POPPINS_MEDIUM,
-        }}
-        _spinner={{
-          color: "BLACK_COLOR",
-        }}
-        _pressed={{
-          backgroundColor: "DISABLED_COLOR",
-        }}
-        spinnerPlacement="end"
-        backgroundColor={"PRIMARY_COLOR"}
-        size={"lg"}
-        mt={verticalScale(50)}
-        p={"4"}
-        borderRadius={16}
-        isDisabled={isLoading}
-        isPressed={isLoading}
-        onPress={() => {
-          from === "forgot" ? verifyToGivenInfo() : verifyOtp();
-        }}
-      >
-        {t("verify")}
-      </Button>
+          }}
+          _pressed={{
+            backgroundColor: "DISABLED_COLOR",
+          }}
+          spinnerPlacement="end"
+          backgroundColor={"PRIMARY_COLOR"}
+          size={"lg"}
+          mt={verticalScale(resendNow ? 10 : 50)}
+          p={"4"}
+          borderRadius={16}
+          isDisabled={isLoading}
+          isPressed={isLoading}
+          onPress={() => {
+            from === "forgot" ? verifyToGivenInfo() : verifyOtp();
+          }}
+        >
+          {t("verify")}
+        </Button>
+      </View>
     </View>
   );
 };
