@@ -82,10 +82,10 @@ const NewPassword = () => {
          {modalView && (
           <Message
           Photo={() => <Images.AccountNotVerified />}
-          message={t("Password must match confirm Password. Please try again. ")}
+          message={t("password_must_match_confirm_password_please_try_again")}
           buttonText={t("ok")}
           callback={() => setModalView(false)}
-          secondButtonText={t("Cancel")}
+          secondButtonText={t("cancel")}
           secondCallback={() => setModalView(false)}
           show={modalView}
         />
@@ -114,7 +114,7 @@ const NewPassword = () => {
               width={verticalScale(120)}
             />
             <Text style={styles.message}>
-              Your password has been updated. Please login to continue.
+          {t("your_password_has_been_updated_please_login_to_continue")} 
             </Text>
 
             <Button
@@ -122,7 +122,7 @@ const NewPassword = () => {
               style={styles.loginButton}
               onPress={handleLogin}
             >
-              <Text style={styles.loginButtonLabel}>Login</Text>
+              <Text style={styles.loginButtonLabel}>{t("login")}</Text>
             </Button>
           </View>
         </View>
@@ -179,7 +179,7 @@ const NewPassword = () => {
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
-              placeholder={t("New Password")}
+              placeholder={t("new_password")}
               w="100%"
               size="lg"
               borderRadius={16}
@@ -226,7 +226,7 @@ const NewPassword = () => {
           control={control}
           name="confirmPassword"
           rules={{
-            required: t("confirm password is required"),
+            required: t("confirm_password_is_required"),
             minLength: {
               value: 8,
               message: t("password_length_must_be_greater_than_8"),
@@ -238,7 +238,7 @@ const NewPassword = () => {
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
-              placeholder={t("Confirm Password")}
+              placeholder={t("confirm_password")}
               w="100%"
               size="lg"
               borderRadius={16}
@@ -310,7 +310,7 @@ const NewPassword = () => {
         isPressed={isLoading}
         onPress={handleSubmit(changePass)}
       >
-        Save
+        {t("save")}
       </Button>
     </View>
   );

@@ -146,7 +146,7 @@ const MyBcsScreen = () => {
       {modalVisible && (
         <Message
           Photo={() => <Images.AccountNotVerified />}
-          message={t("Error sharing")}
+          message={t("Error_sharing")}
           buttonText={t("ok")}
           callback={() => setModalVisible(false)}
           secondButtonText={t("Cancel")}

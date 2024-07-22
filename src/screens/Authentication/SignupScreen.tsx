@@ -202,10 +202,10 @@ const SignupScreen = () => {
       {!toggleCheckBox &&
         <Message
           Photo={() => <Images.AccountNotVerified />}
-          message={t("Please read Terms and Conditions and Privacy Policy")}
+          message={t("please_read_terms_and_conditions_and_privacy_policy")}
           buttonText={t("ok")}
           callback={() => setModalVisible(false)}
-          secondButtonText={t("Cancel")}
+          secondButtonText={t("cancel")}
           secondCallback={() => setModalVisible(false)}
           show={modalVisible}
         />
@@ -214,10 +214,10 @@ const SignupScreen = () => {
       {!showDate &&
         <Message
           Photo={() => <Images.AccountNotVerified />}
-          message={t("Please enter your date of birth")}
+          message={t("please_select_your_date_of_birth")}
           buttonText={t("ok")}
           callback={() => setModalVisible(false)}
-          secondButtonText={t("Cancel")}
+          secondButtonText={t("cancel")}
           secondCallback={() => setModalVisible(false)}
           show={modalVisible}
         />
@@ -446,7 +446,7 @@ const SignupScreen = () => {
                       color={"BLACK_COLOR"}
                       fontSize={"sm"}
                       fontFamily={Fonts.POPPINS_REGULAR}
-                      accessibilityLabel="Select Gender"
+                      accessibilityLabel={t("select_gender")}
                       dropdownIcon={
                         <Icon
                           as={<Ionicons name={"caret-down"} />}
@@ -455,7 +455,7 @@ const SignupScreen = () => {
                           color="BLACK_COLOR"
                         />
                       }
-                      placeholder="Select Gender"
+                      placeholder={t("select_gender")}
                       onValueChange={(itemValue) => onChange(itemValue)}
                     >
                       <Select.Item label={t("male")} value="male" />
@@ -651,6 +651,7 @@ const SignupScreen = () => {
             <Images.Google />
             <Text
               pl="2"
+               pr="2"
               fontSize={verticalScale(16)}
               textAlign={"center"}
               fontFamily={Fonts.POPPINS_MEDIUM}
@@ -667,6 +668,7 @@ const SignupScreen = () => {
             <Images.Facebook />
             <Text
               pl="2"
+              pr="2"
               fontSize={verticalScale(16)}
               fontFamily={Fonts.POPPINS_MEDIUM}
             >

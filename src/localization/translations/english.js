@@ -62,6 +62,17 @@ const auth = {
   add_member: "Add Member",
   full_name: "Full Name",
   full_name_is_required: "Full Name is required",
+  please_read_terms_and_conditions_and_privacy_policy:"Please read Terms and Conditions and Privacy Policy",
+  please_select_your_date_of_birth:"Please select your date of birth",
+  password_must_match_confirm_password_please_try_again:"Password must match confirm password. Please try again.",
+cancle:"Cancle",
+your_password_has_been_updated_please_login_to_continue:"Your password has been updated. Please login to continue.",
+login:"Login",
+save:"Save",
+new_password:"New Password",
+confirm_password:"Confirm Password",
+confirm_password_is_required:"Confirm Password is required",
+select_gender:"Select Gender",
 };
 
 const onboarding = {
@@ -92,6 +103,10 @@ const newBcForm = {
   dont_know_how_to_add: "Don’t know how to add?",
   call_our_helpline: "Call Our Helpline",
   create: "Create",
+  member_can_not_be_more_than_max_members: "Members can not be more than max members",
+  please_add_members: "Please add members",
+  total_expected_bc_amount: "Total expected BC amount",
+  drag_to_arrange_bc_opening_number: "Drag to arrange BC opening number",
 };
 
 const updateBc = {
@@ -128,6 +143,7 @@ const home = {
   map_feature_description: `Your Safety Net! We're thrilled to announce that our upcoming app feature, Insurance, is coming soon!. Stay tuned for updates on this exciting new app feature!`,
   account_not_verified: "your account is not currently verified with Jazzdost.",
   ok: "OK",
+  Cancle: "Cancle",
   verify_now: "Verify Now",
 };
 
@@ -144,6 +160,8 @@ const bcDetails = {
 const myBc = {
   my_bcs: "My BCs",
   no_bc_found: "No BC Found",
+  error_sharing: "Error sharing"
+
 };
 
 const summary = {

@@ -102,7 +102,7 @@ const AddMembers = () => {
 
       <Box mb={verticalScale(10)} mt={verticalScale(30)}>
         {!balloting && (
-          <Text style={styles.details}>Drag to Arrange BC Opening Number</Text>
+          <Text style={styles.details}>{t("drag_to_arrange_bc_opening_number")}</Text>
         )}
       </Box>
 
@@ -201,7 +201,7 @@ const AddMembers = () => {
           </Modal.Header>
           <Modal.Body style={{ width: "100%" }}>
             <FormControl>
-              <FormControl.Label>Full Name</FormControl.Label>
+              <FormControl.Label>{t("full_name")}</FormControl.Label>
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (

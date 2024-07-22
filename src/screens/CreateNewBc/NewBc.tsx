@@ -159,7 +159,7 @@ const NewBc = () => {
       {modalView && (
           <Message
           Photo={() => <Images.AccountNotVerified />}
-          message={t("Members can not be more than max members")}
+          message={t("member_can_not_be_more_than_max_members")}
           buttonText={t("ok")}
           callback={() => setModalVisible(false)}
           secondButtonText={t("Cancel")}
@@ -170,10 +170,10 @@ const NewBc = () => {
         {modalVisible && (
           <Message
           Photo={() => <Images.AccountNotVerified />}
-          message={t("Please Add Members")}
+          message={t("please_add_members")}
           buttonText={t("ok")}
           callback={() => setModalVisible(false)}
-          secondButtonText={t("Cancel")}
+          secondButtonText={t("cancel")}
           secondCallback={() => setModalVisible(false)}
           show={modalVisible}
         />

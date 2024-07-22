@@ -10,6 +10,7 @@ import { Colors, Fonts, Images } from "../constants";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { verticalScale } from "../utilities/Dimensions";
 import { blackPearl, deepSkyBlue, smoky } from "../constants/Colors";
+import { useTranslation } from "react-i18next";
 
 type MemberListItemProps = {
   member: Member;
@@ -26,6 +27,7 @@ const MemberListItem = ({
   onDelete,
   style,
 }: MemberListItemProps) => {
+  const { t } = useTranslation();
   return (
     <View style={[styles.row, style, { marginTop: verticalScale(10) }]}>
       <TouchableOpacity onPressIn={onPressIn} style={styles.touchableContainer}>
@@ -43,7 +45,7 @@ const MemberListItem = ({
         </View>
 
         <View style={{ flexDirection: "column", marginTop: 8 }}>
-          <Text style={[styles.text, { color: blackPearl }]}>Phone</Text>
+          <Text style={[styles.text, { color: blackPearl }]}>{t("phone")}</Text>
           <Text style={[styles.text, { color: smoky, marginTop: 1 }]}>
             {member.phone}
           </Text>

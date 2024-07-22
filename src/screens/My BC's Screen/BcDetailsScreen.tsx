@@ -567,7 +567,7 @@ const BcDetailsScreen = () => {
                                 fontFamily: Fonts.POPPINS_SEMI_BOLD,
                               }}
                             >
-                              Phone:{" "}
+                             {t("phone")}:
                               <Text
                                 style={{
                                   fontFamily: Fonts.POPPINS_MEDIUM,
@@ -583,7 +583,7 @@ const BcDetailsScreen = () => {
                                 fontFamily: Fonts.POPPINS_SEMI_BOLD,
                               }}
                             >
-                              Email:{"  "}
+                              {t("email")}:
                               <Text
                                 style={{
                                   fontFamily: Fonts.POPPINS_MEDIUM,
