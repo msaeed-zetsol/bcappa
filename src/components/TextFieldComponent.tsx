@@ -20,9 +20,11 @@ interface fieldValues {
   onSubmitEditing?: () => any;
   onEndEditing?: () => any;
   style?: any;
+  maxLength?: number;
 }
 
 const TextFieldComponent = ({
+  maxLength,
   placeholder,
   width,
   keyboardType,
@@ -68,6 +70,7 @@ const TextFieldComponent = ({
       editable={editable}
       returnKeyType="next"
       style={style}
+      maxLength={maxLength}
     />
   );
 };

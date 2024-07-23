@@ -409,6 +409,7 @@ const SignupScreen = () => {
                     onBlur={onBlur}
                     onChange={onChange}
                     keyboardType={"number-pad"}
+                    maxLength={13}
                   />
                 )}
                 name="cnicNumber"

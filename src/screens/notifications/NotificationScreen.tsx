@@ -1,4 +1,5 @@
 import {
+  StatusBar,
   FlatList,
   StyleSheet,
   RefreshControl,
@@ -10,18 +11,17 @@ import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import Colors, { deepSkyBlue, newColorTheme } from "../../constants/Colors";
 import { Fonts } from "../../constants";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "../../hooks/hooks";
 import NotificationItem from "../../components/NotificationItem";
-import AppBar from "../../components/AppBar";
 
 const NotificationScreen = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
+
   const getNotifications = async () => {
     setLoading(true);
     const response = await apimiddleWare({
@@ -43,7 +43,12 @@ const NotificationScreen = () => {
 
   return (
     <View style={styles.container}>
-      <AppBar name={t("notifications")} onPress={navigation.goBack} />
+      <StatusBar
+        barStyle={"dark-content"}
+        backgroundColor={newColorTheme.BACKGROUND_COLOR}
+      />
+
+      <Text style={styles.title}>{t("notification")}</Text>
 
       {loading ? (
         <View style={styles.centerCoontentContainer}>

@@ -41,8 +41,10 @@ GoogleSignin.configure({
     "425837288874-ivnre9s31uk6clo206fqaa8op0n5p5r3.apps.googleusercontent.com",
 });
 
+
 const LoginScreen = () => {
   const { t } = useTranslation();
+ 
   const dispatch: any = useDispatch();
   const {
     control,
@@ -59,6 +61,10 @@ const LoginScreen = () => {
   const [show, setShow] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const handlePress = () => {
+    navigation.navigate("SignupScreen");
+  };
+    
   // ------------------Login ---------------------//
 
   const googleLogin = async () => {
@@ -479,21 +485,17 @@ const LoginScreen = () => {
           fontFamily={Fonts.POPPINS_MEDIUM}
         >
           {t("dont_have_an_account")}
-        </Text>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("SignupScreen");
-          }}
-        >
-          <Text
-            color={"PRIMARY_COLOR"}
-            letterSpacing={0.3}
-            fontFamily={Fonts.POPPINS_MEDIUM}
-            ml={1}
-          >
-            {t("sign_up")}
-          </Text>
-        </TouchableOpacity>
+        </Text> 
+        <TouchableOpacity onPress={handlePress}>
+      <Text
+        color={"PRIMARY_COLOR"}
+        letterSpacing={0.3}
+        fontFamily={Fonts.POPPINS_MEDIUM}
+        ml={1}
+      >
+        {t("sign_up")}
+      </Text>
+    </TouchableOpacity>
       </View>
     </View>
   );

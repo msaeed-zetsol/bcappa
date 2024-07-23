@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   Linking,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Text,
   View,
@@ -42,11 +42,12 @@ import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { apply } from "../../scope-functions";
 
 const UpdateBc = () => {
+  const numberformatter = useMemo(() => new Intl.NumberFormat(), []);
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const route: any = useRoute();
   const { item } = route.params;
-
+  const [bcTotal, setBcTotal] = useState("0");
   const [bcData, setBcData] = useState<any>();
   const [disabled, setIsDisabled] = useState(false);
   const [scroll, setScroll] = useState(true);
@@ -63,14 +64,26 @@ const UpdateBc = () => {
   );
   const [amountPerMonth, setAmountPerMonth] = useState(item.amount);
   const { t } = useTranslation();
-
-  const calculateTotalExpected = () => {
-    return amountPerMonth * maxUsers;
-  };
-
   useEffect(() => {
-    return setTotalExpected(calculateTotalExpected());
-  }, [amountPerMonth, maxUsers]);
+    calculateTotal();
+  }, [maxUsers, amountPerMonth]);
+  const calculateTotal = () => {
+    if (amountPerMonth && typeof amountPerMonth === 'string') {
+      const formattedAmount = amountPerMonth.split(",").join("");
+      setBcTotal(numberformatter.format(+maxUsers * +formattedAmount));
+    } else {
+      setBcTotal(numberformatter.format(0));
+    }
+  };
+  
+  const formatAmountPerMonth = (amount: string) => {
+    if (amount && typeof amount === 'string' && amount !== "") {
+      return numberformatter.format(+amount.split(",").join(""));
+    } else {
+      return "";
+    }
+  };
+  
 
   const getNextDay = () => {
     return apply(new Date(), (date) => {
@@ -304,7 +317,7 @@ const UpdateBc = () => {
                         setAmountPerMonth(text);
                         onChange(text);
                       }}
-                      value={value}
+                      value={formatAmountPerMonth(value)}
                       borderColor="BORDER_COLOR"
                       placeholderTextColor={"GREY"}
                       color={"BLACK_COLOR"}
