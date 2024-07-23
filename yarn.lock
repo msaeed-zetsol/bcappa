@@ -4872,20 +4872,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/flash-list@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "@shopify/flash-list@npm:1.7.0"
-  dependencies:
-    recyclerlistview: 4.2.1
-    tslib: 2.6.3
-  peerDependencies:
-    "@babel/runtime": "*"
-    react: "*"
-    react-native: "*"
-  checksum: d9cccd4c53f0957ecea071600d4297611c7dc00ca318dfbae4ff92ed34104340eaacb60a1f38c7165dd8f61e65c59acc7f7b627b21ca3abcec739da9e129d538
-  languageName: node
-  linkType: hard
-
 "@sideway/address@npm:^4.1.5":
   version: 4.1.5
   resolution: "@sideway/address@npm:4.1.5"
@@ -6183,6 +6169,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base64-arraybuffer@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "base64-arraybuffer@npm:1.0.2"
+  checksum: 15e6400d2d028bf18be4ed97702b11418f8f8779fb8c743251c863b726638d52f69571d4cc1843224da7838abef0949c670bde46936663c45ad078e89fee5c62
+  languageName: node
+  linkType: hard
+
 "base64-js@npm:^1.2.3, base64-js@npm:^1.3.1, base64-js@npm:^1.5.1":
   version: 1.5.1
   resolution: "base64-js@npm:1.5.1"
@@ -6215,7 +6208,6 @@ __metadata:
     "@react-navigation/native": ^6.1.17
     "@react-navigation/native-stack": ^6.9.26
     "@reduxjs/toolkit": ^2.2.5
-    "@shopify/flash-list": ^1.7.0
     "@types/react": ^18.2.6
     "@types/react-test-renderer": ^18.0.0
     antd: ^5.18.3
@@ -6224,6 +6216,8 @@ __metadata:
     deprecated-react-native-prop-types: ^5.0.0
     eslint: ^8.19.0
     expo: ^51.0.0
+    expo-clipboard: ^6.0.3
+    expo-media-library: ^16.0.4
     i18next: ^23.11.5
     jest: ^29.6.3
     libphonenumber-js: ^1.11.4
@@ -6248,18 +6242,19 @@ __metadata:
     react-native-image-colors: ^2.4.0
     react-native-image-crop-picker: ^0.41.2
     react-native-onboard: ^2.6.0
+    react-native-qrcode-svg: ^6.3.1
     react-native-reanimated: ^3.12.1
     react-native-restart: ^0.0.27
     react-native-safe-area-context: ^4.10.5
     react-native-screens: ^3.32.0
     react-native-star-rating-widget: ^1.8.0
-    react-native-svg: ^15.3.0
+    react-native-svg: ^15.4.0
     react-native-svg-transformer: ^1.4.0
     react-native-swiper: ^1.6.0
     react-native-vector-icons: ^10.1.0
+    react-native-view-shot: ^3.8.0
     react-redux: ^9.1.2
     react-test-renderer: 18.2.0
-    rn-range-slider: ^2.2.2
     toggle-switch-react-native: ^3.3.0
     typescript: 5.0.4
   languageName: unknown
@@ -7063,6 +7058,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"css-line-break@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "css-line-break@npm:2.1.0"
+  dependencies:
+    utrie: ^1.0.2
+  checksum: 37b1fe632b03be7a287cd394cef8b5285666343443125c510df9cfb6a4734a2c71e154ec8f7bbff72d7c339e1e5872989b1c52d86162aed27d6cc114725bb4d0
+  languageName: node
+  linkType: hard
+
 "css-select@npm:^5.1.0":
   version: 5.1.0
   resolution: "css-select@npm:5.1.0"
@@ -7379,6 +7383,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dijkstrajs@npm:^1.0.1":
+  version: 1.0.3
+  resolution: "dijkstrajs@npm:1.0.3"
+  checksum: 82ff2c6633f235dd5e6bed04ec62cdfb1f327b4d7534557bd52f18991313f864ee50654543072fff4384a92b643ada4d5452f006b7098dbdfad6c8744a8c9e08
+  languageName: node
+  linkType: hard
+
 "dir-glob@npm:^3.0.1":
   version: 3.0.1
   resolution: "dir-glob@npm:3.0.1"
@@ -7526,6 +7537,13 @@ __metadata:
   version: 9.2.2
   resolution: "emoji-regex@npm:9.2.2"
   checksum: 8487182da74aabd810ac6d6f1994111dfc0e331b01271ae01ec1eb0ad7b5ecc2bbbbd2f053c05cb55a1ac30449527d819bbfbf0e3de1023db308cbcb47f86601
+  languageName: node
+  linkType: hard
+
+"encode-utf8@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "encode-utf8@npm:1.0.3"
+  checksum: 550224bf2a104b1d355458c8a82e9b4ea07f9fc78387bc3a49c151b940ad26473de8dc9e121eefc4e84561cb0b46de1e4cd2bc766f72ee145e9ea9541482817f
   languageName: node
   linkType: hard
 
@@ -8152,6 +8170,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-clipboard@npm:^6.0.3":
+  version: 6.0.3
+  resolution: "expo-clipboard@npm:6.0.3"
+  peerDependencies:
+    expo: "*"
+  checksum: 5ef6bd9c98c8c7aa1e4fb9c50ce89f131c8c9b792de4b7403a32715711c46b03a1c0fc7eae04e05979ae395fa24f1448b0f845817d57b9a8aa69f1299c5c6abc
+  languageName: node
+  linkType: hard
+
 "expo-constants@npm:~16.0.0":
   version: 16.0.2
   resolution: "expo-constants@npm:16.0.2"
@@ -8190,6 +8217,15 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 1300c6663632bc00db71a7d3b8a8dfc30ec0cbdd01777ab30b54ef5269cdfd557ae9419ae9f4007dbab1d252610fa6bfd22ebb0b5c2012ecad929bb4c3f35188
+  languageName: node
+  linkType: hard
+
+"expo-media-library@npm:^16.0.4":
+  version: 16.0.4
+  resolution: "expo-media-library@npm:16.0.4"
+  peerDependencies:
+    expo: "*"
+  checksum: fd79cea8437b8b57fadc5bb7352eca53760ae560a07a19d07036b89a1924443131436678f914b9c4b1a372acfecbe9c12aceb38943a4925299ba760ffb8c34de
   languageName: node
   linkType: hard
 
@@ -9103,6 +9139,16 @@ __metadata:
   dependencies:
     void-elements: 3.1.0
   checksum: 334fdebd4b5c355dba8e95284cead6f62bf865a2359da2759b039db58c805646350016d2017875718bc3c4b9bf81a0d11be5ee0cf4774a3a5a7b97cde21cfd67
+  languageName: node
+  linkType: hard
+
+"html2canvas@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "html2canvas@npm:1.4.1"
+  dependencies:
+    css-line-break: ^2.1.0
+    text-segmentation: ^1.0.3
+  checksum: c134324af57f3262eecf982e436a4843fded3c6cf61954440ffd682527e4dd350e0c2fafd217c0b6f9a455fe345d0c67b4505689796ab160d4ca7c91c3766739
   languageName: node
   linkType: hard
 
@@ -12540,6 +12586,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pngjs@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "pngjs@npm:5.0.0"
+  checksum: 04e912cc45fb9601564e2284efaf0c5d20d131d9b596244f8a6789fc6cdb6b18d2975a6bbf7a001858d7e159d5c5c5dd7b11592e97629b7137f7f5cef05904c8
+  languageName: node
+  linkType: hard
+
 "possible-typed-array-names@npm:^1.0.0":
   version: 1.0.0
   resolution: "possible-typed-array-names@npm:1.0.0"
@@ -12703,7 +12756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15.8.1, prop-types@npm:^15.5.10, prop-types@npm:^15.5.7, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15.8.1, prop-types@npm:^15.5.10, prop-types@npm:^15.5.7, prop-types@npm:^15.7.2, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -12758,6 +12811,20 @@ __metadata:
   bin:
     qrcode-terminal: ./bin/qrcode-terminal.js
   checksum: ad146ea1e339e1745402a3ea131631f64f40f0d1ff9cc6bd9c21677feaa1ca6dcd32eadf188fd3febdab8bf6191b3d24d533454903a72543645a72820e4d324c
+  languageName: node
+  linkType: hard
+
+"qrcode@npm:^1.5.1":
+  version: 1.5.3
+  resolution: "qrcode@npm:1.5.3"
+  dependencies:
+    dijkstrajs: ^1.0.1
+    encode-utf8: ^1.0.3
+    pngjs: ^5.0.0
+    yargs: ^15.3.1
+  bin:
+    qrcode: bin/qrcode
+  checksum: 9a8a20a0a9cb1d15de8e7b3ffa214e8b6d2a8b07655f25bd1b1d77f4681488f84d7bae569870c0652872d829d5f8ac4922c27a6bd14c13f0e197bf07b28dead7
   languageName: node
   linkType: hard
 
@@ -13578,6 +13645,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-qrcode-svg@npm:^6.3.1":
+  version: 6.3.1
+  resolution: "react-native-qrcode-svg@npm:6.3.1"
+  dependencies:
+    prop-types: ^15.8.0
+    qrcode: ^1.5.1
+  peerDependencies:
+    react: "*"
+    react-native: ">=0.63.4"
+    react-native-svg: ">=13.2.0"
+  checksum: d8b5bad08c4c0206642541bad40e34f5cc7136e2515611e294fb2926c4da86c2cec752583fdd6d8c3f9d61105ab6f50092bec6496c385dbdf852fe2f0dd79eb8
+  languageName: node
+  linkType: hard
+
 "react-native-reanimated@npm:^3.12.1":
   version: 3.13.0
   resolution: "react-native-reanimated@npm:3.13.0"
@@ -13657,16 +13738,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-svg@npm:^15.3.0":
-  version: 15.3.0
-  resolution: "react-native-svg@npm:15.3.0"
+"react-native-svg@npm:^15.4.0":
+  version: 15.4.0
+  resolution: "react-native-svg@npm:15.4.0"
   dependencies:
     css-select: ^5.1.0
     css-tree: ^1.1.3
+    warn-once: 0.1.1
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: e976878361c100639ab4f9bd2cd042f526b28890cc0052139b36a5ebde44cd3b1a54c6dd3b5e391fe10a998767a994748fc6ee3f1b356154418828d12f98d77a
+  checksum: 04f5aafa88e5d641df998c195988904760984004ae3d5b16c3313941f2027d85b4d5f9c35ac9d696ee533ccff33f4f3c9b86249ca6fec787ca4895075ee4d9d0
   languageName: node
   linkType: hard
 
@@ -13698,6 +13780,18 @@ __metadata:
     fa6-upgrade: bin/fa6-upgrade.sh
     generate-icon: bin/generate-icon.js
   checksum: c1e1d7c7ccc110e99caaed4d57324d5331dfa91817183350d2fd4df16d2302e7363da1f7a2b87011da3936b77aac3a7bf8ee11844dd8786b8b7dbc6553494866
+  languageName: node
+  linkType: hard
+
+"react-native-view-shot@npm:^3.8.0":
+  version: 3.8.0
+  resolution: "react-native-view-shot@npm:3.8.0"
+  dependencies:
+    html2canvas: ^1.4.1
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 9e3044da325b44c90238d1eac54ab0a0a9bdab9b7b93f05409e402890c982ee854ae93ff3b6f0d7befe8f2c53df7cf0c708782c007c4c3c4a007a4844b658fde
   languageName: node
   linkType: hard
 
@@ -13868,7 +13962,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recyclerlistview@npm:4.2.1, recyclerlistview@npm:^4.0.0":
+"recyclerlistview@npm:^4.0.0":
   version: 4.2.1
   resolution: "recyclerlistview@npm:4.2.1"
   dependencies:
@@ -14224,13 +14318,6 @@ __metadata:
   bin:
     rimraf: ./bin.js
   checksum: 3ea587b981a19016297edb96d1ffe48af7e6af69660e3b371dbfc73722a73a0b0e9be5c88089fbeeb866c389c1098e07f64929c7414290504b855f54f901ab10
-  languageName: node
-  linkType: hard
-
-"rn-range-slider@npm:^2.2.2":
-  version: 2.2.2
-  resolution: "rn-range-slider@npm:2.2.2"
-  checksum: 6d9273ff103584319d0095794ee21da48c49609978321677e22c9d1d2eb22ce7fd72228382a8777828fac7b646eb814cee4e2c764e44f11cb92a7d5936ded529
   languageName: node
   linkType: hard
 
@@ -15205,6 +15292,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"text-segmentation@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "text-segmentation@npm:1.0.3"
+  dependencies:
+    utrie: ^1.0.2
+  checksum: 2e24632d59567c55ab49ac324815e2f7a8043e63e26b109636322ac3e30692cee8679a448fd5d0f0598a345f407afd0e34ba612e22524cf576d382d84058c013
+  languageName: node
+  linkType: hard
+
 "text-table@npm:^0.2.0":
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
@@ -15383,17 +15479,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.6.3, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.4.0":
-  version: 2.6.3
-  resolution: "tslib@npm:2.6.3"
-  checksum: 74fce0e100f1ebd95b8995fbbd0e6c91bdd8f4c35c00d4da62e285a3363aaa534de40a80db30ecfd388ed7c313c42d930ee0eaf108e8114214b180eec3dbe6f5
-  languageName: node
-  linkType: hard
-
 "tslib@npm:^1.8.1":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.4.0":
+  version: 2.6.3
+  resolution: "tslib@npm:2.6.3"
+  checksum: 74fce0e100f1ebd95b8995fbbd0e6c91bdd8f4c35c00d4da62e285a3363aaa534de40a80db30ecfd388ed7c313c42d930ee0eaf108e8114214b180eec3dbe6f5
   languageName: node
   linkType: hard
 
@@ -15754,6 +15850,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"utrie@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "utrie@npm:1.0.2"
+  dependencies:
+    base64-arraybuffer: ^1.0.2
+  checksum: c96fbb7d4d8855a154327da0b18e39b7511cc70a7e4bcc3658e24f424bb884312d72b5ba777500b8858e34d365dc6b1a921dc5ca2f0d341182519c6b78e280a5
+  languageName: node
+  linkType: hard
+
 "uuid@npm:^7.0.3":
   version: 7.0.3
   resolution: "uuid@npm:7.0.3"
@@ -15829,7 +15934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"warn-once@npm:^0.1.0":
+"warn-once@npm:0.1.1, warn-once@npm:^0.1.0":
   version: 0.1.1
   resolution: "warn-once@npm:0.1.1"
   checksum: e6a5a1f5a8dba7744399743d3cfb571db4c3947897875d4962a7c5b1bf2195ab4518c838cb4cea652e71729f21bba2e98dc75686f5fccde0fabbd894e2ed0c0d
@@ -16251,7 +16356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^15.1.0":
+"yargs@npm:^15.1.0, yargs@npm:^15.3.1":
   version: 15.4.1
   resolution: "yargs@npm:15.4.1"
   dependencies:

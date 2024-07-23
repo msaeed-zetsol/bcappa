@@ -12,6 +12,7 @@ import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import { Images, Fonts } from "../../constants";
 import {
   CommonActions,
+  StackActions,
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
@@ -191,7 +192,21 @@ const BcDetailsScreen = () => {
           backgroundColor={newColorTheme.BACKGROUND_COLOR}
         />
         <View px={horizontalScale(20)}>
-          <Heading name={"BC Details"} onPress={navigation.goBack} />
+          <Heading
+            name={"BC Details"}
+            onPress={() => {
+              if (deeplink) {
+                navigation.dispatch(
+                  StackActions.replace("BottomNavigator", {
+                    screen: "HomeScreen",
+                    show: false,
+                  })
+                );
+              } else {
+                navigation.goBack();
+              }
+            }}
+          />
         </View>
         {!loadScreen &&
           bcData[0].status === BcStatus.Pending &&

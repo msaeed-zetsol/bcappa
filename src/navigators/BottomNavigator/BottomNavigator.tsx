@@ -10,6 +10,7 @@ import MyBcsScreen from "../../screens/My BC's Screen/MyBcsScreen";
 import ExploreScreen from "../../screens/Explore Screen/ExploreScreen";
 import NotificationScreen from "../../screens/notifications/NotificationScreen";
 import ProfileScreen from "../../screens/Profile Screen/ProfileScreen";
+import BcCreated from "../../screens/CreateNewBc/BcCreated";
 
 const Tab = createBottomTabNavigator();
 

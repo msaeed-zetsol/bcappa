@@ -59,8 +59,14 @@ import RedLock from '../assets/svg/RedLock.svg';
 import Global from '../assets/svg/Global.svg';
 import Not_Members_Found from '../assets/svg/not_membersfound.svg';
 import DragIcon from '../assets/svg/dragIcon.svg';
+import QuestionMark from "../assets/svg/QuestionMark.svg";
+import TermsAndConditions from "../assets/svg/TermsAndConditions.svg";
+import Rewards from "../assets/svg/Rewards.svg";
 
 export default {
+  QuestionMark,
+  TermsAndConditions,
+  Rewards,
   Logo,
   Not_Members_Found,
   DragIcon,

@@ -82,7 +82,7 @@ export const notificationListener = async (navigation?: any) => {
       // TODO(khuram): handle what happens to notification according to its type.
     });
 
-    // returns when app is opened from quite state upon notification click.
+    // returns when app is opened from quit state upon notification click.
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {

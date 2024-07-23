@@ -17,8 +17,30 @@ import SeeAll from "../../screens/HomeScreen/SeeAll";
 import AddMembers from "../../screens/CreateNewBc/AddMembers";
 import BcDetailsScreen from "../../screens/My BC's Screen/BcDetailsScreen";
 import SummaryScreen from "../../screens/My BC's Screen/SummaryScreen";
+import BcCreated from "../../screens/CreateNewBc/BcCreated";
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  AuthStack: undefined;
+  BottomNavigator: undefined;
+  TermsAndConditions: undefined;
+  BcCreated: { bcId: string };
+  BcDetailsScreen: undefined;
+  UserSchedule: undefined;
+  SummaryScreen: undefined;
+  VerifiedAccountDetails: undefined;
+  PersonalInformation: undefined;
+  FaqAndSupport: undefined;
+  Language: undefined;
+  MyRewards: undefined;
+  JazzDostVerification: undefined;
+  JazzDostSignup: undefined;
+  NewBc: undefined;
+  AddMembers: undefined;
+  SeeAll: undefined;
+  UpdateBc: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const StackNavigator = () => {
   return (
@@ -60,6 +82,7 @@ const StackNavigator = () => {
 
       <Stack.Screen name="SeeAll" component={SeeAll} />
       <Stack.Screen name="UpdateBc" component={UpdateBc} />
+      <Stack.Screen name="BcCreated" component={BcCreated} />
     </Stack.Navigator>
   );
 };

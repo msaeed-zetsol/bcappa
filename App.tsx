@@ -11,12 +11,17 @@ import { RootState } from "./src/redux/store";
 import ErrorModal from "./src/components/ErrorModal";
 import messaging from "@react-native-firebase/messaging";
 import { PermissionsAndroid } from "react-native";
+import dynamicLinks from "@react-native-firebase/dynamic-links";
+import { StackActions, useNavigation } from "@react-navigation/native";
+
+const DEEP_LINK_BASE_URL = "https://invertase.io/offer?id=";
 
 export default function App() {
   const { message, value }: any = useSelector(
     (state: RootState) => state.users.ErrorModal
   );
   const theme = extendTheme({ colors: newColorTheme });
+  const navigation = useNavigation();
 
   useEffect(() => {
     requestUserPermission();
@@ -31,6 +36,21 @@ export default function App() {
       onDisplayNotification(remoteMessage);
     });
 
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = dynamicLinks().onLink((link) => {
+      const id = link.url.split("id=")[1];
+      if (link.url === `${DEEP_LINK_BASE_URL}${id}`) {
+        navigation.dispatch(
+          StackActions.replace("BcDetailsScreen", {
+            item: id,
+            deeplink: true,
+          })
+        );
+      }
+    });
     return unsubscribe;
   }, []);
 

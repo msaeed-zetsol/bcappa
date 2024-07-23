@@ -97,80 +97,78 @@ const LoginScreen = () => {
     }
   };
 
-
-
   // =============Facebook login===============
   const facebookLogin = async () => {
     try {
-      const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
-      console.log('result', result)
+      const result = await LoginManager.logInWithPermissions([
+        "public_profile",
+        "email",
+      ]);
+      console.log("result", result);
       if (result.isCancelled) {
-        console.log('Login cancelled');
+        console.log("Login cancelled");
         return;
       }
       const data = await AccessToken.getCurrentAccessToken();
 
       if (!data) {
-        throw new Error('Something went wrong obtaining access token');
+        throw new Error("Something went wrong obtaining access token");
       }
 
       const responseInfoCallback = async (error: any, result: any) => {
         if (error) {
-          console.log('Error fetching data:', error);
+          console.log("Error fetching data:", error);
         } else {
           try {
-            const getToken: any = await AsyncStorage.getItem('fcmToken');
+            const getToken: any = await AsyncStorage.getItem("fcmToken");
             const parsedFcmToken: any = await JSON.parse(getToken);
 
             const datas = {
               ...result,
               fcmToken: parsedFcmToken,
-              role: 'customer',
+              role: "customer",
             };
 
             const response = await apimiddleWare({
-              url: '/auth/login/facebook',
-              method: 'post',
+              url: "/auth/login/facebook",
+              method: "post",
               data: datas,
             });
 
             if (response) {
               const loginUserDataString = JSON.stringify(response);
-              await AsyncStorage.setItem('loginUserData', loginUserDataString);
-              navigation.replace('BottomNavigator', {
-                screen: 'HomeScreen',
+              await AsyncStorage.setItem("loginUserData", loginUserDataString);
+              navigation.replace("BottomNavigator", {
+                screen: "HomeScreen",
                 params: {
-                  screenName: 'Login',
+                  screenName: "Login",
                 },
               });
             }
           } catch (apiError) {
-            console.log('Error in API call:', apiError);
+            console.log("Error in API call:", apiError);
           }
         }
       };
 
       const infoRequest = new GraphRequest(
-        '/me',
+        "/me",
         {
           accessToken: data.accessToken,
           parameters: {
             fields: {
-              string: 'id,name,email',
+              string: "id,name,email",
             },
           },
         },
-        responseInfoCallback,
+        responseInfoCallback
       );
-
 
       new GraphRequestManager().addRequest(infoRequest).start();
     } catch (error) {
-      console.log('Error:', error);
+      console.log("Error:", error);
     }
   };
-
-
 
   const logoutSocialLogIn = async () => {
     try {
@@ -444,11 +442,10 @@ const LoginScreen = () => {
             textAlign={"center"}
             fontFamily={Fonts.POPPINS_MEDIUM}
           >
-            {" "}
             {t("google")}
           </Text>
         </Pressable>
-        <Pressable
+        {/* <Pressable
           style={styles.socialButton}
           onPress={facebookLogin}
           // onPress={logoutSocialLogIn}
@@ -465,7 +462,7 @@ const LoginScreen = () => {
             {" "}
             {t("facebook")}
           </Text>
-        </Pressable>
+        </Pressable> */}
       </View>
       <View
         alignItems={"center"}
@@ -514,7 +511,7 @@ const styles = StyleSheet.create({
     borderColor: "#CCCCCC",
     borderWidth: 1,
     borderRadius: 16,
-    width: "48%",
+    width: "100%",
     justifyContent: "center",
   },
 });

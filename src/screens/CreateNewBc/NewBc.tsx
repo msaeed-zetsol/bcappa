@@ -113,10 +113,15 @@ const NewBc = () => {
             navigation,
           });
           if (response) {
-            console.log({ response });
+            console.log(`Bc is created: ${JSON.stringify(response)}`);
             setIsDisabled(false);
 
             dispatch(setMembers([]));
+            // navigation.dispatch(
+            //   CommonActions.navigate("BcCreated", {
+            //     bcId: response.id,
+            //   })
+            // );
             navigation.goBack();
           }
           setIsDisabled(false);
@@ -141,10 +146,7 @@ const NewBc = () => {
     });
   };
 
-
-
   return (
-
     <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
       <StatusBar backgroundColor={newColorTheme.BACKGROUND_COLOR} />
       <Heading
@@ -156,7 +158,7 @@ const NewBc = () => {
       />
       <Box mt={verticalScale(40)}></Box>
       <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false}>
-      {modalView && (
+        {modalView && (
           <Message
           Photo={() => <Images.AccountNotVerified />}
           message={t("member_can_not_be_more_than_max_members")}
