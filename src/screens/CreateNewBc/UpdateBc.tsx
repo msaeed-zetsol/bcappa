@@ -68,8 +68,8 @@ const UpdateBc = () => {
     calculateTotal();
   }, [maxUsers, amountPerMonth]);
   const calculateTotal = () => {
-    if (amountPerMonth && typeof amountPerMonth === 'string') {
-      const formattedAmount = amountPerMonth.split(",").join("");
+    if (amountPerMonth && amountPerMonth !== "") {
+      const formattedAmount = amountPerMonth;
       setBcTotal(numberformatter.format(+maxUsers * +formattedAmount));
     } else {
       setBcTotal(numberformatter.format(0));
@@ -371,12 +371,9 @@ const UpdateBc = () => {
             >
               {t("total_expected_bc_amount")}
               {": "}
-              <Text
-                color={"PRIMARY_COLOR"}
-                fontFamily={Fonts.POPPINS_SEMI_BOLD}
-              >
-                Rs. {totalExpected}
-              </Text>
+              <Text color={"PRIMARY_COLOR"} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
+              Rs. {bcTotal}
+            </Text>
             </Text>
           </FormControl>
           <View

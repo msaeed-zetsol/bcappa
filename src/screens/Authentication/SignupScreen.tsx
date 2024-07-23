@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  StatusBar,
   TouchableOpacity,
   ScrollView,
   Modal,
@@ -43,6 +42,8 @@ import globalStyles from "../../styles/global";
 import { useAppDispatch } from "../../hooks/hooks";
 import CountryCodePicker from "../../components/CountryCodePicker";
 import Message from "../../components/AlertMessage";
+import AppBar from "../../components/AppBar";
+import { setMembers } from "../../redux/members/membersSlice";
 
 const SignupScreen = () => {
   const [show, setShow] = useState(false);
@@ -195,10 +196,6 @@ const SignupScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar
-        backgroundColor={newColorTheme.WHITE_COLOR}
-        barStyle={"dark-content"}
-      />
       {!toggleCheckBox && (
         <Message
           Photo={() => <Images.AccountNotVerified />}
@@ -252,35 +249,13 @@ const SignupScreen = () => {
           negativeButton={{ label: "Cancel", textColor: Colors.PRIMARY_COLOR }}
         />
       )}
-
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
+    <AppBar
+        name={t("sign_up")}
+        onPress={() => {
+          dispatch(setMembers([]));
+          navigation.goBack();
         }}
-      >
-        <Pressable
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Images.BackButton
-            width={horizontalScale(50)}
-            height={verticalScale(50)}
-            style={{
-              transform: [{ rotateY: I18nManager.isRTL ? "180deg" : "0deg" }],
-            }}
-          />
-        </Pressable>
-        <Text
-          fontSize="2xl"
-          color="BLACK_COLOR"
-          ml="5"
-          fontFamily={Fonts.POPPINS_SEMI_BOLD}
-        >
-          {t("sign_up")}
-        </Text>
-      </View>
+      />
       <Text
         color="GREY"
         fontSize="md"
@@ -354,6 +329,7 @@ const SignupScreen = () => {
                     onBlur={onBlur}
                     onChange={onChange}
                     value={value}
+                    maxLength={10}
                     keyboardType={"number-pad"}
                     InputLeftElement={
                       <Pressable
