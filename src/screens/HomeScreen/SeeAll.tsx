@@ -1,8 +1,7 @@
-import { StatusBar, FlatList, ActivityIndicator } from "react-native";
+import {  FlatList, ActivityIndicator } from "react-native";
 import { View, Text, Avatar, Button } from "native-base";
 import React, { useEffect, useState } from "react";
 import { newColorTheme } from "../../constants/Colors";
-import Heading from "../../components/Heading";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import {
   useRoute,
@@ -13,6 +12,7 @@ import {
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 import { Fonts, Colors } from "../../constants";
 import { useTranslation } from "react-i18next";
+import AppBar from "../../components/AppBar";
 
 const SeeAll = () => {
   const route: any = useRoute();
@@ -56,12 +56,8 @@ const SeeAll = () => {
 
   return (
     <View flex={1} bg={"BACKGROUND_COLOR"}>
-      <StatusBar
-        barStyle={"dark-content"}
-        backgroundColor={newColorTheme.BACKGROUND_COLOR}
-      />
       <View px={horizontalScale(20)}>
-        <Heading name={name} onPress={navigation.goBack} />
+        <AppBar name={name} onPress={navigation.goBack} />
       </View>
       {!isLoading ? (
         <FlatList

@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  StatusBar,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
@@ -21,7 +20,6 @@ import { Fonts } from "../../constants";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import TextFieldComponent from "../../components/TextFieldComponent";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Heading from "../../components/Heading";
 import {
   apimiddleWare,
   removeEmptyProperties,
@@ -33,6 +31,7 @@ import parsePhoneNumber, { PhoneNumber } from "libphonenumber-js";
 import { useTranslation } from "react-i18next";
 import CountryCodePicker from "../../components/CountryCodePicker";
 import { apply } from "../../scope-functions";
+import AppBar from "../../components/AppBar";
 
 const initialDate = new Date();
 initialDate.setDate(initialDate.getDate() - 1); // Set initial date to one day before today
@@ -143,11 +142,7 @@ const PersonalInformationScreen = () => {
   return (
     <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
       <ScrollView>
-        <StatusBar
-          barStyle={"dark-content"}
-          backgroundColor={newColorTheme.BACKGROUND_COLOR}
-        />
-        <Heading
+        <AppBar
           name={t("personal_information")}
           onPress={() =>
             navigation.dispatch(CommonActions.navigate("ProfileScreen"))

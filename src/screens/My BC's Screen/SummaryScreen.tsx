@@ -1,13 +1,13 @@
-import {StyleSheet, StatusBar, ScrollView, Modal} from 'react-native';
-import React, {useState} from 'react';
-import {View, Text, Radio, Button} from 'native-base';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import {Fonts, Images} from '../../constants';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {newColorTheme} from '../../constants/Colors';
-import Heading from '../../components/Heading';
-import {apimiddleWare} from '../../utilities/HelperFunctions';
+import { StyleSheet, StatusBar, ScrollView, Modal } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Radio, Button } from 'native-base';
+import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
+import { Fonts, Images } from '../../constants';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { newColorTheme } from '../../constants/Colors';
+import { apimiddleWare } from '../../utilities/HelperFunctions';
 import { useTranslation } from "react-i18next";
+import AppBar from '../../components/AppBar';
 
 const SummaryScreen = () => {
   const paymentMethod = [
@@ -82,12 +82,8 @@ const SummaryScreen = () => {
 
   return (
     <View backgroundColor={newColorTheme.BACKGROUND_COLOR} flex={1}>
-      <StatusBar
-        barStyle={"dark-content"}
-        backgroundColor={newColorTheme.BACKGROUND_COLOR}
-      />
       <View mx={horizontalScale(20)}>
-        <Heading name={t("summary")} onPress={navigation.goBack} />
+        <AppBar name={t("summary")} onPress={navigation.goBack} />
       </View>
       <ScrollView
         contentContainerStyle={{ paddingBottom: verticalScale(10) }}

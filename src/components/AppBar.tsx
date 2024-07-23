@@ -1,23 +1,29 @@
 import React from "react";
-import { I18nManager, TouchableOpacity } from "react-native";
+import { I18nManager, StatusBar, TouchableOpacity } from "react-native";
 import { View, Text } from "native-base";
 import { horizontalScale, verticalScale } from "../utilities/Dimensions";
 import { Fonts, Images } from "../constants";
+import { newColorTheme } from "../constants/Colors";
 
-type HeadingProps = {
+type AppBarProps = {
   name: string;
   color?: string;
   onPress: () => void;
 };
 
-const Heading = ({ name, color = "#06202E", onPress }: HeadingProps) => {
+const AppBar: React.FC<AppBarProps> = ({ name, color = "#06202E", onPress }) => {
   return (
+
     <View
       flexDirection="row"
       alignItems="center"
       mt={verticalScale(25)}
-      justifyContent={"center"}
+      justifyContent="center"
     >
+      <StatusBar
+        barStyle={"dark-content"}
+        backgroundColor={newColorTheme.BACKGROUND_COLOR}
+      />
       <TouchableOpacity
         style={{
           position: "absolute",
@@ -45,4 +51,4 @@ const Heading = ({ name, color = "#06202E", onPress }: HeadingProps) => {
   );
 };
 
-export default Heading;
+export default AppBar;

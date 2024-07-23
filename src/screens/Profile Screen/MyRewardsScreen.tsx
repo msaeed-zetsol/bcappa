@@ -3,10 +3,10 @@ import {View, Text} from 'native-base';
 import {StatusBar} from 'react-native';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
 import Colors, {newColorTheme} from '../../constants/Colors';
-import Heading from '../../components/Heading';
 import {useNavigation} from '@react-navigation/native';
 import {Fonts, Images} from '../../constants';
 import { useTranslation } from "react-i18next";
+import AppBar from '../../components/AppBar';
 
 const MyRewardsScreen = () => {
   const navigation = useNavigation();
@@ -23,7 +23,7 @@ const MyRewardsScreen = () => {
         px={horizontalScale(20)}
         height={verticalScale(300)}
       >
-        <Heading
+        <AppBar
           name={t("rewards")}
           onPress={navigation.goBack}
           color={Colors.WHITE_COLOR}

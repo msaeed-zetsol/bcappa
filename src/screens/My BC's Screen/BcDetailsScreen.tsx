@@ -1,5 +1,4 @@
 import {
-  StatusBar,
   FlatList,
   ActivityIndicator,
   ScrollView,
@@ -23,12 +22,12 @@ import {
   BcType,
 } from "../../lookups/Enums";
 import Colors, { newColorTheme } from "../../constants/Colors";
-import Heading from "../../components/Heading";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import InfoModal from "../../components/InfoModal";
 import { useTranslation } from "react-i18next";
+import AppBar from "../../components/AppBar";
 
 const BcDetailsScreen = () => {
   const routes: any = useRoute();
@@ -187,12 +186,8 @@ const BcDetailsScreen = () => {
   const MemoizedComponent = useMemo(() => {
     return (
       <View flex={1} bg={"BACKGROUND_COLOR"}>
-        <StatusBar
-          barStyle={"dark-content"}
-          backgroundColor={newColorTheme.BACKGROUND_COLOR}
-        />
         <View px={horizontalScale(20)}>
-          <Heading
+          <AppBar
             name={"BC Details"}
             onPress={() => {
               if (deeplink) {
@@ -508,7 +503,7 @@ const BcDetailsScreen = () => {
                             fontSize={"sm"}
                           >
                             {item?.openingPrecedence &&
-                            item?.bcMemberStatus === BcMemberStatus.Opened
+                              item?.bcMemberStatus === BcMemberStatus.Opened
                               ? `${item?.bcMemberStatus} #${item?.openingPrecedence}`
                               : ""}
                           </Text>
@@ -582,7 +577,7 @@ const BcDetailsScreen = () => {
                                 fontFamily: Fonts.POPPINS_SEMI_BOLD,
                               }}
                             >
-                             {t("phone")}:
+                              {t("phone")}:
                               <Text
                                 style={{
                                   fontFamily: Fonts.POPPINS_MEDIUM,
@@ -639,8 +634,8 @@ const BcDetailsScreen = () => {
                           backgroundColor={"PRIMARY_COLOR"}
                         >
                           {bcData[0].type === BcType.Private &&
-                          item?.user?.id === userData?.id &&
-                          !isAdmin
+                            item?.user?.id === userData?.id &&
+                            !isAdmin
                             ? t("view_payments")
                             : t("pay_now")}
                         </Button>

@@ -1,4 +1,3 @@
-import {StatusBar} from 'react-native';
 import React, {useState} from 'react';
 import {
   View,
@@ -11,7 +10,6 @@ import {
   Button,
 } from 'native-base';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import Heading from '../../components/Heading';
 import Colors, {newColorTheme} from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import {Fonts} from '../../constants';
@@ -20,6 +18,7 @@ import DatePicker from "react-native-date-picker";
 import TextFieldComponent from "../../components/TextFieldComponent";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
+import AppBar from '../../components/AppBar';
 
 const JazzDostSignup = () => {
   const navigation = useNavigation();
@@ -64,11 +63,7 @@ const JazzDostSignup = () => {
       pt={verticalScale(15)}
       px={horizontalScale(20)}
     >
-      <StatusBar
-        barStyle={"dark-content"}
-        backgroundColor={newColorTheme.BACKGROUND_COLOR}
-      />
-      <Heading name="" onPress={navigation.goBack} />
+      <AppBar name="" onPress={navigation.goBack} />
       <View mt={verticalScale(40)}>
         <Text fontSize={verticalScale(22)} fontFamily={Fonts.POPPINS_BOLD}>
           {t("welcome_to_dost")}

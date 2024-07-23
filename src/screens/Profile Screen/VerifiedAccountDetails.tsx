@@ -1,4 +1,4 @@
-import { StyleSheet, StatusBar, Modal } from "react-native";
+import { StyleSheet, Modal } from "react-native";
 import React, { useState } from "react";
 import {
   Button,
@@ -15,8 +15,8 @@ import { Fonts, Images } from "../../constants";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { CountryPicker } from "react-native-country-codes-picker";
-import Heading from "../../components/Heading";
 import { useTranslation } from "react-i18next";
+import AppBar from "../../components/AppBar";
 
 const VerifiedAccountDetails = () => {
   const navigation = useNavigation();
@@ -27,10 +27,6 @@ const VerifiedAccountDetails = () => {
 
   return (
     <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
-      <StatusBar
-        barStyle={"dark-content"}
-        backgroundColor={newColorTheme.BACKGROUND_COLOR}
-      />
       <Modal visible={showDropdown} transparent={true} animationType="slide">
         <CountryPicker
           lang={"en"}
@@ -48,7 +44,7 @@ const VerifiedAccountDetails = () => {
           onBackdropPress={() => setShowDropdown(false)}
         />
       </Modal>
-      <Heading name={t("verify_account")} onPress={navigation.goBack} />
+      <AppBar name={t("verify_account")} onPress={navigation.goBack} />
       <View mt={7} alignItems="center">
         <Images.Congratulations />
         <Text

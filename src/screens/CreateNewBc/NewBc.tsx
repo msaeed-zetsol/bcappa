@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  StatusBar,
   TouchableOpacity,
   Linking,
   Alert,
@@ -24,7 +23,6 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import { Fonts, Images } from "../../constants";
 import ToggleSwitch from "toggle-switch-react-native";
-import Heading from "../../components/Heading";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 import { BcSelectionType, BcType } from "../../lookups/Enums";
 import TextFieldComponent from "../../components/TextFieldComponent";
@@ -35,6 +33,7 @@ import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import globalStyles from "../../styles/global";
 import Message from "../../components/AlertMessage";
+import AppBar from "../../components/AppBar";
 
 const NewBc = () => {
   const numberformatter = useMemo(() => new Intl.NumberFormat(), []);
@@ -148,8 +147,7 @@ const NewBc = () => {
 
   return (
     <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
-      <StatusBar backgroundColor={newColorTheme.BACKGROUND_COLOR} />
-      <Heading
+      <AppBar
         name={t("create_new_bc")}
         onPress={() => {
           dispatch(setMembers([]));
@@ -160,25 +158,25 @@ const NewBc = () => {
       <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false}>
         {modalView && (
           <Message
-          Photo={() => <Images.AccountNotVerified />}
-          message={t("member_can_not_be_more_than_max_members")}
-          buttonText={t("ok")}
-          callback={() => setModalVisible(false)}
-          secondButtonText={t("Cancel")}
-          secondCallback={() => setModalVisible(false)}
-          show={modalVisible}
-        />
+            Photo={() => <Images.AccountNotVerified />}
+            message={t("member_can_not_be_more_than_max_members")}
+            buttonText={t("ok")}
+            callback={() => setModalVisible(false)}
+            secondButtonText={t("Cancel")}
+            secondCallback={() => setModalVisible(false)}
+            show={modalVisible}
+          />
         )}
         {modalVisible && (
           <Message
-          Photo={() => <Images.AccountNotVerified />}
-          message={t("please_add_members")}
-          buttonText={t("ok")}
-          callback={() => setModalVisible(false)}
-          secondButtonText={t("cancel")}
-          secondCallback={() => setModalVisible(false)}
-          show={modalVisible}
-        />
+            Photo={() => <Images.AccountNotVerified />}
+            message={t("please_add_members")}
+            buttonText={t("ok")}
+            callback={() => setModalVisible(false)}
+            secondButtonText={t("cancel")}
+            secondCallback={() => setModalVisible(false)}
+            show={modalVisible}
+          />
         )}
         <FormControl w="100%">
           <Controller

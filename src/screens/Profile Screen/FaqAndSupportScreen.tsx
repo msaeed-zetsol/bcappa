@@ -1,13 +1,13 @@
-import { StyleSheet, StatusBar } from "react-native";
+import { StyleSheet } from "react-native";
 import React from "react";
 import { View } from "native-base";
 import { verticalScale, horizontalScale } from "../../utilities/Dimensions";
 import { useNavigation } from "@react-navigation/native";
 import { newColorTheme } from "../../constants/Colors";
 import ProfileInformationRow from "../../components/ProfileInformationRow";
-import Heading from "../../components/Heading";
 import { useTranslation } from "react-i18next";
 import { Images } from "../../constants";
+import AppBar from "../../components/AppBar";
 
 const FaqAndSupportScreen = () => {
   const navigation = useNavigation();
@@ -20,33 +20,29 @@ const FaqAndSupportScreen = () => {
       pt={verticalScale(15)}
       px={horizontalScale(22)}
     >
-      <StatusBar
-        barStyle={"dark-content"}
-        backgroundColor={newColorTheme.BACKGROUND_COLOR}
-      />
-      <Heading name={t("faqs")} onPress={navigation.goBack} />
+      <AppBar name={t("faqs")} onPress={navigation.goBack} />
       <View mt={verticalScale(30)} />
       <ProfileInformationRow
         heading={t("what_is_bcappa")}
-        onPress={() => {}}
+        onPress={() => { }}
         startIcon={{ Icon: Images.AccountNotVerified }}
         endIconMode={"navigation"}
       />
       <ProfileInformationRow
         heading={t("general_information")}
-        onPress={() => {}}
+        onPress={() => { }}
         startIcon={{ Icon: Images.AccountNotVerified }}
         endIconMode={"navigation"}
       />
       <ProfileInformationRow
         heading={t("payments")}
-        onPress={() => {}}
+        onPress={() => { }}
         startIcon={{ Icon: Images.AccountNotVerified }}
         endIconMode={"navigation"}
       />
       <ProfileInformationRow
         heading={t("how_it_works")}
-        onPress={() => {}}
+        onPress={() => { }}
         startIcon={{ Icon: Images.AccountNotVerified }}
         endIconMode={"navigation"}
       />

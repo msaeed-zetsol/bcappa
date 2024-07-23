@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import { View, Text, Pressable, Icon, Button } from "native-base";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import Colors, { newColorTheme } from "../../constants/Colors";
-import Heading from "../../components/Heading";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { Fonts, Images } from "../../constants";
 import TextFieldComponent from "../../components/TextFieldComponent";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { CountryPicker } from "react-native-country-codes-picker";
 import { useTranslation } from "react-i18next";
+import AppBar from "../../components/AppBar";
 
 const JazzDostVerificationScreen = () => {
   const navigation = useNavigation();
@@ -27,11 +27,7 @@ const JazzDostVerificationScreen = () => {
       pt={verticalScale(15)}
       px={horizontalScale(20)}
     >
-      <StatusBar
-        barStyle={"dark-content"}
-        backgroundColor={newColorTheme.BACKGROUND_COLOR}
-      />
-      <Heading name={t("jazz_dost_verification")} onPress={navigation.goBack} />
+      <AppBar name={t("jazz_dost_verification")} onPress={navigation.goBack} />
       <View flexDirection={"row"} alignItems={"center"} mt={verticalScale(30)}>
         <Text
           color={Colors.GREY}

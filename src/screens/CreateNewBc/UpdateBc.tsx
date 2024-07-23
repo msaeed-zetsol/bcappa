@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  StatusBar,
   TouchableOpacity,
   Platform,
   ScrollView,
@@ -29,7 +28,6 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { Fonts, Images } from "../../constants";
 import ToggleSwitch from "toggle-switch-react-native";
-import Heading from "../../components/Heading";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 import { BcSelectionType, BcStatus, BcType } from "../../lookups/Enums";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +36,7 @@ import { setMembers } from "../../redux/members/membersSlice";
 import { RootState } from "../../redux/store";
 import { removeMembers } from "../../redux/user/userSlice";
 import { useTranslation } from "react-i18next";
+import AppBar from "../../components/AppBar";
 
 const UpdateBc = () => {
   const navigation = useNavigation();
@@ -205,8 +204,7 @@ const UpdateBc = () => {
 
   return (
     <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
-      <StatusBar backgroundColor={newColorTheme.BACKGROUND_COLOR} />
-      <Heading
+      <AppBar
         name={t("update_bc")}
         onPress={() => {
           dispatch(setMembers([]));
@@ -369,12 +367,12 @@ const UpdateBc = () => {
               fontSize={"sm"}
               color={"GREY"}
             >
-              {t("total_expected_bc_amount")} 
+              {t("total_expected_bc_amount")}
               <Text
                 color={"PRIMARY_COLOR"}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
               >
-              {totalExpected}
+                {totalExpected}
               </Text>
             </Text>
           </FormControl>

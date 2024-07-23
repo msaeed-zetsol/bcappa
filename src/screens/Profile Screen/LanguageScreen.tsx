@@ -3,7 +3,6 @@ import { View } from "native-base";
 import { StatusBar, StyleSheet } from "react-native";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import { newColorTheme } from "../../constants/Colors";
-import Heading from "../../components/Heading";
 import { useNavigation } from "@react-navigation/native";
 import i18next, {
   findLanguageByCode,
@@ -13,6 +12,7 @@ import i18next, {
 import { t } from "i18next";
 import LanguageCheckable from "../../components/LanguageCheckable";
 import ForceRestartModal from "../../components/ForceRestartModal";
+import AppBar from "../../components/AppBar";
 
 const LanguageScreen = () => {
   const navigation = useNavigation();
@@ -30,7 +30,7 @@ const LanguageScreen = () => {
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
 
-      <Heading name={t("select_language")} onPress={navigation.goBack} />
+      <AppBar name={t("select_language")} onPress={navigation.goBack} />
 
       <View style={{ marginTop: verticalScale(50) }}>
         {languages.map((it) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, StatusBar, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   Text,
   Box,
@@ -16,7 +16,6 @@ import { useForm, Controller } from "react-hook-form";
 import { verticalScale } from "../../utilities/Dimensions";
 import Colors, { newColorTheme } from "../../constants/Colors";
 import { Fonts, Images } from "../../constants";
-import Heading from "../../components/Heading";
 import { useTranslation } from "react-i18next";
 import DraggableFlatList, {
   RenderItemParams,
@@ -25,6 +24,7 @@ import MemberListItem from "../../components/MemberListItem";
 import { setMembers } from "../../redux/members/membersSlice";
 import { store } from "../../redux/store";
 import { useAppDispatch } from "../../hooks/hooks";
+import AppBar from "../../components/AppBar";
 
 type RouteParams = {
   balloting: boolean;
@@ -96,9 +96,7 @@ const AddMembers = () => {
         paddingHorizontal: 24,
       }}
     >
-      <StatusBar backgroundColor={newColorTheme.BACKGROUND_COLOR} />
-
-      <Heading name={t("members")} onPress={navigation.goBack} />
+      <AppBar name={t("members")} onPress={navigation.goBack} />
 
       <Box mb={verticalScale(10)} mt={verticalScale(30)}>
         {!balloting && (

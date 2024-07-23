@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   StatusBar,
@@ -6,10 +6,9 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import {View, Text, Avatar, Button} from 'native-base';
-import Colors, {newColorTheme} from '../../constants/Colors';
-import Heading from '../../components/Heading';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
+import { View, Text, Avatar, Button } from 'native-base';
+import Colors, { newColorTheme } from '../../constants/Colors';
+import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
 import {
   CommonActions,
   useFocusEffect,
@@ -21,6 +20,7 @@ import { apimiddleWare } from "../../utilities/HelperFunctions";
 import { BcType } from "../../lookups/Enums";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import AppBar from '../../components/AppBar';
 
 const getCurrentAndPreviousMonthsPayments = (data: any) => {
   const currentDate = new Date();
@@ -159,12 +159,8 @@ const UserSchedule = () => {
 
   return (
     <View flex={1} bg={"BACKGROUND_COLOR"}>
-      <StatusBar
-        barStyle={"dark-content"}
-        backgroundColor={newColorTheme.BACKGROUND_COLOR}
-      />
       <View px={horizontalScale(20)}>
-        <Heading name={t("user_schedule")} onPress={navigation.goBack} />
+        <AppBar name={t("user_schedule")} onPress={navigation.goBack} />
       </View>
 
       {member.payments?.length > 0 && (
