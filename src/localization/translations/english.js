@@ -93,7 +93,7 @@ const newBcForm = {
   title_is_required: "Title is required",
   max_users: "Max Users",
   max_users_required: "Max Users are required",
-  amount_per_month: "Amount/Month",
+  amount_per_month: "Amount /Month",
   amount_per_month_required: "Amount Per Month is required",
   starting_date: "Starting Date",
   total_expected_bc_amount: "Total expected BC amount",
@@ -103,7 +103,8 @@ const newBcForm = {
   dont_know_how_to_add: "Don’t know how to add?",
   call_our_helpline: "Call Our Helpline",
   create: "Create",
-  member_can_not_be_more_than_max_members: "Members can not be more than max members",
+  member_can_not_be_more_than_max_members:
+    "Members can not be more than max members",
   please_add_members: "Please add members",
   total_expected_bc_amount: "Total expected BC amount",
   drag_to_arrange_bc_opening_number: "Drag to arrange BC opening number",

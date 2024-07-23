@@ -25,16 +25,19 @@ import { setMembers } from "../../redux/members/membersSlice";
 import { store } from "../../redux/store";
 import { useAppDispatch } from "../../hooks/hooks";
 import AppBar from "../../components/AppBar";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
 
 type RouteParams = {
+  bcId: string;
   balloting: boolean;
   maxUsers: number;
+  updatingBc: boolean;
 };
 
 const AddMembers = () => {
   const navigation = useNavigation();
   const route = useRoute<any>();
-  const { balloting, maxUsers } = route.params as RouteParams;
+  const { bcId, balloting, maxUsers, updatingBc } = route.params as RouteParams;
   const [openModal, setOpenModal] = useState(false);
   const [members, updateMembers] = useState<Member[]>(store.getState().members);
   const { t } = useTranslation();
@@ -53,15 +56,39 @@ const AddMembers = () => {
     },
   });
 
+  const removeBcMember = async (member: Member) => {
+    const data = {
+      bcId: bcId,
+      membersId: [member.id],
+    };
+
+    const response = await apimiddleWare({
+      url: "/bcs/private/remove-members",
+      method: "delete",
+      data: data,
+      reduxDispatch: dispatch,
+      navigation: navigation,
+    });
+
+    if (response) {
+      console.log(`Bc Member Removed: ${JSON.stringify(response)}`);
+    }
+  };
+
   const renderItem = ({ item, getIndex, drag }: RenderItemParams<Member>) => (
     <MemberListItem
       index={getIndex() ?? 0}
       member={item}
       onPressIn={drag}
-      onDelete={(precedence) => {
+      onDelete={(item) => {
         updateMembers(
-          members.filter((member) => member.openingPrecedence !== precedence)
+          members.filter(
+            (member) => member.openingPrecedence !== item.openingPrecedence
+          )
         );
+        if (updatingBc) {
+          removeBcMember(item);
+        }
       }}
     />
   );
@@ -76,7 +103,6 @@ const AddMembers = () => {
 
   useEffect(
     () => () => {
-      console.log("saving members");
       dispatch(
         setMembers(
           members.map((member, index) => {
@@ -100,7 +126,9 @@ const AddMembers = () => {
 
       <Box mb={verticalScale(10)} mt={verticalScale(30)}>
         {!balloting && (
-          <Text style={styles.details}>{t("drag_to_arrange_bc_opening_number")}</Text>
+          <Text style={styles.details}>
+            {t("drag_to_arrange_bc_opening_number")}
+          </Text>
         )}
       </Box>
 
@@ -305,8 +333,6 @@ const AddMembers = () => {
   );
 };
 
-export default AddMembers;
-
 const styles = StyleSheet.create({
   text: {
     fontSize: 22,
@@ -317,3 +343,5 @@ const styles = StyleSheet.create({
     fontSize: verticalScale(15),
   },
 });
+
+export default AddMembers;

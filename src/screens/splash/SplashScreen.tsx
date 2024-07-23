@@ -106,7 +106,7 @@ const SplashScreen = () => {
         } else {
           navigation.dispatch(StackActions.replace(destination));
         }
-      }, 4000);
+      }, 2000);
     }
   }, [status, destination]);
 

@@ -15,6 +15,7 @@ import {
   Box,
   Pressable,
   Icon,
+  Toast,
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -37,12 +38,15 @@ import { RootState } from "../../redux/store";
 import { removeMembers } from "../../redux/user/userSlice";
 import { useTranslation } from "react-i18next";
 import AppBar from "../../components/AppBar";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { apply } from "../../scope-functions";
 
 const UpdateBc = () => {
   const navigation = useNavigation();
-  const dispatch: any = useDispatch();
+  const dispatch = useAppDispatch();
   const route: any = useRoute();
   const { item } = route.params;
+
   const [bcData, setBcData] = useState<any>();
   const [disabled, setIsDisabled] = useState(false);
   const [scroll, setScroll] = useState(true);
@@ -50,24 +54,29 @@ const UpdateBc = () => {
   const [openDate, setOpenDate] = useState(false);
   const [showDate, setShowDate] = useState("");
   const [load, setLoad] = useState(true);
-  const members = useSelector((state: any) => state.members);
-  const remove: any = useSelector((state: RootState) => state.users.removeUser);
+  const [bcId, setBcId] = useState(0);
+  const members = useAppSelector((state) => state.members);
   const [totalExpected, setTotalExpected] = useState(0);
+  const [maxUsers, setMaxUsers] = useState(item.maxMembers);
   const [balloting, setBalloting] = useState(
     item.selectionType === BcSelectionType.Auto
   );
+  const [amountPerMonth, setAmountPerMonth] = useState(item.amount);
   const { t } = useTranslation();
 
   const calculateTotalExpected = () => {
-    return item.amount * item.maxMembers;
+    return amountPerMonth * maxUsers;
   };
+
   useEffect(() => {
     return setTotalExpected(calculateTotalExpected());
-  }, []);
+  }, [amountPerMonth, maxUsers]);
 
-  let currentDate = new Date();
-  let nextDay = new Date(currentDate);
-  nextDay.setDate(currentDate.getDate() + 1);
+  const getNextDay = () => {
+    return apply(new Date(), (date) => {
+      return date.setDate(date.getDate() + 1);
+    });
+  };
 
   const getData = async () => {
     setLoad(true);
@@ -76,6 +85,7 @@ const UpdateBc = () => {
       method: "get",
     });
     if (response) {
+      setBcId(response[0].id);
       console.log({ sayen: response[0].bcMembers });
       setBcData(response[0]);
       response[0].bcMembers.sort(
@@ -100,6 +110,7 @@ const UpdateBc = () => {
     }
     setLoad(false);
   };
+
   const {
     control: newBcControl,
     handleSubmit: handleNewBcSubmit,
@@ -112,19 +123,6 @@ const UpdateBc = () => {
     },
   });
 
-  const {
-    control: addMembersControl,
-    handleSubmit: handleAddMembersSubmit,
-    formState: { errors: addMemberError },
-    reset,
-  } = useForm({
-    defaultValues: {
-      fullName: "",
-      email: "",
-      phone: "",
-      openingPrecedence: 0,
-    },
-  });
 
   const handleDialPress = () => {
     const phoneNumberURL = "tel:03163110456";
@@ -133,33 +131,16 @@ const UpdateBc = () => {
     });
   };
 
-  const deleteMembers = async () => {
-    console.log({ membersstart: members });
-    const data = {
-      bcId: item.id,
-      membersId: remove,
-    };
-    const response = await apimiddleWare({
-      url: "/bcs/private/remove-members",
-      method: "delete",
-      data: data,
-      reduxDispatch: dispatch,
-    });
-    console.log({ data });
-    if (response) {
-      console.log({ saye: response });
-    }
-  };
   const updateBc = async (details: any) => {
-    console.group({ remove });
-    if (remove.length > 0) {
-      await deleteMembers();
+    console.log(`Max Users: ${maxUsers}`);
+    console.log(`Members Length: ${members.length}`)
+    const totalUsers = parseInt(maxUsers);
+    const membersLength = members.length;
+    if (totalUsers !== membersLength) {
+      Toast.show({ title: "Please edit members before continuing." });
+      return;
     }
 
-    console.log({ members });
-    const a = members.map((item: any, index: any) => {
-      item.openingPrecedence = index + 1;
-    });
     const finalMembers = members.map((item: any) => {
       return {
         fullName: item?.fullName,
@@ -168,8 +149,9 @@ const UpdateBc = () => {
         openingPrecedence: item?.openingPrecedence,
       };
     });
-    console.log({ members: finalMembers });
+
     setIsDisabled(true);
+
     const data = {
       title: details.title,
       status: BcStatus.Pending,
@@ -180,7 +162,7 @@ const UpdateBc = () => {
       bcMembers: finalMembers,
       commenceDate: date,
     };
-    console.log({ data_sayen: data });
+
     const response = await apimiddleWare({
       url: `/bcs/${item.id}`,
       method: "put",
@@ -188,13 +170,14 @@ const UpdateBc = () => {
       reduxDispatch: dispatch,
       navigation,
     });
+
     if (response) {
       console.log({ response });
       setIsDisabled(false);
       dispatch(removeMembers(null));
-
       navigation.goBack();
     }
+
     setIsDisabled(false);
   };
 
@@ -272,7 +255,10 @@ const UpdateBc = () => {
                       keyboardType="number-pad"
                       autoCorrect={false}
                       onBlur={onBlur}
-                      onChangeText={onChange}
+                      onChangeText={(text) => {
+                        setMaxUsers(text);
+                        onChange(text);
+                      }}
                       value={value}
                       borderColor="BORDER_COLOR"
                       placeholderTextColor={"GREY"}
@@ -314,7 +300,10 @@ const UpdateBc = () => {
                       keyboardType="number-pad"
                       autoCorrect={false}
                       onBlur={onBlur}
-                      onChangeText={onChange}
+                      onChangeText={(text) => {
+                        setAmountPerMonth(text);
+                        onChange(text);
+                      }}
                       value={value}
                       borderColor="BORDER_COLOR"
                       placeholderTextColor={"GREY"}
@@ -368,11 +357,12 @@ const UpdateBc = () => {
               color={"GREY"}
             >
               {t("total_expected_bc_amount")}
+              {": "}
               <Text
                 color={"PRIMARY_COLOR"}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
               >
-                {totalExpected}
+                Rs. {totalExpected}
               </Text>
             </Text>
           </FormControl>
@@ -413,7 +403,7 @@ const UpdateBc = () => {
               value={date}
               mode={"date"}
               display="default"
-              minimumDate={nextDay}
+              minimumDate={getNextDay()}
               onChange={(txt: any) => {
                 console.log("bhai");
                 setOpenDate(false);
@@ -447,7 +437,11 @@ const UpdateBc = () => {
             onPress={() => {
               navigation.dispatch(
                 CommonActions.navigate("AddMembers", {
+                  bcId: bcId,
                   balloting: balloting,
+                  members: members,
+                  maxUsers: maxUsers,
+                  updatingBc: true,
                 })
               );
             }}

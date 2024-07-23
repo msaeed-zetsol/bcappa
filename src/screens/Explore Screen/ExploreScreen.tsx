@@ -89,8 +89,10 @@ const ExploreScreen = () => {
       reduxDispatch: dispatch,
     });
 
+    console.log(`Swiped Response: ${JSON.stringify(response)}`);
+
     if (response) {
-      if (response?.status === "matched") {
+      if (response?.status === "joined") {
         setUser({
           userOne: response.userOne.fullName,
           userTwo: response.userTwo.fullName,

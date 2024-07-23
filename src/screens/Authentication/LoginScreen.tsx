@@ -80,6 +80,8 @@ const LoginScreen = () => {
         url: "/auth/login/google",
         method: "post",
         data: datas,
+        reduxDispatch: dispatch,
+        navigation: navigation,
       });
 
       if (response) {

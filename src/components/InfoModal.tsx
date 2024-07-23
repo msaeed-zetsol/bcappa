@@ -1,8 +1,8 @@
-import {StyleSheet, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
-import {Modal, Button, View, Text} from 'native-base';
-import {horizontalScale, verticalScale} from '../utilities/Dimensions';
-import {Images} from '../constants';
+import { StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { Modal, Button, View, Text } from "native-base";
+import { horizontalScale, verticalScale } from "../utilities/Dimensions";
+import { Images } from "../constants";
 
 type InfoModalProps = {
   Photo?: any;
@@ -36,15 +36,17 @@ const InfoModal = ({
         px={horizontalScale(30)}
         py={verticalScale(10)}
       >
-        <TouchableOpacity
-          onPress={onClose}
-          style={{
-            alignSelf: "flex-end",
-            marginTop: 4,
-          }}
-        >
-          <Images.Cross />
-        </TouchableOpacity>
+        {onClose && (
+          <TouchableOpacity
+            onPress={onClose}
+            style={{
+              alignSelf: "flex-end",
+              marginTop: 4,
+            }}
+          >
+            <Images.Cross />
+          </TouchableOpacity>
+        )}
         <Modal.Body>
           <View justifyContent={"center"} alignItems={"center"} mt={3}>
             <Photo />

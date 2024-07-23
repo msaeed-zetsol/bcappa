@@ -4,9 +4,8 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from "react-native";
-import { Member } from "../screens/CreateNewBc/AddMembers";
 import { Text, View } from "native-base";
-import { Colors, Fonts, Images } from "../constants";
+import { Fonts, Images } from "../constants";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { verticalScale } from "../utilities/Dimensions";
 import { blackPearl, deepSkyBlue, smoky } from "../constants/Colors";
@@ -16,7 +15,7 @@ type MemberListItemProps = {
   member: Member;
   index: number;
   onPressIn: () => void;
-  onDelete: (precedence: number) => void;
+  onDelete: (member: Member) => void;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -54,7 +53,7 @@ const MemberListItem = ({
 
       <TouchableOpacity
         style={{ marginEnd: 16 }}
-        onPress={() => onDelete(member.openingPrecedence)}
+        onPress={() => onDelete(member)}
       >
         <MaterialIcons name="close" size={25} color="red" />
       </TouchableOpacity>

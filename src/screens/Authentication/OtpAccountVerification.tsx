@@ -33,7 +33,7 @@ const OtpAccountVerification = () => {
   const [shows, setShows] = useState(show);
   const [timer, setTimer] = useState(60);
   const [resendNow, setResendNow] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isVerifyingLoading, setIsVerifyingLoading] = useState(false);
   const [whatTosend, setWhatToSend] = useState("phoneNumber");
   const { t } = useTranslation();
 
@@ -65,7 +65,7 @@ const OtpAccountVerification = () => {
     const parsedFcmToken: any = await JSON.parse(getToken);
 
     Keyboard.dismiss();
-    setIsLoading(true);
+    setIsVerifyingLoading(true);
 
     const data = {
       email: details.email,
@@ -98,12 +98,12 @@ const OtpAccountVerification = () => {
     } catch (e) {
       console.log(e);
     } finally {
-      setIsLoading(false);
+      setIsVerifyingLoading(false);
     }
   };
 
   const verifyOtp = async () => {
-    setIsLoading(true);
+    setIsVerifyingLoading(true);
     Keyboard.dismiss();
     const concatenatedOtp = Object.values(OTP).join("");
 
@@ -135,14 +135,14 @@ const OtpAccountVerification = () => {
       });
       if (response) {
         await LoginHandler(data);
-        setIsLoading(false);
+        setIsVerifyingLoading(false);
       }
     }
-    setIsLoading(false);
+    setIsVerifyingLoading(false);
   };
 
   const verifyToGivenInfo = async () => {
-    setIsLoading(true);
+    setIsVerifyingLoading(true);
     Keyboard.dismiss();
     const concatenatedOtp = Object.values(OTP).join("");
 
@@ -168,7 +168,7 @@ const OtpAccountVerification = () => {
 
     if (response) {
       console.log({ response });
-      setIsLoading(false);
+      setIsVerifyingLoading(false);
       navigation.dispatch(
         CommonActions.navigate("NewPassword", {
           data,
@@ -176,7 +176,7 @@ const OtpAccountVerification = () => {
       );
     }
 
-    setIsLoading(false);
+    setIsVerifyingLoading(false);
   };
 
   const sendOtp = async () => {
@@ -374,7 +374,6 @@ const OtpAccountVerification = () => {
       <View style={{ flexDirection: "column" }}>
         {resendNow && (
           <Button
-            isLoading={isLoading}
             variant="outline"
             _loading={{
               _text: {
@@ -399,8 +398,8 @@ const OtpAccountVerification = () => {
             borderRadius={16}
             borderColor={deepSkyBlue}
             borderWidth={2}
-            isDisabled={isLoading}
-            isPressed={isLoading}
+            isDisabled={isVerifyingLoading}
+            isPressed={isVerifyingLoading}
             onPress={() => {
               setResendNow(false);
               setTimer(60);
@@ -411,7 +410,7 @@ const OtpAccountVerification = () => {
           </Button>
         )}
         <Button
-          isLoading={isLoading}
+          isLoading={isVerifyingLoading}
           variant="solid"
           _loading={{
             _text: {
@@ -435,8 +434,8 @@ const OtpAccountVerification = () => {
           mt={verticalScale(resendNow ? 10 : 50)}
           p={"4"}
           borderRadius={16}
-          isDisabled={isLoading}
-          isPressed={isLoading}
+          isDisabled={isVerifyingLoading}
+          isPressed={isVerifyingLoading}
           onPress={() => {
             from === "forgot" ? verifyToGivenInfo() : verifyOtp();
           }}

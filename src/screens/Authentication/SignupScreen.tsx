@@ -93,6 +93,8 @@ const SignupScreen = () => {
         url: "/auth/login/google",
         method: "post",
         data: datas,
+        reduxDispatch: dispatch,
+        navigation: navigation,
       });
 
       if (response) {
@@ -147,7 +149,6 @@ const SignupScreen = () => {
     } else {
       if (!showDate) {
         setModalVisible(true);
-
       } else if (!toggleCheckBox) {
         setModalVisible(true);
       }
@@ -175,7 +176,6 @@ const SignupScreen = () => {
   };
 
   useEffect(() => {
-    locationPermission();
     return () => {
       reset({
         fullName: "",
@@ -199,7 +199,7 @@ const SignupScreen = () => {
         backgroundColor={newColorTheme.WHITE_COLOR}
         barStyle={"dark-content"}
       />
-      {!toggleCheckBox &&
+      {!toggleCheckBox && (
         <Message
           Photo={() => <Images.AccountNotVerified />}
           message={t("please_read_terms_and_conditions_and_privacy_policy")}
@@ -209,9 +209,8 @@ const SignupScreen = () => {
           secondCallback={() => setModalVisible(false)}
           show={modalVisible}
         />
-
-      }
-      {!showDate &&
+      )}
+      {!showDate && (
         <Message
           Photo={() => <Images.AccountNotVerified />}
           message={t("please_select_your_date_of_birth")}
@@ -221,7 +220,7 @@ const SignupScreen = () => {
           secondCallback={() => setModalVisible(false)}
           show={modalVisible}
         />
-      }
+      )}
       <CountryCodePicker
         visible={showCountryCodePicker}
         onDismiss={() => setShowCountryCodePicker(false)}
@@ -651,7 +650,7 @@ const SignupScreen = () => {
             <Images.Google />
             <Text
               pl="2"
-               pr="2"
+              pr="2"
               fontSize={verticalScale(16)}
               textAlign={"center"}
               fontFamily={Fonts.POPPINS_MEDIUM}
@@ -659,7 +658,7 @@ const SignupScreen = () => {
               {t("google")}
             </Text>
           </Pressable>
-          <Pressable
+          {/* <Pressable
             style={styles.socialButton}
             _pressed={{
               backgroundColor: "DISABLED_COLOR",
@@ -674,7 +673,7 @@ const SignupScreen = () => {
             >
               {t("facebook")}
             </Text>
-          </Pressable>
+          </Pressable> */}
         </View>
         <View
           alignItems={"center"}
@@ -724,7 +723,7 @@ const styles = StyleSheet.create({
     borderColor: "#CCCCCC",
     borderWidth: 1,
     borderRadius: 12,
-    width: "48%",
+    width: "100%",
     justifyContent: "center",
   },
 });

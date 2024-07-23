@@ -57,7 +57,17 @@ const NewBc = () => {
   }, [maxUsers, amountPerMonth]);
 
   const calculateTotal = () => {
-    setBcTotal(numberformatter.format(+maxUsers * +amountPerMonth));
+    setBcTotal(
+      numberformatter.format(+maxUsers * +amountPerMonth.replaceAll(",", ""))
+    );
+  };
+
+  const formatAmountPerMonth = (amount: string) => {
+    if (amount && amount !== "") {
+      return numberformatter.format(+amount.replaceAll(",", ""));
+    } else {
+      return "";
+    }
   };
 
   const {
@@ -275,7 +285,7 @@ const NewBc = () => {
                       setAmountPerMonth(text);
                       onChange(text);
                     }}
-                    value={value}
+                    value={formatAmountPerMonth(value)}
                     borderColor="BORDER_COLOR"
                     placeholderTextColor={"GREY"}
                     color={"BLACK_COLOR"}
@@ -400,9 +410,11 @@ const NewBc = () => {
           onPress={() => {
             navigation.dispatch(
               CommonActions.navigate("AddMembers", {
+                bcId: 0,
                 balloting: balloting,
                 members: members,
                 maxUsers: maxUsers,
+                updatingBc: false,
               })
             );
           }}
