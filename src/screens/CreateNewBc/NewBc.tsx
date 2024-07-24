@@ -80,6 +80,9 @@ const NewBc = () => {
       totalUsers: "",
       amountPerMonth: "",
     },
+    reValidateMode: "onChange",
+    mode: "onChange",
+    criteriaMode: "firstError",
   });
 
   const createBc = async (details: any) => {

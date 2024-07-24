@@ -54,6 +54,9 @@ const AddMembers = () => {
       phone: "",
       openingPrecedence: 0,
     },
+    reValidateMode: "onChange",
+    mode: "onChange",
+    criteriaMode: "firstError",
   });
 
   const removeBcMember = async (member: Member) => {

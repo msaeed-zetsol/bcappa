@@ -39,6 +39,9 @@ const JazzDostSignup = () => {
       cnicNumber: "",
       carrier: "",
     },
+    reValidateMode: "onChange",
+    mode: "onChange",
+    criteriaMode: "firstError",
   });
   const signupHandler = (details: any) => {
     setIsLoading(true);
@@ -157,6 +160,7 @@ const JazzDostSignup = () => {
                   onBlur={onBlur}
                   onChange={onChange}
                   keyboardType={"number-pad"}
+                  maxLength={10}
                   InputLeftElement={
                     <Pressable
                       onPress={() => setShowDropdown(true)}

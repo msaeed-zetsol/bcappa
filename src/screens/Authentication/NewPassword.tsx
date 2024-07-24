@@ -39,6 +39,9 @@ const NewPassword = () => {
       password: "",
       confirmPassword: "",
     },
+    reValidateMode: "onChange",
+    mode: "onChange",
+    criteriaMode: "firstError",
   });
 
   const changePass = async (details: {

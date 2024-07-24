@@ -55,6 +55,9 @@ const LoginScreen = () => {
       email: "",
       password: "",
     },
+    reValidateMode: "onChange",
+    mode: "onChange",
+    criteriaMode: "firstError",
   });
 
   const navigation: any = useNavigation();

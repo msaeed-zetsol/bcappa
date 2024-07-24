@@ -73,6 +73,9 @@ const SignupScreen = () => {
       password: "",
       gender: "",
     },
+    reValidateMode: "onChange",
+    mode: "onChange",
+    criteriaMode: "firstError",
   });
 
   const googleLogin = async () => {

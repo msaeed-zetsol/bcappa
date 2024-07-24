@@ -134,6 +134,9 @@ const UpdateBc = () => {
       totalUsers: String(item.maxMembers),
       amountPerMonth: String(item.amount),
     },
+    reValidateMode: "onChange",
+    mode: "onChange",
+    criteriaMode: "firstError",
   });
 
 
