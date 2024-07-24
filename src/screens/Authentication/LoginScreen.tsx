@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   Keyboard,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Images, Fonts } from "../../constants";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import { useForm, Controller } from "react-hook-form";
@@ -18,23 +18,28 @@ import {
   Icon,
   Button,
   View,
-} from 'native-base';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
-import { newColorTheme } from '../../constants/Colors';
-import { apimiddleWare } from '../../utilities/HelperFunctions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { requestUserPermission } from '../../firebase/Notifications';
-import { useDispatch } from 'react-redux';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+} from "native-base";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import {
+  CommonActions,
+  StackActions,
+  useNavigation,
+} from "@react-navigation/native";
+import { newColorTheme } from "../../constants/Colors";
+import { apimiddleWare } from "../../utilities/HelperFunctions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { requestUserPermission } from "../../firebase/Notifications";
+import { useDispatch } from "react-redux";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import {
   LoginManager,
   LoginButton,
   AccessToken,
   GraphRequest,
   GraphRequestManager,
-} from 'react-native-fbsdk-next';
-
+} from "react-native-fbsdk-next";
+import { useAppDispatch } from "../../hooks/hooks";
+import useAxios from "../../data/useAxios";
 
 GoogleSignin.configure({
   webClientId:
@@ -42,15 +47,24 @@ GoogleSignin.configure({
 });
 
 
+type LoginForm = {
+  email: string;
+  password: string;
+};
+
 const LoginScreen = () => {
   const { t } = useTranslation();
  
-  const dispatch: any = useDispatch();
+  const dispatch = useAppDispatch();
+  const navigation = useNavigation();
+  const [show, setShow] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<LoginForm>({
     defaultValues: {
       email: "",
       password: "",
@@ -60,12 +74,34 @@ const LoginScreen = () => {
     criteriaMode: "firstError",
   });
 
-  const navigation: any = useNavigation();
-  const [show, setShow] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [data, start, loading] = useAxios("/auth/login", "post", {
+    "Email or Password is Invalid.": "Incorrect Email or Password",
+  });
 
-  const handlePress = () => {
-    navigation.navigate("SignupScreen");
+  const login = async (loginDetails: LoginForm) => {
+    const token = await getFcmToken();
+    start({
+      data: {
+        email: loginDetails.email,
+        password: loginDetails.password,
+        fcmToken: token,
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (data) {
+      console.log(`Login Response: ${data}`);
+      // if response if received, navigate to next screen.
+    }
+  }, [data]);
+
+  const getFcmToken = async () => {
+    const fcmToken = await AsyncStorage.getItem("fcmToken");
+    if (fcmToken) {
+      return await JSON.parse(fcmToken);
+    }
+    return "";
   };
     
   // ------------------Login ---------------------//
@@ -96,12 +132,14 @@ const LoginScreen = () => {
       if (response) {
         const loginUserDataString = JSON.stringify(response);
         await AsyncStorage.setItem("loginUserData", loginUserDataString);
-        navigation.replace("BottomNavigator", {
-          screen: "HomeScreen",
-          params: {
-            screenName: "Login",
-          },
-        });
+        navigation.dispatch(
+          StackActions.replace("BottomNavigator", {
+            screen: "HomeScreen",
+            params: {
+              screenName: "Login",
+            },
+          })
+        );
       }
     } catch (err) {
       console.log(err);
@@ -149,12 +187,14 @@ const LoginScreen = () => {
             if (response) {
               const loginUserDataString = JSON.stringify(response);
               await AsyncStorage.setItem("loginUserData", loginUserDataString);
-              navigation.replace("BottomNavigator", {
-                screen: "HomeScreen",
-                params: {
-                  screenName: "Login",
-                },
-              });
+              navigation.dispatch(
+                StackActions.replace("BottomNavigator", {
+                  screen: "HomeScreen",
+                  params: {
+                    screenName: "Login",
+                  },
+                })
+              );
             }
           } catch (apiError) {
             console.log("Error in API call:", apiError);
@@ -215,12 +255,14 @@ const LoginScreen = () => {
         const loginUserDataString = JSON.stringify(response);
         await AsyncStorage.setItem("loginUserData", loginUserDataString);
         await requestUserPermission();
-        navigation.replace("BottomNavigator", {
-          screen: "HomeScreen",
-          params: {
-            screenName: "Login",
-          },
-        });
+        navigation.dispatch(
+          StackActions.replace("BottomNavigator", {
+            screen: "HomeScreen",
+            params: {
+              screenName: "Login",
+            },
+          })
+        );
       }
     } catch (e) {
       console.log(e);
@@ -368,7 +410,7 @@ const LoginScreen = () => {
 
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("Forgot");
+          navigation.dispatch(CommonActions.navigate("Forgot"));
         }}
       >
         <Text
@@ -384,7 +426,7 @@ const LoginScreen = () => {
       </TouchableOpacity>
 
       <Button
-        isLoading={isLoading}
+        isLoading={loading}
         variant="solid"
         _text={{
           color: "WHITE_COLOR",
@@ -410,7 +452,7 @@ const LoginScreen = () => {
         p={"4"}
         borderRadius={16}
         isPressed={isLoading}
-        onPress={handleSubmit(LoginHandler)}
+        onPress={handleSubmit(login)}
       >
         {t("sign_in")}
       </Button>
@@ -488,17 +530,21 @@ const LoginScreen = () => {
           fontFamily={Fonts.POPPINS_MEDIUM}
         >
           {t("dont_have_an_account")}
-        </Text> 
-        <TouchableOpacity onPress={handlePress}>
-      <Text
-        color={"PRIMARY_COLOR"}
-        letterSpacing={0.3}
-        fontFamily={Fonts.POPPINS_MEDIUM}
-        ml={1}
-      >
-        {t("sign_up")}
-      </Text>
-    </TouchableOpacity>
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.dispatch(CommonActions.navigate("SignupScreen"));
+          }}
+        >
+          <Text
+            color={"PRIMARY_COLOR"}
+            letterSpacing={0.3}
+            fontFamily={Fonts.POPPINS_MEDIUM}
+            ml={1}
+          >
+            {t("sign_up")}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

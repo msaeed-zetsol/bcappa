@@ -50,10 +50,7 @@ const isSplashExpired = (response: SplashResponse): boolean =>
   new Date() > new Date(response.endDate);
 
 const useSplash = (): UseSplashHook => {
-  const [data, start] = useAxios<SplashResponse>({
-    url: "/splash-screen",
-    method: "get",
-  });
+  const [data, start] = useAxios<SplashResponse>("/splash-screen", "get");
   const [state, setState] = useState<SplashState>(initialSplashState);
 
   useEffect(() => {

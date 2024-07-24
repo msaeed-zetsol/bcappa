@@ -1,7 +1,12 @@
 import { useCallback, useState } from "react";
 import { errors } from "../redux/user/userSlice";
 import { StackActions, useNavigation } from "@react-navigation/native";
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, {
+  AxiosError,
+  AxiosRequestConfig,
+  AxiosResponse,
+  Method,
+} from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { axiosInstance } from "./axiosConfig";
 import { useAppDispatch } from "../hooks/hooks";
@@ -23,19 +28,27 @@ type ApiError = {
  */
 type useAxiosHook<O> = [
   data: O | null | undefined,
-  start: () => AbortController
+  start: (config?: AxiosRequestConfig<any>) => AbortController,
+  loading: boolean
 ];
+
+type ErrorMessagesMap = Record<string, string>;
 
 const errorMessage = (it: string | string[]) =>
   typeof it === "string" ? it : it.join(",");
 
-const useAxios = <O>(config: AxiosRequestConfig<any>): useAxiosHook<O> => {
+const useAxios = <O>(
+  url?: string,
+  method?: Method | string,
+  errorMap?: ErrorMessagesMap
+): useAxiosHook<O> => {
   const [data, setData] = useState<O | null | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const dispatcher = useAppDispatch();
 
-  const navigateToLoginIf = (isUnauthorized: boolean) =>
-    useCallback(() => {
+  const navigateToLoginIf = useCallback(
+    (isUnauthorized: boolean) => {
       if (isUnauthorized) {
         AsyncStorage.removeItem("loginUserData");
         navigation.dispatch(
@@ -44,17 +57,21 @@ const useAxios = <O>(config: AxiosRequestConfig<any>): useAxiosHook<O> => {
           })
         );
       }
-    }, [navigation]);
+    },
+    [navigation]
+  );
 
-  const dispatch = (msg: string) =>
-    useCallback(() => {
+  const dispatch = useCallback(
+    (msg: string) => {
       dispatcher(errors({ message: msg, value: true }));
-    }, [dispatcher]);
+    },
+    [dispatcher]
+  );
 
   const handleAxiosError = (error: AxiosError<ApiError>) => {
     if (error.response) {
       apply(errorMessage(error.response.data.message), (it) => {
-        dispatch(it);
+        dispatch(errorMap?.[it] ?? it);
         navigateToLoginIf(
           it.includes("Unauthorized" || "User Does Not Exits.")
         );
@@ -69,23 +86,36 @@ const useAxios = <O>(config: AxiosRequestConfig<any>): useAxiosHook<O> => {
     navigateToLoginIf(true);
   };
 
-  const start = useCallback(() => {
-    const controller = new AbortController();
-    setData(undefined);
-    axiosInstance<O, AxiosResponse<O>>({ ...config, signal: controller.signal })
-      .then((response) => setData(response.data))
-      .catch((error) => {
-        setData(null);
-        if (axios.isAxiosError(error)) {
-          handleAxiosError(error);
-        } else {
-          handleUnexpectedError();
-        }
-      });
-    return controller;
-  }, [config]);
+  const start = useCallback(
+    (config?: AxiosRequestConfig<any>) => {
+      const controller = new AbortController();
+      setLoading(true);
+      setData(undefined);
+      axiosInstance<O, AxiosResponse<O>>({
+        url: url,
+        method: method,
+        signal: controller.signal,
+        ...config,
+      })
+        .then((response) => {
+          setLoading(false);
+          setData(response.data);
+        })
+        .catch((error) => {
+          setLoading(false);
+          setData(null);
+          if (axios.isAxiosError(error)) {
+            handleAxiosError(error);
+          } else {
+            handleUnexpectedError();
+          }
+        });
+      return controller;
+    },
+    [url, method]
+  );
 
-  return [data, start];
+  return [data, start, loading];
 };
 
 export default useAxios;

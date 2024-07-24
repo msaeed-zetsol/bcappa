@@ -13,7 +13,6 @@ type AppBarProps = {
 
 const AppBar: React.FC<AppBarProps> = ({ name, color = "#06202E", onPress }) => {
   return (
-
     <View
       flexDirection="row"
       alignItems="center"

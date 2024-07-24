@@ -2,13 +2,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Modal,
   I18nManager,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { Fonts, Images } from "../../constants";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
-import { CountryPicker } from "react-native-country-codes-picker";
 import { useForm, Controller } from "react-hook-form";
 import {
   Text,
@@ -23,7 +21,6 @@ import {
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Colors, { newColorTheme } from "../../constants/Colors";
-
 import {
   CommonActions,
   StackActions,
@@ -33,7 +30,6 @@ import TextFieldComponent from "../../components/TextFieldComponent";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 import CheckBox from "@react-native-community/checkbox";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { locationPermission } from "../../service/LocationService";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apply } from "../../scope-functions";
@@ -377,7 +373,6 @@ const SignupScreen = () => {
               )}
             </View>
 
-            {/*  nic*/}
             <View mt={verticalScale(15)}>
               <Controller
                 control={control}
@@ -638,22 +633,6 @@ const SignupScreen = () => {
               {t("google")}
             </Text>
           </Pressable>
-          {/* <Pressable
-            style={styles.socialButton}
-            _pressed={{
-              backgroundColor: "DISABLED_COLOR",
-            }}
-          >
-            <Images.Facebook />
-            <Text
-              pl="2"
-              pr="2"
-              fontSize={verticalScale(16)}
-              fontFamily={Fonts.POPPINS_MEDIUM}
-            >
-              {t("facebook")}
-            </Text>
-          </Pressable> */}
         </View>
         <View
           alignItems={"center"}
@@ -688,6 +667,25 @@ const SignupScreen = () => {
     </View>
   );
 };
+
+{
+  /* <Pressable
+            style={styles.socialButton}
+            _pressed={{
+              backgroundColor: "DISABLED_COLOR",
+            }}
+          >
+            <Images.Facebook />
+            <Text
+              pl="2"
+              pr="2"
+              fontSize={verticalScale(16)}
+              fontFamily={Fonts.POPPINS_MEDIUM}
+            >
+              {t("facebook")}
+            </Text>
+          </Pressable> */
+}
 
 const styles = StyleSheet.create({
   container: {
