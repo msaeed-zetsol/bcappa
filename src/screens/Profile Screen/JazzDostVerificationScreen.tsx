@@ -60,7 +60,7 @@ const JazzDostVerificationScreen = () => {
       </View>
       <View mt={verticalScale(20)} />
       <TextFieldComponent
-        placeholder={"Phone Number"}
+        placeholder={t("phone_number")}
         value={number}
         maxLength={10}
         onChange={(num) => {

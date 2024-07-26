@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text} from 'native-base';
 import {StatusBar} from 'react-native';
 import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
-import Colors, {newColorTheme} from '../../constants/Colors';
+import Colors, {newColorTheme, wildWatermelon} from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import {Fonts, Images} from '../../constants';
 import { useTranslation } from "react-i18next";
@@ -19,7 +19,7 @@ const MyRewardsScreen = () => {
         backgroundColor={newColorTheme.PRIMARY_COLOR}
       />
       <View
-        bg={"PRIMARY_COLOR"}
+        bg={wildWatermelon}
         px={horizontalScale(20)}
         height={verticalScale(300)}
       >

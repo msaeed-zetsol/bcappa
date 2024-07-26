@@ -234,11 +234,12 @@ const UserSchedule = () => {
                     style={{
                       borderWidth: 1,
                       borderColor:
-                        item.paid === true ? Colors.PRIMARY_COLOR : "#FAC245",
+                        item.paid === true ? Colors.PRIMARY_COLOR : "#FF696D",
                       backgroundColor:
-                        item.paid === true ? Colors.PRIMARY_COLOR : "#FAC245",
+                        item.paid === true ? Colors.PRIMARY_COLOR : "#FF696D",
                       borderRadius: 5,
-                      paddingHorizontal: horizontalScale(5),
+                      paddingVertical: verticalScale(1),
+                      paddingHorizontal: horizontalScale(8),
                     }}
                   >
                     <Text
@@ -353,7 +354,7 @@ const UserSchedule = () => {
             mx={horizontalScale(20)}
             bg={"WHITE_COLOR"}
             borderRadius={15}
-            py={verticalScale(20)}
+            py={verticalScale(25)}
           >
             <View justifyContent={"center"} alignItems={"center"}>
               <Images.Payment />
@@ -378,10 +379,12 @@ const UserSchedule = () => {
               <Button
                 variant="solid"
                 _text={{
-                  color: "BLACK_COLOR",
+                  color: "#FF696D",
                   fontFamily: Fonts.POPPINS_SEMI_BOLD,
                 }}
-                backgroundColor={"#D3D3D3"}
+                bgColor={"white"}
+                borderColor={"#FF696D"}
+                borderWidth={1}
                 size={"md"}
                 px={"7"}
                 mr={2}

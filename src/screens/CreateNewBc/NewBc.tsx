@@ -18,7 +18,7 @@ import {
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
-import Colors, { newColorTheme } from "../../constants/Colors";
+import Colors, { newColorTheme, wildWatermelon } from "../../constants/Colors";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import { Fonts, Images } from "../../constants";
@@ -446,7 +446,7 @@ const NewBc = () => {
             style={[
               styles.btnContainer,
               {
-                borderColor: Colors.PRIMARY_COLOR,
+                borderColor: wildWatermelon,
                 borderWidth: 2,
                 backgroundColor: "white",
               },
@@ -454,7 +454,7 @@ const NewBc = () => {
           >
             <Images.Call />
             <Text
-              color={Colors.PRIMARY_COLOR}
+              color={wildWatermelon}
               ml={horizontalScale(5)}
               fontFamily={Fonts.POPPINS_SEMI_BOLD}
             >

@@ -20,7 +20,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
-import Colors, { newColorTheme } from "../../constants/Colors";
+import Colors, { newColorTheme, wildWatermelon } from "../../constants/Colors";
 import {
   CommonActions,
   useNavigation,
@@ -483,7 +483,7 @@ const UpdateBc = () => {
               style={[
                 styles.btnContainer,
                 {
-                  borderColor: Colors.PRIMARY_COLOR,
+                  borderColor: "#FF696D",
                   borderWidth: 2,
                   backgroundColor: "white",
                 },
@@ -491,7 +491,7 @@ const UpdateBc = () => {
             >
               <Images.Call />
               <Text
-                color={Colors.PRIMARY_COLOR}
+                color={wildWatermelon}
                 ml={horizontalScale(5)}
                 fontFamily={Fonts.POPPINS_SEMI_BOLD}
               >

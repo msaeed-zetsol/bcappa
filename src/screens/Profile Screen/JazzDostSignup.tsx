@@ -106,6 +106,7 @@ const JazzDostSignup = () => {
                 value={value}
                 onBlur={onBlur}
                 onChange={onChange}
+                maxLength={13}
                 keyboardType={"number-pad"}
               />
             )}

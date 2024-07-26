@@ -283,8 +283,8 @@ const BcDetailsScreen = () => {
                     color="#06202E"
                     fontFamily={Fonts.POPPINS_SEMI_BOLD}
                   >
-                    {bcData[0].status == BcStatus.Pending && "Commence Date"}
-                    {bcData[0].status === BcStatus.Active && "Due Date"}
+                    {bcData[0].status === BcStatus.Pending && t("commence_date")}
+                    {bcData[0].status === BcStatus.Active && t("due_date")}
                   </Text>
                   <Text
                     color="#5A5A5C"
@@ -441,8 +441,8 @@ const BcDetailsScreen = () => {
                               borderWidth: 1,
                               borderColor: check
                                 ? Colors.PRIMARY_COLOR
-                                : "#FAC245",
-                              backgroundColor: check ? "#F0FAFF" : "#FFF2D3",
+                                : "#FF696D",
+                              backgroundColor: check ? "#F0FAFF" : "#ffffff",
                               borderRadius: 5,
                               paddingHorizontal: horizontalScale(8),
                               paddingVertical: verticalScale(3),
@@ -451,7 +451,7 @@ const BcDetailsScreen = () => {
                           >
                             <Text
                               style={{
-                                color: check ? Colors.PRIMARY_COLOR : "#FAC245",
+                                color: check ? Colors.PRIMARY_COLOR : "#FF696D",
                                 textAlign: "center",
                               }}
                             >

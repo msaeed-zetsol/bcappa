@@ -62,17 +62,17 @@ const auth = {
   add_member: "Add Member",
   full_name: "Full Name",
   full_name_is_required: "Full Name is required",
-  please_read_terms_and_conditions_and_privacy_policy:"Please read Terms and Conditions and Privacy Policy",
-  please_select_your_date_of_birth:"Please select your date of birth",
-  password_must_match_confirm_password_please_try_again:"Password must match confirm password. Please try again.",
-cancle:"Cancle",
-your_password_has_been_updated_please_login_to_continue:"Your password has been updated. Please login to continue.",
-login:"Login",
-save:"Save",
-new_password:"New Password",
-confirm_password:"Confirm Password",
-confirm_password_is_required:"Confirm Password is required",
-select_gender:"Select Gender",
+  please_read_terms_and_conditions_and_privacy_policy: "Please read Terms and Conditions and Privacy Policy",
+  please_select_your_date_of_birth: "Please select your date of birth",
+  password_must_match_confirm_password_please_try_again: "Password must match confirm password. Please try again.",
+  cancle: "Cancle",
+  your_password_has_been_updated_please_login_to_continue: "Your password has been updated. Please login to continue.",
+  login: "Login",
+  save: "Save",
+  new_password: "New Password",
+  confirm_password: "Confirm Password",
+  confirm_password_is_required: "Confirm Password is required",
+  select_gender: "Select Gender",
 };
 
 const onboarding = {
@@ -156,6 +156,8 @@ const bcDetails = {
   pay_now: "Pay Now",
   paid: "Paid",
   pending: "Pending",
+  commence_date: "Commence Date",
+  due_date: "Due Date"
 };
 
 const myBc = {

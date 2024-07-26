@@ -62,12 +62,12 @@ const auth = {
   add_member: "رکن شامل کریں",
   full_name: "پورا نام",
   full_name_is_required: "پورا نام ضروری ہے",
-  please_read_terms_and_conditions_and_privacy_policy:"براہ کرم شرائط و ضوابط اور رازداری کی پالیسی کو پڑھیں",
-  please_select_your_date_of_birth:"براہ کرم اپنی تاریخ پیدائش منتخب کریں۔",
+  please_read_terms_and_conditions_and_privacy_policy: "براہ کرم شرائط و ضوابط اور رازداری کی پالیسی کو پڑھیں",
+  please_select_your_date_of_birth: "براہ کرم اپنی تاریخ پیدائش منتخب کریں۔",
   new_password: "نیا پاس ورڈ",
   confirm_password: "پاس ورڈ کی تصدیق کریں",
   confirm_password_is_required: "تصدیق پاس ورڈ ضروری ہے",
-  select_gender:"جنس منتخب کریں",
+  select_gender: "جنس منتخب کریں",
 
 };
 
@@ -103,11 +103,11 @@ const newBcForm = {
   please_add_members: "اراکین کا اضافہ کریں",
   password_must_match_confirm_password_please_try_again: "پاس ورڈ کے مطابقہ کریں۔ براہ کرم تصدیق کریں!",
   cancle: "منسوخ کریں",
-  your_password_has_been_updated_please_login_to_continue:"آپ کا پاس ورڈ اپ ڈیٹ کر دیا گیا ہے۔ جاری رکھنے کے لئے لاگ ان کریں۔",
+  your_password_has_been_updated_please_login_to_continue: "آپ کا پاس ورڈ اپ ڈیٹ کر دیا گیا ہے۔ جاری رکھنے کے لئے لاگ ان کریں۔",
   login: "لاگ ان",
   save: "محفوظ کریں",
-  total_expected_bc_amount:"کل متوقع BC رقم",
-  drag_to_arrange_bc_opening_number:"BC افتتاحی نمبر کو ترتیب دینے کے لیے گھسیٹیں۔"
+  total_expected_bc_amount: "کل متوقع BC رقم",
+  drag_to_arrange_bc_opening_number: "BC افتتاحی نمبر کو ترتیب دینے کے لیے گھسیٹیں۔"
 };
 
 const updateBc = {
@@ -158,6 +158,8 @@ const bcDetails = {
   pay_now: "اب ادا کریں",
   paid: "ادا شدہ",
   pending: "زیر التوا",
+  commence_date: "شروع کرنے کی تاریخ",
+  due_date: "منتخب کرنے کی تاریخ",
 };
 
 const myBc = {

@@ -8,7 +8,7 @@ import {
 import React, { useState, useCallback } from "react";
 import { View, Text, Avatar, Button, Icon } from "native-base";
 import { verticalScale, horizontalScale } from "../../utilities/Dimensions";
-import { newColorTheme } from "../../constants/Colors";
+import { newColorTheme, wildWatermelon } from "../../constants/Colors";
 import { Fonts, Images } from "../../constants";
 import ImagePicker from "react-native-image-crop-picker";
 import InfoModal from "../../components/InfoModal";
@@ -197,7 +197,7 @@ const ProfileScreen = () => {
           {AvatarName}
           <Avatar.Badge
             p={verticalScale(13)}
-            bg={"PRIMARY_COLOR"}
+            bg={wildWatermelon}
             justifyContent={"center"}
             alignItems={"center"}
           >

@@ -279,6 +279,7 @@ const AddMembers = () => {
                       onBlur={onBlur}
                       onChangeText={onChange}
                       keyboardType="number-pad"
+                      maxLength={10}
                     />
                   </InputGroup>
                 )}
