@@ -109,7 +109,7 @@ const OtpAccountVerification = () => {
 
     const payloadData: any = {
       otpCode: concatenatedOtp,
-      phone: data.phone,
+     phone: data.phoneNumber,
     };
 
     if (whatTosend === "email") {
@@ -151,10 +151,10 @@ const OtpAccountVerification = () => {
         otpCode: concatenatedOtp,
         email: data.email,
       };
-    } else if (data.phone) {
+    } else if (data.phoneNumber) {
       var payloadData: any = {
         otpCode: concatenatedOtp,
-        phone: data.phone,
+       phone: data.phoneNumber,Number,
       };
     }
 
@@ -185,7 +185,7 @@ const OtpAccountVerification = () => {
       url: "/otp",
       method: "post",
       data: {
-        phone: data.phone,
+       phone: data.phoneNumber,Number,
       },
       reduxDispatch: dispatch,
       navigation,
@@ -210,7 +210,7 @@ const OtpAccountVerification = () => {
   };
 
   const sendOtpToGivenInfo = async () => {
-    if (data.phone) {
+    if (data.phoneNumber) {
       await sendOtp();
     } else if (data.email) {
       sendOtpViaEmail();

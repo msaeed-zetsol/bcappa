@@ -40,27 +40,49 @@ import CountryCodePicker from "../../components/CountryCodePicker";
 import Message from "../../components/AlertMessage";
 import AppBar from "../../components/AppBar";
 import { setMembers } from "../../redux/members/membersSlice";
+import useAxios from "../../data/useAxios";
+
+
+
+type SignupForm = {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  cnicNumber: string;
+  password: string;
+  gender: string;
+  countryCode: string;
+  dob: Date;
+};
+
+type VerifyForm = {
+  email: string;
+  phone: string;
+  cnic: string;
+};
 
 const SignupScreen = () => {
+  const [showCountryCodePicker, setShowCountryCodePicker] = useState<boolean>(false);
+  const [countryCode, setCountryCode] = useState<string>("+92");
+  const [date, setDate] = useState<Date>(new Date());
+  const [openDate, setOpenDate] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [showDate, setShowDate] = useState<string>("");
   const [show, setShow] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showCountryCodePicker, setShowCountryCodePicker] = useState(false);
-  const [countryCode, setCountryCode] = useState("+92");
-  const [date, setDate] = useState(new Date());
-  const [openDate, setOpenDate] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [showDate, setShowDate] = useState("");
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const dispatch = useAppDispatch();
-  const navigation = useNavigation();
+  const [toggleCheckBox, setToggleCheckBox] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { t } = useTranslation();
+  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+  // type ErrorMessagesMap = Record<string, string>;
+  // const errorMessagesMap: ErrorMessagesMap = {
+  //   "property phoneNumber should not exist": "Phone number is not allowed.",
+  //   "property cnicNumber should not exist": "CNIC number is not allowed.",
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
+  // };
+
+
+  const { control, handleSubmit, formState: { errors }, reset, getValues } = useForm<SignupForm>({
     defaultValues: {
       fullName: "",
       email: "",
@@ -73,6 +95,94 @@ const SignupScreen = () => {
     mode: "onChange",
     criteriaMode: "firstError",
   });
+
+  const [data, start, loading] = useAxios("/auth/signup", "post");
+  const [verifyData, startVerify] = useAxios("/auth/verify-credentials", "post");
+
+  const signup = async (SignupDetails: SignupForm) => {
+      const formattedDate = new Date().toISOString().split('T')[0]; 
+      console.log('Request Data:', SignupDetails);
+      start({
+        data: {
+          fullName: SignupDetails.fullName,
+          email: SignupDetails.email,
+          phone: countryCode + SignupDetails.phoneNumber, 
+          cnic: SignupDetails.cnicNumber, 
+          dob: formattedDate, 
+          password: SignupDetails.password,
+          gender: SignupDetails.gender,
+          role: "customer" 
+        }
+      });
+    try {
+      const verificationResponse:any = await Verify({
+        email: SignupDetails.email,
+        phone: countryCode + SignupDetails.phoneNumber,
+        cnic: SignupDetails.cnicNumber,
+      });
+      
+    if (verificationResponse.message === "Success") {
+      if (!SignupDetails.gender) {
+        console.log(errors.gender);
+        return;
+      }
+
+      console.log('Verification Response:', verificationResponse)
+
+       
+      } else {
+        console.log('Verification Error:', verificationResponse);
+        // Handle verification error (e.g., show modal or alert)
+      }
+    } catch (error) {
+      console.error('Signup Error:', error);
+    }
+  };
+
+  const Verify = async (VerifyDetails: VerifyForm) => {
+    try {
+      const response = await startVerify({
+        data: VerifyDetails,
+      });
+      console.log('Verification Data:', response);
+      return response;
+    } catch (err) {
+      console.error('Verification Error:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (data) {
+      console.log('Signup Data:', data);
+      navigation.dispatch(
+        CommonActions.navigate("OtpAccountVerification", {
+          data: {
+            ...getValues(),
+            phoneNumber: countryCode + getValues().phoneNumber,
+          },
+          show: true,
+          from: "Signup",
+          hide: false,
+        })
+      );
+    }
+  }, [data, navigation]);
+
+  useEffect(() => {
+    if (verifyData && verifyData.message === "Success") {
+      navigation.dispatch(
+        CommonActions.navigate("OtpAccountVerification", {
+          data: {
+            ...getValues(),
+            phoneNumber: countryCode + getValues().phoneNumber,
+          },
+          show: true,
+          from: "Signup",
+          hide: false,
+        })
+      );
+    }
+  }, [verifyData, navigation]);
 
   const googleLogin = async () => {
     try {
@@ -154,6 +264,8 @@ const SignupScreen = () => {
       }
     }
   };
+
+
 
   const verifyCredentials = async (details: any) => {
     const data = {
@@ -248,7 +360,7 @@ const SignupScreen = () => {
           negativeButton={{ label: "Cancel", textColor: Colors.PRIMARY_COLOR }}
         />
       )}
-    <AppBar
+      <AppBar
         name={t("sign_up")}
         onPress={() => {
           dispatch(setMembers([]));
@@ -343,6 +455,7 @@ const SignupScreen = () => {
                           fontFamily={Fonts.POPPINS_REGULAR}
                         >
                           {countryCode}
+
                         </Text>
                         <Icon
                           as={<Ionicons name={"caret-down"} />}
@@ -562,7 +675,7 @@ const SignupScreen = () => {
         </View>
 
         <Button
-          isLoading={isLoading}
+          isLoading={loading}
           variant="solid"
           _text={{
             color: "WHITE_COLOR",
@@ -587,7 +700,7 @@ const SignupScreen = () => {
           p={"4"}
           borderRadius={16}
           isPressed={isLoading}
-          onPress={handleSubmit(signupHandler)}
+          onPress={handleSubmit(signup)}
         >
           {t("sign_up")}
         </Button>

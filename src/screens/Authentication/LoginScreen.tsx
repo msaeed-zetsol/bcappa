@@ -92,6 +92,17 @@ const LoginScreen = () => {
   useEffect(() => {
     if (data) {
       console.log(`Login Response: ${data}`);
+      const loginUserDataString = JSON.stringify(data);
+       AsyncStorage.setItem("loginUserData", loginUserDataString);
+       requestUserPermission();
+        navigation.dispatch(
+          StackActions.replace("BottomNavigator", {
+            screen: "HomeScreen",
+            params: {
+              screenName: "Login",
+            },
+          })
+        );
       // if response if received, navigate to next screen.
     }
   }, [data]);
