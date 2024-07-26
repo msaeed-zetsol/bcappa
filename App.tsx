@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import BootSplash from "react-native-bootsplash";
 import StackNavigator from "./src/navigators/StackNavigator/StackNavigator";
 import { NativeBaseProvider, extendTheme } from "native-base";
 import { newColorTheme } from "./src/constants/Colors";
@@ -53,6 +54,10 @@ export default function App() {
     });
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    BootSplash.hide({ fade: true });
+  });
 
   return (
     <NativeBaseProvider theme={theme}>

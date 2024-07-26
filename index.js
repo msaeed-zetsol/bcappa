@@ -8,10 +8,10 @@ import { Provider } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
 import "./src/localization/config";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Settings } from 'react-native-fbsdk-next';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Settings } from "react-native-fbsdk-next";
 
-messaging().setBackgroundMessageHandler(async remoteMessage => {
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   // Notification recevied in the background.
 });
 

@@ -9,7 +9,7 @@ import {
   RefreshControl,
 } from "react-native";
 import React, { useState } from "react";
-import { View, Text, Avatar, Button, Pressable } from "native-base";
+import { View, Text, Avatar, Button, Pressable, Image } from "native-base";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
 import { Fonts, Images } from "../../constants";
 import { BcStatus, BcType } from "../../lookups/Enums";
@@ -18,7 +18,7 @@ import {
   useFocusEffect,
   useNavigation,
 } from "@react-navigation/native";
-import Colors, { newColorTheme } from "../../constants/Colors";
+import Colors, { newColorTheme, wildWatermelon } from "../../constants/Colors";
 import dynamicLinks from "@react-native-firebase/dynamic-links";
 import { apimiddleWare } from "../../utilities/HelperFunctions";
 import { useDispatch } from "react-redux";
@@ -166,20 +166,34 @@ const MyBcsScreen = () => {
       </View>
       <TouchableOpacity
         onPress={() => {
-          dispatch(setMembers([]));
           navigation.dispatch(CommonActions.navigate("NewBc"));
         }}
         style={{
+          width: 64,
+          height: 64,
+          backgroundColor: wildWatermelon,
           position: "absolute",
           bottom: verticalScale(20),
-          right: horizontalScale(20),
+          right: horizontalScale(15),
           zIndex: 1,
-          elevation: 100,
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 15,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.2,
+          shadowRadius: 1.41,
+
+          elevation: 2,
         }}
       >
-        <Images.CreateBc
-          width={horizontalScale(65)}
-          height={verticalScale(60)}
+        <Image
+          source={require("../../assets/images/add.png")}
+          size={verticalScale(24)}
+          alt="create bc"
         />
       </TouchableOpacity>
       {!loading ? (

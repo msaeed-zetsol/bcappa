@@ -17,6 +17,7 @@ import {
   HStack,
   VStack,
   ScrollView,
+  Image,
 } from "native-base";
 import { Fonts, Images } from "../../constants";
 import { verticalScale, horizontalScale } from "../../utilities/Dimensions";
@@ -26,7 +27,7 @@ import {
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
-import Colors, { newColorTheme } from "../../constants/Colors";
+import Colors, { newColorTheme, wildWatermelon } from "../../constants/Colors";
 import InfoModal from "../../components/InfoModal";
 import { modalEnums } from "../../lookups/Enums";
 import Swiper from "react-native-swiper";
@@ -86,6 +87,7 @@ const HomeScreen = () => {
       }));
     }
   };
+
   const getActiveBc = async () => {
     setActiveLoad(true);
     const getUserData: any = await AsyncStorage.getItem("loginUserData");
@@ -103,6 +105,7 @@ const HomeScreen = () => {
       // setLoad(false);
     }
   };
+
   const scrollingContainer = async () => {
     setLoad(true);
     // const getUserData: any = await AsyncStorage.getItem('loginUserData');
@@ -809,41 +812,62 @@ const HomeScreen = () => {
           navigation.dispatch(CommonActions.navigate("NewBc"));
         }}
         style={{
+          width: 64,
+          height: 64,
+          backgroundColor: wildWatermelon,
           position: "absolute",
           bottom: verticalScale(20),
-          right: horizontalScale(20),
+          right: horizontalScale(15),
           zIndex: 1,
-          elevation: 100,
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 15,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.2,
+          shadowRadius: 1.41,
+
+          elevation: 2,
         }}
       >
-        <Images.CreateBc
-          width={horizontalScale(65)}
-          height={verticalScale(60)}
+        <Image
+          source={require("../../assets/images/add.png")}
+          size={verticalScale(24)}
+          alt="create bc"
         />
       </TouchableOpacity>
+
       <Modal
         isOpen={firstSignup}
-        // onClose={() => setFirstSignup(false)}
         safeAreaTop={true}
         backgroundColor={"rgba(0, 0, 0, 0.63)"}
       >
         <Modal.Content
           width={horizontalScale(325)}
-          px={horizontalScale(30)}
+          px={horizontalScale(16)}
           py={verticalScale(10)}
         >
           <Modal.Body>
             <View justifyContent={"center"} alignItems={"center"}>
-              <Images.Congratulations />
+              <Image
+                source={require("../../assets/images/congratulations-red.png")}
+                alt="congratulations"
+                width={250}
+                height={217}
+              />
               <Text
                 color={"#03110A"}
-                fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                fontSize={"lg"}
-                mt={2}
+                fontFamily={Fonts.POPPINS_BOLD}
+                fontWeight={700}
+                fontSize={24}
+                mt={verticalScale(16)}
               >
                 {t("congratulations")}
               </Text>
-              <Text color={"GREY"} textAlign={"center"} mt={5}>
+              <Text color={"GREY"} textAlign={"center"} mt={verticalScale(8)}>
                 {t("account_created")}
               </Text>
             </View>
@@ -853,6 +877,7 @@ const HomeScreen = () => {
             borderRadius={15}
             py={5}
             mb={3}
+            mx={3}
             _pressed={{
               backgroundColor: "DISABLED_COLOR",
             }}
@@ -864,6 +889,7 @@ const HomeScreen = () => {
           </Button>
         </Modal.Content>
       </Modal>
+
       {modals.commingSoon && (
         <InfoModal
           message={t("map_feature_description")}

@@ -46,7 +46,6 @@ GoogleSignin.configure({
     "425837288874-ivnre9s31uk6clo206fqaa8op0n5p5r3.apps.googleusercontent.com",
 });
 
-
 type LoginForm = {
   email: string;
   password: string;
@@ -54,11 +53,9 @@ type LoginForm = {
 
 const LoginScreen = () => {
   const { t } = useTranslation();
- 
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [show, setShow] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const {
     control,
@@ -79,6 +76,7 @@ const LoginScreen = () => {
   });
 
   const login = async (loginDetails: LoginForm) => {
+    Keyboard.dismiss();
     const token = await getFcmToken();
     start({
       data: {
@@ -89,21 +87,22 @@ const LoginScreen = () => {
     });
   };
 
+  const navigateToHome = async () => {
+    await AsyncStorage.setItem("loginUserData", JSON.stringify(data));
+    await requestUserPermission();
+    navigation.dispatch(
+      StackActions.replace("BottomNavigator", {
+        screen: "HomeScreen",
+        params: {
+          screenName: "Login",
+        },
+      })
+    );
+  };
+
   useEffect(() => {
     if (data) {
-      console.log(`Login Response: ${data}`);
-      const loginUserDataString = JSON.stringify(data);
-       AsyncStorage.setItem("loginUserData", loginUserDataString);
-       requestUserPermission();
-        navigation.dispatch(
-          StackActions.replace("BottomNavigator", {
-            screen: "HomeScreen",
-            params: {
-              screenName: "Login",
-            },
-          })
-        );
-      // if response if received, navigate to next screen.
+      navigateToHome();
     }
   }, [data]);
 
@@ -114,7 +113,7 @@ const LoginScreen = () => {
     }
     return "";
   };
-    
+
   // ------------------Login ---------------------//
 
   const googleLogin = async () => {
@@ -241,47 +240,6 @@ const LoginScreen = () => {
     }
   };
 
-  const LoginHandler = async (details: any) => {
-    try {
-      const getToken: any = await AsyncStorage.getItem("fcmToken");
-      const parsedFcmToken: any = await JSON.parse(getToken);
-      Keyboard.dismiss();
-      setIsLoading(true);
-
-      const data = {
-        email: details.email,
-        password: details.password,
-        fcmToken: parsedFcmToken,
-      };
-
-      const response = await apimiddleWare({
-        url: "/auth/login",
-        method: "post",
-        data: data,
-        reduxDispatch: dispatch,
-        navigation: navigation,
-      });
-
-      if (response) {
-        const loginUserDataString = JSON.stringify(response);
-        await AsyncStorage.setItem("loginUserData", loginUserDataString);
-        await requestUserPermission();
-        navigation.dispatch(
-          StackActions.replace("BottomNavigator", {
-            screen: "HomeScreen",
-            params: {
-              screenName: "Login",
-            },
-          })
-        );
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <StatusBar
@@ -382,18 +340,18 @@ const LoginScreen = () => {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                type={show ? "text" : "password"}
+                type={showPassword ? "text" : "password"}
                 borderColor="BORDER_COLOR"
                 placeholderTextColor={"GREY"}
                 color={"BLACK_COLOR"}
                 fontSize={"sm"}
                 fontFamily={Fonts.POPPINS_REGULAR}
                 InputRightElement={
-                  <Pressable onPress={() => setShow(!show)}>
+                  <Pressable onPress={() => setShowPassword(!showPassword)}>
                     <Icon
                       as={
                         <MaterialIcons
-                          name={show ? "visibility" : "visibility-off"}
+                          name={showPassword ? "visibility" : "visibility-off"}
                         />
                       }
                       size={5}
@@ -462,7 +420,7 @@ const LoginScreen = () => {
         mt={verticalScale(50)}
         p={"4"}
         borderRadius={16}
-        isPressed={isLoading}
+        isPressed={loading}
         onPress={handleSubmit(login)}
       >
         {t("sign_in")}

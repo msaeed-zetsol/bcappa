@@ -377,15 +377,24 @@ const BcDetailsScreen = () => {
               >
                 {t("members")}
               </Text>
-              <Text
-                color="PRIMARY_COLOR"
-                fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                fontSize={"lg"}
-              >
-                {bcData[0].bcMembers.length}
-              </Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text
+                  color="PRIMARY_COLOR"
+                  fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                  fontSize={"lg"}
+                >
+                  {bcData[0].bcMembers.length}
+                </Text>
+                <Text
+                  color="GREY"
+                  fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                  fontSize={"lg"}
+                >
+                  {`/${bcData[0].maxMembers}`}
+                </Text>
+              </View>
             </View>
-            {/* <View height={80}> */}
+
             <FlatList
               data={BcMembers}
               keyExtractor={(item) => item.id}
@@ -503,7 +512,7 @@ const BcDetailsScreen = () => {
                             fontSize={"sm"}
                           >
                             {item?.openingPrecedence &&
-                              item?.bcMemberStatus === BcMemberStatus.Opened
+                            item?.bcMemberStatus === BcMemberStatus.Opened
                               ? `${item?.bcMemberStatus} #${item?.openingPrecedence}`
                               : ""}
                           </Text>
@@ -634,8 +643,8 @@ const BcDetailsScreen = () => {
                           backgroundColor={"PRIMARY_COLOR"}
                         >
                           {bcData[0].type === BcType.Private &&
-                            item?.user?.id === userData?.id &&
-                            !isAdmin
+                          item?.user?.id === userData?.id &&
+                          !isAdmin
                             ? t("view_payments")
                             : t("pay_now")}
                         </Button>

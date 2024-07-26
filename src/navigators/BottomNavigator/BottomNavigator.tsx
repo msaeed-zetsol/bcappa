@@ -11,6 +11,8 @@ import ExploreScreen from "../../screens/Explore Screen/ExploreScreen";
 import NotificationScreen from "../../screens/notifications/NotificationScreen";
 import ProfileScreen from "../../screens/Profile Screen/ProfileScreen";
 import BcCreated from "../../screens/CreateNewBc/BcCreated";
+import { Image } from "native-base";
+import { wildWatermelon } from "../../constants/Colors";
 
 const Tab = createBottomTabNavigator();
 
@@ -88,12 +90,28 @@ const BottomNavigator = () => {
                 <View
                   style={{
                     position: "absolute",
-                    bottom: verticalScale(20),
+                    width: verticalScale(80),
+                    height: verticalScale(80),
+                    backgroundColor: wildWatermelon,
+                    borderRadius: 80,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    bottom: verticalScale(43),
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 1,
+                    },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 1.41,
+
+                    elevation: 2,
                   }}
                 >
-                  <Images.Explore
-                    width={verticalScale(110)}
-                    height={verticalScale(110)}
+                  <Image
+                    source={require("../../assets/images/explore.png")}
+                    size={30}
+                    alt="explore"
                   />
                 </View>
               );
