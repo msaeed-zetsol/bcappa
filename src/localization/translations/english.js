@@ -113,6 +113,7 @@ const newBcForm = {
 const updateBc = {
   update_bc: "Update Bc",
   update: "Update",
+  please_edit_members: "Please edit members.",
 };
 
 const explore = {

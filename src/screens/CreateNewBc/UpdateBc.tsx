@@ -40,6 +40,7 @@ import { useTranslation } from "react-i18next";
 import AppBar from "../../components/AppBar";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { apply } from "../../scope-functions";
+import Message from "../../components/AlertMessage";
 
 const UpdateBc = () => {
   const numberformatter = useMemo(() => new Intl.NumberFormat(), []);
@@ -59,6 +60,7 @@ const UpdateBc = () => {
   const members = useAppSelector((state) => state.members);
   const [totalExpected, setTotalExpected] = useState(0);
   const [maxUsers, setMaxUsers] = useState(item.maxMembers);
+  const [modalView, setModalView] = useState(false);
   const [balloting, setBalloting] = useState(
     item.selectionType === BcSelectionType.Auto
   );
@@ -153,7 +155,7 @@ const UpdateBc = () => {
     const totalUsers = parseInt(maxUsers);
     const membersLength = members.length;
     if (totalUsers !== membersLength) {
-      Toast.show({ title: "Please edit members before continuing." });
+      setModalView(true);
       return;
     }
 
@@ -203,6 +205,17 @@ const UpdateBc = () => {
 
   return (
     <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
+       {modalView && (
+          <Message
+          Photo={() => <Images.AccountNotVerified />}
+          message={t("please_edit_members")}
+          buttonText={t("ok")}
+          callback={() => setModalView(false)}
+          secondButtonText={t("cancel")}
+          secondCallback={() => setModalView(false)}
+          show={modalView}
+        />
+        )}
       <AppBar
         name={t("update_bc")}
         onPress={() => {

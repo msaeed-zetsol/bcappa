@@ -113,6 +113,7 @@ const newBcForm = {
 const updateBc = {
   update_bc: "بی سی اپ ڈیٹ کریں",
   update: "اپ ڈیٹ کریں",
+  please_edit_members: "اراکین کو ایڈیٹ کریں",
 };
 
 const explore = {

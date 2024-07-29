@@ -52,14 +52,11 @@ const Message = ({
         <View style={styles.buttonContainer}>
         {secondButtonText && secondCallback && (
             <Button
-              backgroundColor={'blueGray.400'}
+              backgroundColor={'blueGray.300'}
               borderRadius={15}
               py={5}
               px={8} 
               mr={4}       
-              _pressed={{
-                backgroundColor: 'DISABLED_COLOR',
-              }}
               isPressed={isSecondButtonPressed}
               onPress={() => {
                 if (secondCallback) {
