@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { View } from "native-base";
 import { StatusBar, StyleSheet } from "react-native";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { newColorTheme } from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import i18next, {

@@ -1,6 +1,6 @@
 import { Text, View } from "native-base";
 import { Colors } from "../constants";
-import { horizontalScale, verticalScale } from "../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../utilities/dimensions";
 import { StyleSheet } from "react-native";
 
 type BottomNavIconProps = {

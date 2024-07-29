@@ -1,7 +1,7 @@
 import { View, Text } from "native-base";
 import React from "react";
 import { newColorTheme } from "../../constants/Colors";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Fonts } from "../../constants";
 import AppBar from "../../components/AppBar";

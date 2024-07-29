@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { View, Text, Avatar, Button } from 'native-base';
 import Colors, { newColorTheme } from '../../constants/Colors';
-import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import {
   CommonActions,
   useFocusEffect,
@@ -16,8 +16,8 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { Fonts, Images } from "../../constants";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
-import { BcType } from "../../lookups/Enums";
+import { apimiddleWare } from "../../utilities/helper-functions";
+import { BcType } from "../../types/Enums";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import AppBar from '../../components/AppBar';

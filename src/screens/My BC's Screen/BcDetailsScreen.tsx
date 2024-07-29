@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { Text, View, Avatar, Button } from "native-base";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { Images, Fonts } from "../../constants";
 import {
   CommonActions,
@@ -20,9 +20,9 @@ import {
   BcMemberType,
   BcStatus,
   BcType,
-} from "../../lookups/Enums";
+} from "../../types/Enums";
 import Colors, { newColorTheme } from "../../constants/Colors";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { apimiddleWare } from "../../utilities/helper-functions";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import InfoModal from "../../components/InfoModal";

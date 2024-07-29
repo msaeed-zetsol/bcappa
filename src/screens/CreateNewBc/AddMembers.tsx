@@ -13,7 +13,7 @@ import {
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
-import { verticalScale } from "../../utilities/Dimensions";
+import { verticalScale } from "../../utilities/dimensions";
 import Colors, { newColorTheme } from "../../constants/Colors";
 import { Fonts, Images } from "../../constants";
 import { useTranslation } from "react-i18next";
@@ -25,7 +25,7 @@ import { setMembers } from "../../redux/members/membersSlice";
 import { store } from "../../redux/store";
 import { useAppDispatch } from "../../hooks/hooks";
 import AppBar from "../../components/AppBar";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { apimiddleWare } from "../../utilities/helper-functions";
 
 type RouteParams = {
   bcId: string;

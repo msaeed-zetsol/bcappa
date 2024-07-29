@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { freeSpeechRed } from "../constants/Colors";
-import { verticalScale } from "../utilities/Dimensions";
+import { verticalScale } from "../utilities/dimensions";
 import { Fonts } from "../constants";
 
 const globalStyles = StyleSheet.create({

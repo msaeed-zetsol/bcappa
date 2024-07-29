@@ -7,7 +7,7 @@ import {
 import { Text, View } from "native-base";
 import { Fonts, Images } from "../constants";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { verticalScale } from "../utilities/Dimensions";
+import { verticalScale } from "../utilities/dimensions";
 import { blackPearl, deepSkyBlue, smoky } from "../constants/Colors";
 import { useTranslation } from "react-i18next";
 

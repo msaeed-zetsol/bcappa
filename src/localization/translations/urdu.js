@@ -27,7 +27,7 @@ const auth = {
   sign_in_to_continue: "جاری رکھنے کے لیے سائن ان کریں۔",
   email_is_required: "ای میل ضروری ہے",
   email_is_invalid: "غلط ای میل ایڈریس",
-  phone_is_invalid: "فون نمبر 11 نمبروں کا ہونا چاہیے",
+  phone_is_invalid: "فون نمبر 10 نمبروں کا ہونا چاہیے",
   phone_is_required: "فون نمبر ضروری ہے",
   password_is_required: "پاس ورڈ ضروری ہے",
   password_alpha_numeric_only: "پاس ورڈ میں صرف حروف اور نمبرز ہونے چاہئیں",
@@ -52,23 +52,23 @@ const auth = {
   account_verification: "اکاؤنٹ کی تصدیق",
   resend_code_in: "کوڈ دوبارہ بھیجیں:",
   resend_now: "اب دوبارہ بھیجیں",
-  trouble_receiving_otp: "او ٹی پی موصول کرنے میں مشکل? رابطہ کریں",
+  trouble_receiving_otp: "او ٹی پی موصول کرنے میں مشکل?",
   help_center: "ہیلپ سینٹر",
   receive_otp_via: "یا او ٹی پی وصول کریں بذریعہ",
   verify: "تصدیق کریں",
   enter_4_digit_code_sent:
-    "4 ہندسوں کا کوڈ درج کریں جو ہم نے ابھی آپ کے فون نمبر پر بھیجا ہے",
+    "4 ہندسوں کا کوڈ درج کریں جو ہم آپ کے {{type}} پر بھیجتے ہیں",
   add_new_member: "نیا رکن شامل کریں",
   add_member: "رکن شامل کریں",
   full_name: "پورا نام",
   full_name_is_required: "پورا نام ضروری ہے",
-  please_read_terms_and_conditions_and_privacy_policy: "براہ کرم شرائط و ضوابط اور رازداری کی پالیسی کو پڑھیں",
+  please_read_terms_and_conditions_and_privacy_policy:
+    "براہ کرم شرائط و ضوابط اور رازداری کی پالیسی کو پڑھیں",
   please_select_your_date_of_birth: "براہ کرم اپنی تاریخ پیدائش منتخب کریں۔",
   new_password: "نیا پاس ورڈ",
   confirm_password: "پاس ورڈ کی تصدیق کریں",
   confirm_password_is_required: "تصدیق پاس ورڈ ضروری ہے",
   select_gender: "جنس منتخب کریں",
-
 };
 
 const onboarding = {
@@ -99,15 +99,19 @@ const newBcForm = {
   dont_know_how_to_add: "شامل کرنے کا طریقہ نہیں جانتے؟",
   call_our_helpline: "ہماری ہیلپ لائن پر کال کریں",
   create: "بنائیں",
-  member_can_not_be_more_than_max_members: "اراکین میں زیادہ سے زیادہ صارفین نہیں ہے",
+  member_can_not_be_more_than_max_members:
+    "اراکین میں زیادہ سے زیادہ صارفین نہیں ہے",
   please_add_members: "اراکین کا اضافہ کریں",
-  password_must_match_confirm_password_please_try_again: "پاس ورڈ کے مطابقہ کریں۔ براہ کرم تصدیق کریں!",
+  password_must_match_confirm_password_please_try_again:
+    "پاس ورڈ کے مطابقہ کریں۔ براہ کرم تصدیق کریں!",
   cancle: "منسوخ کریں",
-  your_password_has_been_updated_please_login_to_continue: "آپ کا پاس ورڈ اپ ڈیٹ کر دیا گیا ہے۔ جاری رکھنے کے لئے لاگ ان کریں۔",
+  your_password_has_been_updated_please_login_to_continue:
+    "آپ کا پاس ورڈ اپ ڈیٹ کر دیا گیا ہے۔ جاری رکھنے کے لئے لاگ ان کریں۔",
   login: "لاگ ان",
   save: "محفوظ کریں",
   total_expected_bc_amount: "کل متوقع BC رقم",
-  drag_to_arrange_bc_opening_number: "BC افتتاحی نمبر کو ترتیب دینے کے لیے گھسیٹیں۔"
+  drag_to_arrange_bc_opening_number:
+    "BC افتتاحی نمبر کو ترتیب دینے کے لیے گھسیٹیں۔",
 };
 
 const updateBc = {

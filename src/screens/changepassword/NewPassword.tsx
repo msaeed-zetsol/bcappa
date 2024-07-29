@@ -1,9 +1,9 @@
-import { StyleSheet, I18nManager, Modal, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
-import { Text, FormControl, Button, Pressable, Input, Icon } from 'native-base';
-import { newColorTheme } from '../../constants/Colors';
-import { horizontalScale, verticalScale } from '../../utilities/Dimensions';
-import { Fonts, Colors, Images } from '../../constants';
+import { StyleSheet, I18nManager, Modal, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { Text, FormControl, Button, Pressable, Input, Icon } from "native-base";
+import { newColorTheme } from "../../constants/Colors";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
+import { Fonts, Colors, Images } from "../../constants";
 import {
   StackActions,
   useNavigation,
@@ -11,11 +11,11 @@ import {
 } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { apimiddleWare } from "../../utilities/helper-functions";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native-animatable";
-import Message from '../../components/AlertMessage';
+import Message from "../../components/AlertMessage";
 
 const NewPassword = () => {
   const { t } = useTranslation();
@@ -67,7 +67,7 @@ const NewPassword = () => {
         setModalVisible(true);
       }
     } else {
-     setModalView(true);
+      setModalView(true);
     }
   };
 
@@ -82,8 +82,8 @@ const NewPassword = () => {
 
   return (
     <View style={styles.container}>
-         {modalView && (
-          <Message
+      {modalView && (
+        <Message
           Photo={() => <Images.AccountNotVerified />}
           message={t("password_must_match_confirm_password_please_try_again")}
           buttonText={t("ok")}
@@ -92,7 +92,7 @@ const NewPassword = () => {
           secondCallback={() => setModalView(false)}
           show={modalView}
         />
-        )}
+      )}
       <Modal
         style={{
           flex: 1,
@@ -117,7 +117,7 @@ const NewPassword = () => {
               width={verticalScale(120)}
             />
             <Text style={styles.message}>
-          {t("your_password_has_been_updated_please_login_to_continue")} 
+              {t("your_password_has_been_updated_please_login_to_continue")}
             </Text>
 
             <Button
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
     height: 66,
     width: "100%",
     borderRadius: 16,
-    backgroundColor: Colors.PRIMARY_COLOR
+    backgroundColor: Colors.PRIMARY_COLOR,
   },
   loginButtonLabel: {
     color: "white",

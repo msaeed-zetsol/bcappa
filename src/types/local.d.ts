@@ -1,5 +1,5 @@
 /**
- * These types are used to store data for processing purposes inside the app.
+ * These type represent ephemeral state of the app.
  */
 
 type Member = {
@@ -7,4 +7,22 @@ type Member = {
   fullName: string;
   phone: string;
   openingPrecedence: number;
+};
+
+// Forms
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
+
+type SignupFormValues = {
+  fullName: string;
+  email: string;
+  phone: string;
+  cnic: string;
+  password: string;
+  gender: string;
+  countryCode: string;
+  dob: string;
+  role: "customer";
 };

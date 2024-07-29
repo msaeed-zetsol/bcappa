@@ -14,7 +14,7 @@ import {
   Select,
 } from "native-base";
 import React, { useState, useEffect } from "react";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import Colors, { newColorTheme } from "../../constants/Colors";
 import { Fonts } from "../../constants";
 import { CommonActions, useNavigation } from "@react-navigation/native";
@@ -23,14 +23,14 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import {
   apimiddleWare,
   removeEmptyProperties,
-} from "../../utilities/HelperFunctions";
+} from "../../utilities/helper-functions";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import parsePhoneNumber, { PhoneNumber } from "libphonenumber-js";
 import { useTranslation } from "react-i18next";
 import CountryCodePicker from "../../components/CountryCodePicker";
-import { apply } from "../../scope-functions";
+import { apply } from "../../utilities/scope-functions";
 import AppBar from "../../components/AppBar";
 
 const initialDate = new Date();

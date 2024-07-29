@@ -1,6 +1,6 @@
 import { Text } from "native-base";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { horizontalScale, verticalScale } from "../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../utilities/dimensions";
 import { Fonts } from "../constants";
 import { StyleSheet } from "react-native";
 

@@ -4,7 +4,7 @@ import {
   height,
   horizontalScale,
   verticalScale,
-} from "../utilities/Dimensions";
+} from "../utilities/dimensions";
 import { Fonts, Colors, Images } from "../constants";
 import { Button, Image } from "native-base";
 import { View } from "react-native-animatable";

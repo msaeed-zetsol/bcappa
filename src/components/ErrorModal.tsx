@@ -1,6 +1,6 @@
 import { StyleSheet, Text, Modal } from "react-native";
 import React from "react";
-import { horizontalScale, verticalScale } from "../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../utilities/dimensions";
 import { Fonts, Colors, Images } from "../constants";
 import { useDispatch } from "react-redux";
 import { errors } from "../redux/user/userSlice";

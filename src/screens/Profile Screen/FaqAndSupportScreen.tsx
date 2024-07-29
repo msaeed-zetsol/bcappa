@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import React from "react";
 import { View } from "native-base";
-import { verticalScale, horizontalScale } from "../../utilities/Dimensions";
+import { verticalScale, horizontalScale } from "../../utilities/dimensions";
 import { useNavigation } from "@react-navigation/native";
 import { newColorTheme } from "../../constants/Colors";
 import ProfileInformationRow from "../../components/ProfileInformationRow";

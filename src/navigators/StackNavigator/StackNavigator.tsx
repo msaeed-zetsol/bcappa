@@ -1,10 +1,10 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import BottomNavigator from "../BottomNavigator/BottomNavigator";
+import BottomNavigator from "../bottomNavigator/BottomNavigator";
 import AuthStack from "./AuthStack";
 import VerifiedAccountDetails from "../../screens/Profile Screen/VerifiedAccountDetails";
 import PersonalInformationScreen from "../../screens/Profile Screen/PersonalInformationScreen";
-import TermsAndConditionScreen from "../../screens/Authentication/TermsAndConditionScreen";
+import TermsAndConditionScreen from "../../screens/others/TermsAndConditionScreen";
 import FaqAndSupportScreen from "../../screens/Profile Screen/FaqAndSupportScreen";
 import LanguageScreen from "../../screens/Profile Screen/LanguageScreen";
 import MyRewardsScreen from "../../screens/Profile Screen/MyRewardsScreen";

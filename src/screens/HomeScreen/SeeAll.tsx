@@ -2,14 +2,14 @@ import {  FlatList, ActivityIndicator } from "react-native";
 import { View, Text, Avatar, Button } from "native-base";
 import React, { useEffect, useState } from "react";
 import { newColorTheme } from "../../constants/Colors";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import {
   useRoute,
   useNavigation,
   StackActions,
   CommonActions,
 } from "@react-navigation/native";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { apimiddleWare } from "../../utilities/helper-functions";
 import { Fonts, Colors } from "../../constants";
 import { useTranslation } from "react-i18next";
 import AppBar from "../../components/AppBar";

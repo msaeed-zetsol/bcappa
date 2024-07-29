@@ -4,9 +4,9 @@ import {
   TouchableOpacity,
   Keyboard,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Images, Fonts } from "../../constants";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
@@ -26,42 +26,42 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { newColorTheme } from "../../constants/Colors";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { apimiddleWare } from "../../utilities/helper-functions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { requestUserPermission } from "../../firebase/Notifications";
-import { useDispatch } from "react-redux";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import {
   LoginManager,
-  LoginButton,
   AccessToken,
   GraphRequest,
   GraphRequestManager,
 } from "react-native-fbsdk-next";
 import { useAppDispatch } from "../../hooks/hooks";
-import useAxios from "../../data/useAxios";
+import useAxios from "../../hooks/useAxios";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AuthStackParamList } from "../../navigators/StackNavigator/AuthStack";
+import PrimaryButton from "../../components/PrimaryButton";
 
 GoogleSignin.configure({
   webClientId:
     "425837288874-ivnre9s31uk6clo206fqaa8op0n5p5r3.apps.googleusercontent.com",
 });
 
-type LoginForm = {
-  email: string;
-  password: string;
-};
+type LoginScreenProps = NativeStackScreenProps<
+  AuthStackParamList,
+  "LoginScreen"
+>;
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
-  } = useForm<LoginForm>({
+    formState: { errors, isValid },
+  } = useForm<LoginFormValues>({
     defaultValues: {
       email: "",
       password: "",
@@ -71,17 +71,19 @@ const LoginScreen = () => {
     criteriaMode: "firstError",
   });
 
-  const [data, start, loading] = useAxios("/auth/login", "post", {
+  const [data, start] = useAxios("/auth/login", "post", {
     "Email or Password is Invalid.": "Incorrect Email or Password",
   });
+  const [loading, setLoading] = useState(false);
 
-  const login = async (loginDetails: LoginForm) => {
+  const login = async (formValues: LoginFormValues) => {
+    setLoading(true);
     Keyboard.dismiss();
     const token = await getFcmToken();
     start({
       data: {
-        email: loginDetails.email,
-        password: loginDetails.password,
+        email: formValues.email,
+        password: formValues.password,
         fcmToken: token,
       },
     });
@@ -101,6 +103,10 @@ const LoginScreen = () => {
   };
 
   useEffect(() => {
+    if (data === null) {
+      setLoading(false);
+    }
+
     if (data) {
       navigateToHome();
     }
@@ -271,6 +277,7 @@ const LoginScreen = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <View>
                 <Input
+                  isDisabled={loading}
                   placeholder={t("email_id")}
                   w="100%"
                   size="lg"
@@ -330,6 +337,7 @@ const LoginScreen = () => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
+                isDisabled={loading}
                 placeholder={t("password")}
                 w="100%"
                 size="lg"
@@ -394,37 +402,13 @@ const LoginScreen = () => {
         </Text>
       </TouchableOpacity>
 
-      <Button
+      <PrimaryButton
+        isDisabled={!isValid}
         isLoading={loading}
-        variant="solid"
-        _text={{
-          color: "WHITE_COLOR",
-
-          fontFamily: Fonts.POPPINS_SEMI_BOLD,
-        }}
-        _loading={{
-          _text: {
-            color: "BLACK_COLOR",
-            fontFamily: Fonts.POPPINS_MEDIUM,
-          },
-        }}
-        _spinner={{
-          color: "BLACK_COLOR",
-        }}
-        _pressed={{
-          backgroundColor: "DISABLED_COLOR",
-        }}
-        spinnerPlacement="end"
-        backgroundColor={"PRIMARY_COLOR"}
-        size={"lg"}
-        mt={verticalScale(50)}
-        p={"4"}
-        borderRadius={16}
-        isPressed={loading}
-        onPress={handleSubmit(login)}
-      >
-        {t("sign_in")}
-      </Button>
+        onClick={handleSubmit(login)}
+        text={t("sign_in")}
+        props={{ mt: verticalScale(50) }}
+      />
 
       <View width={"100%"} justifyContent={"center"} mt={verticalScale(20)}>
         <View borderWidth={0.5} borderColor={"BORDER_COLOR"} />
@@ -451,7 +435,11 @@ const LoginScreen = () => {
         alignItems={"center"}
       >
         <Pressable
-          style={styles.socialButton}
+          disabled={loading}
+          style={[
+            styles.googleButton,
+            loading ? styles.inactiveGoogleButton : styles.activeGoogleButton,
+          ]}
           onPress={googleLogin}
           _pressed={{
             backgroundColor: "DISABLED_COLOR",
@@ -526,15 +514,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalScale(28),
     paddingVertical: verticalScale(30),
   },
-  socialButton: {
+  googleButton: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: verticalScale(20),
     borderColor: "#CCCCCC",
     borderWidth: 1,
-    borderRadius: 16,
+    borderRadius: 12,
     width: "100%",
     justifyContent: "center",
+  },
+  activeGoogleButton: {
+    backgroundColor: "transparent",
+    borderColor: "#CCCCCC",
+  },
+  inactiveGoogleButton: {
+    backgroundColor: "#e8e8e8",
+    borderColor: "#e8e8e8",
   },
 });
 

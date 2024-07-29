@@ -10,7 +10,7 @@ import {
   View,
 } from "native-base";
 import { newColorTheme } from "../../constants/Colors";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { Fonts, Images } from "../../constants";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";

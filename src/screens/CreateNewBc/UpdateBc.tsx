@@ -19,7 +19,7 @@ import {
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import Colors, { newColorTheme, wildWatermelon } from "../../constants/Colors";
 import {
   CommonActions,
@@ -29,8 +29,8 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { Fonts, Images } from "../../constants";
 import ToggleSwitch from "toggle-switch-react-native";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
-import { BcSelectionType, BcStatus, BcType } from "../../lookups/Enums";
+import { apimiddleWare } from "../../utilities/helper-functions";
+import { BcSelectionType, BcStatus, BcType } from "../../types/Enums";
 import { useDispatch, useSelector } from "react-redux";
 import TextFieldComponent from "../../components/TextFieldComponent";
 import { setMembers } from "../../redux/members/membersSlice";
@@ -39,8 +39,8 @@ import { removeMembers } from "../../redux/user/userSlice";
 import { useTranslation } from "react-i18next";
 import AppBar from "../../components/AppBar";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { apply } from "../../scope-functions";
 import Message from "../../components/AlertMessage";
+import { apply } from "../../utilities/scope-functions";
 
 const UpdateBc = () => {
   const numberformatter = useMemo(() => new Intl.NumberFormat(), []);

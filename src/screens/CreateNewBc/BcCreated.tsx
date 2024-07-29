@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import {
   deepSkyBlue,
   ghostWhite,
@@ -19,7 +19,7 @@ import {
 import { Fonts } from "../../constants";
 import QRCode from "react-native-qrcode-svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../navigators/StackNavigator/StackNavigator";
+import { RootStackParamList } from "../../navigators/stackNavigator/StackNavigator";
 import { StackActions } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
 import * as MediaLibrary from "expo-media-library";

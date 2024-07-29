@@ -1,7 +1,7 @@
 import { Text, View } from "native-base";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Fonts, Images } from "../constants";
-import { horizontalScale, verticalScale } from "../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../utilities/dimensions";
 import { StyleSheet } from "react-native";
 
 type LanguageCheckableProps = {

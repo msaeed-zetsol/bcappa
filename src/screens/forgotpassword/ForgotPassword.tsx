@@ -2,7 +2,7 @@ import { StyleSheet, View, TouchableOpacity, I18nManager } from "react-native";
 import { Text, FormControl, Button, Icon } from "native-base";
 import React, { useState } from "react";
 import { newColorTheme } from "../../constants/Colors";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { Pressable } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { Fonts, Images } from "../../constants";
@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import CountryCodePicker from "../../components/CountryCodePicker";
 import { useAppDispatch } from "../../hooks/hooks";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { apimiddleWare } from "../../utilities/helper-functions";
 
 type EmailVerification = {
   email: string;
@@ -95,11 +95,12 @@ const ForgotPassword = () => {
     console.log(`Account Verification: ${JSON.stringify(response)}`);
 
     if (response) {
-      navigation.navigate("OtpAccountVerification", {
+      navigation.navigate("AccountVerificationScreen", {
         data: data,
         show: true,
         from: "forgot",
         hide: true,
+        verificationType: "phone",
       });
     }
     setIsLoading(false);

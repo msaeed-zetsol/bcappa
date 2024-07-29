@@ -20,7 +20,7 @@ import {
   Image,
 } from "native-base";
 import { Fonts, Images } from "../../constants";
-import { verticalScale, horizontalScale } from "../../utilities/Dimensions";
+import { verticalScale, horizontalScale } from "../../utilities/dimensions";
 import {
   CommonActions,
   useFocusEffect,
@@ -29,14 +29,14 @@ import {
 } from "@react-navigation/native";
 import Colors, { newColorTheme, wildWatermelon } from "../../constants/Colors";
 import InfoModal from "../../components/InfoModal";
-import { modalEnums } from "../../lookups/Enums";
+import { modalEnums } from "../../types/Enums";
 import Swiper from "react-native-swiper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Profile } from "../../interface/Interface";
+import { Profile } from "../../types/Interface";
 import {
   apimiddleWare,
   getFirstAndLastCharsUppercase,
-} from "../../utilities/HelperFunctions";
+} from "../../utilities/helper-functions";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import LanguageToggle from "../../components/LanguageToggle";

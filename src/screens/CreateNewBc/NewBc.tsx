@@ -18,13 +18,13 @@ import {
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
-import Colors, { newColorTheme, wildWatermelon } from "../../constants/Colors";
+import Colors, { wildWatermelon } from "../../constants/Colors";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import { Fonts, Images } from "../../constants";
 import ToggleSwitch from "toggle-switch-react-native";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
-import { BcSelectionType, BcType } from "../../lookups/Enums";
+import { apimiddleWare } from "../../utilities/helper-functions";
+import { BcSelectionType, BcType } from "../../types/Enums";
 import TextFieldComponent from "../../components/TextFieldComponent";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { setMembers } from "../../redux/members/membersSlice";

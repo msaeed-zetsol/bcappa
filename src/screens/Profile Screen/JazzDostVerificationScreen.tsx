@@ -1,7 +1,7 @@
 import { StyleSheet, StatusBar, Modal, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { View, Text, Pressable, Icon, Button } from "native-base";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import Colors, { newColorTheme } from "../../constants/Colors";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { Fonts, Images } from "../../constants";

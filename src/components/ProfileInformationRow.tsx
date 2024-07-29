@@ -2,7 +2,7 @@ import { I18nManager, StyleSheet, TouchableOpacity } from "react-native";
 import { View, Text } from "native-base";
 import React from "react";
 import { Fonts, Images } from "../constants";
-import { verticalScale } from "../utilities/Dimensions";
+import { verticalScale } from "../utilities/dimensions";
 
 type EndIconMode =
   | "navigation"

@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import useAxios from "../../data/useAxios";
+import useAxios from "../hooks/useAxios";
 import { useEffect, useState } from "react";
 
 export type SplashResponse = {

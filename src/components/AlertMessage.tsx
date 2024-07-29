@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Modal, Button, View, Text } from 'native-base';
-import { horizontalScale, verticalScale } from '../utilities/Dimensions';
+import { horizontalScale, verticalScale } from "../utilities/dimensions";
 import { Images } from '../constants';
 
 export type ModalTypes = {

@@ -5,7 +5,7 @@ import { OnboardFlow } from "react-native-onboard";
 import { Colors } from "../../constants";
 import { useTranslation } from "react-i18next";
 
-export default function OnBoardScreen() {
+export default function OnboardingScreen() {
   const navigation = useNavigation();
   const { t } = useTranslation();
 

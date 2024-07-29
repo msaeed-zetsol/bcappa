@@ -21,6 +21,7 @@ interface fieldValues {
   onEndEditing?: () => any;
   style?: any;
   maxLength?: number;
+  isDisabled?: boolean;
 }
 
 const TextFieldComponent = ({
@@ -40,12 +41,14 @@ const TextFieldComponent = ({
   readOnly,
   ref,
   style,
+  isDisabled,
 }: fieldValues) => {
   return (
     <Input
       ref={ref}
+      isDisabled={isDisabled}
       placeholder={placeholder}
-      w={width ? width : '100%'}
+      w={width ? width : "100%"}
       size="lg"
       borderRadius={16}
       p="3"
@@ -60,9 +63,9 @@ const TextFieldComponent = ({
       onEndEditing={onEndEditing}
       value={value}
       borderColor="BORDER_COLOR"
-      placeholderTextColor={'GREY'}
-      color={'BLACK_COLOR'}
-      fontSize={'sm'}
+      placeholderTextColor={"GREY"}
+      color={"BLACK_COLOR"}
+      fontSize={"sm"}
       fontFamily={Fonts.POPPINS_REGULAR}
       InputRightElement={InputRightElement}
       InputLeftElement={InputLeftElement}

@@ -12,7 +12,7 @@ import { newColorTheme, wildWatermelon } from "../../constants/Colors";
 import { Fonts, Images } from "../../constants";
 import ImagePicker from "react-native-image-crop-picker";
 import InfoModal from "../../components/InfoModal";
-import { modalEnums } from "../../lookups/Enums";
+import { modalEnums } from "../../types/Enums";
 import {
   CommonActions,
   StackActions,
@@ -21,12 +21,12 @@ import {
 } from "@react-navigation/native";
 import ProfileInformationRow from "../../components/ProfileInformationRow";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Profile } from "../../interface/Interface";
+import { Profile } from "../../types/Interface";
 import {
   apimiddleWare,
   createFormData,
   getFirstAndLastCharsUppercase,
-} from "../../utilities/HelperFunctions";
+} from "../../utilities/helper-functions";
 import { Content_Type } from "../../constants/Base_Url";
 import { useDispatch } from "react-redux";
 import * as Animatable from "react-native-animatable";

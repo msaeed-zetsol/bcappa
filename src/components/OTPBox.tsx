@@ -1,7 +1,7 @@
 import { View } from "native-base";
 import { StyleSheet, TextInput } from "react-native";
 import { Colors } from "../constants";
-import { horizontalScale, verticalScale } from "../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../utilities/dimensions";
 import { forwardRef, RefObject } from "react";
 import { deepSkyBlue } from "../constants/Colors";
 

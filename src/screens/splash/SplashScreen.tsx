@@ -4,7 +4,7 @@ import { deepSkyBlue } from "../../constants/Colors";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackActions, useNavigation } from "@react-navigation/native";
-import useSplash, { saveSplash } from "./useSplash";
+import useSplash, { saveSplash } from "../../hooks/useSplash";
 import dynamicLinks from "@react-native-firebase/dynamic-links";
 import { notificationListener } from "../../firebase/Notifications";
 import { getColors } from "react-native-image-colors";

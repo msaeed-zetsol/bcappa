@@ -1,7 +1,13 @@
 import React from "react";
-import { I18nManager, StatusBar, TouchableOpacity } from "react-native";
+import {
+  I18nManager,
+  StatusBar,
+  StyleProp,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
 import { View, Text } from "native-base";
-import { horizontalScale, verticalScale } from "../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../utilities/dimensions";
 import { Fonts, Images } from "../constants";
 import { newColorTheme } from "../constants/Colors";
 
@@ -9,11 +15,18 @@ type AppBarProps = {
   name: string;
   color?: string;
   onPress: () => void;
+  style?: StyleProp<ViewStyle>;
 };
 
-const AppBar: React.FC<AppBarProps> = ({ name, color = "#06202E", onPress }) => {
+const AppBar: React.FC<AppBarProps> = ({
+  name,
+  color = "#06202E",
+  onPress,
+  style,
+}) => {
   return (
     <View
+      style={style}
       flexDirection="row"
       alignItems="center"
       mt={verticalScale(25)}

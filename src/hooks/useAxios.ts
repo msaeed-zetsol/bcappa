@@ -8,9 +8,9 @@ import axios, {
   Method,
 } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { axiosInstance } from "./axiosConfig";
-import { useAppDispatch } from "../hooks/hooks";
-import { apply } from "../scope-functions";
+import { axiosInstance } from "../axios/axiosConfig";
+import { useAppDispatch } from "./hooks";
+import { apply } from "../utilities/scope-functions";
 
 type ApiError = {
   statusCode: number;

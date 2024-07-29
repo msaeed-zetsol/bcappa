@@ -10,9 +10,9 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { View, Text, Avatar, Button, Pressable, Image } from "native-base";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { Fonts, Images } from "../../constants";
-import { BcStatus, BcType } from "../../lookups/Enums";
+import { BcStatus, BcType } from "../../types/Enums";
 import {
   CommonActions,
   useFocusEffect,
@@ -20,7 +20,7 @@ import {
 } from "@react-navigation/native";
 import Colors, { newColorTheme, wildWatermelon } from "../../constants/Colors";
 import dynamicLinks from "@react-native-firebase/dynamic-links";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { apimiddleWare } from "../../utilities/helper-functions";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setMembers } from "../../redux/members/membersSlice";

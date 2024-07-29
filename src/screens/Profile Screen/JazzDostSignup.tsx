@@ -9,7 +9,7 @@ import {
   Select,
   Button,
 } from 'native-base';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import Colors, {newColorTheme} from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import {Fonts} from '../../constants';

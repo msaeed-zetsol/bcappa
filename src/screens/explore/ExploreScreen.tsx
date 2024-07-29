@@ -1,12 +1,12 @@
 import { StyleSheet, StatusBar, ActivityIndicator } from "react-native";
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { View, Text, Switch, Button } from "native-base";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { Fonts, Images, Colors } from "../../constants";
 import { newColorTheme } from "../../constants/Colors";
 import Swiper from "react-native-deck-swiper";
 import { useDispatch } from "react-redux";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { apimiddleWare } from "../../utilities/helper-functions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   CommonActions,

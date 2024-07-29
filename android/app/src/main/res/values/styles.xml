@@ -10,6 +10,7 @@
         <item name="bootSplashBackground">@color/bootsplash_background</item>
         <item name="bootSplashLogo">@drawable/bootsplash_logo</item>
         <item name="postBootSplashTheme">@style/AppTheme</item>
+        <item name="darkContentBarsStyle">true</item>
     </style>
 
 </resources>

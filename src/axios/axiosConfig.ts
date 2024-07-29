@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { apply } from "../scope-functions";
+import { apply } from "../utilities/scope-functions";
 
 export const axiosInstance = axios.create({
   baseURL: "http://bcappa-dev-apis.us-east-1.elasticbeanstalk.com/api",

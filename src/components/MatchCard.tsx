@@ -6,7 +6,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { Fonts } from "../constants";
-import { verticalScale } from "../utilities/Dimensions";
+import { verticalScale } from "../utilities/dimensions";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { deepSkyBlue, wildWatermelon } from "../constants/Colors";
 

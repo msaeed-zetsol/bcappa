@@ -7,10 +7,10 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { Text, View } from "native-base";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import Colors, { deepSkyBlue, newColorTheme } from "../../constants/Colors";
 import { Fonts } from "../../constants";
-import { apimiddleWare } from "../../utilities/HelperFunctions";
+import { apimiddleWare } from "../../utilities/helper-functions";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "../../hooks/hooks";
