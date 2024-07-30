@@ -77,15 +77,14 @@ const UpdateBc = () => {
       setBcTotal(numberformatter.format(0));
     }
   };
-  
+
   const formatAmountPerMonth = (amount: string) => {
-    if (amount && typeof amount === 'string' && amount !== "") {
+    if (amount && typeof amount === "string" && amount !== "") {
       return numberformatter.format(+amount.split(",").join(""));
     } else {
       return "";
     }
   };
-  
 
   const getNextDay = () => {
     return apply(new Date(), (date) => {
@@ -141,7 +140,6 @@ const UpdateBc = () => {
     criteriaMode: "firstError",
   });
 
-
   const handleDialPress = () => {
     const phoneNumberURL = "tel:03163110456";
     Linking.openURL(phoneNumberURL).catch((error) => {
@@ -151,7 +149,7 @@ const UpdateBc = () => {
 
   const updateBc = async (details: any) => {
     console.log(`Max Users: ${maxUsers}`);
-    console.log(`Members Length: ${members.length}`)
+    console.log(`Members Length: ${members.length}`);
     const totalUsers = parseInt(maxUsers);
     const membersLength = members.length;
     if (totalUsers !== membersLength) {
@@ -205,8 +203,8 @@ const UpdateBc = () => {
 
   return (
     <View flex={1} bg={"BACKGROUND_COLOR"} px={horizontalScale(20)}>
-       {modalView && (
-          <Message
+      {modalView && (
+        <Message
           Photo={() => <Images.AccountNotVerified />}
           message={t("please_edit_members")}
           buttonText={t("ok")}
@@ -215,7 +213,7 @@ const UpdateBc = () => {
           secondCallback={() => setModalView(false)}
           show={modalView}
         />
-        )}
+      )}
       <AppBar
         name={t("update_bc")}
         onPress={() => {
@@ -387,9 +385,12 @@ const UpdateBc = () => {
             >
               {t("total_expected_bc_amount")}
               {": "}
-              <Text color={"PRIMARY_COLOR"} fontFamily={Fonts.POPPINS_SEMI_BOLD}>
-              Rs. {bcTotal}
-            </Text>
+              <Text
+                color={"PRIMARY_COLOR"}
+                fontFamily={Fonts.POPPINS_SEMI_BOLD}
+              >
+                Rs. {bcTotal}
+              </Text>
             </Text>
           </FormControl>
           <View

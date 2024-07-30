@@ -34,6 +34,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import globalStyles from "../../styles/global";
 import Message from "../../components/AlertMessage";
 import AppBar from "../../components/AppBar";
+import useAxios from "../../hooks/useAxios";
 
 const NewBc = () => {
   const numberformatter = useMemo(() => new Intl.NumberFormat(), []);
@@ -85,13 +86,19 @@ const NewBc = () => {
     criteriaMode: "firstError",
   });
 
-  const createBc = async (details: any) => {
+  const [data, start] = useAxios("/bcs", "post", {
+    "Network Error": "Unable to connect. Please check your internet connection.",
+    "Request failed with status code 400": "Invalid request data. Please check your input.",
+    "Request failed with status code 500": "Server error. Please try again later.",
+    "Some Error Message from Server": "An unexpected error occurred. Please try again.",
+  });
+
+  const createBc = async (details:any) => {
     if (showDate) {
       setIsDisabled(true);
+
       if (members.length >= 1) {
-        console.log(
-          " ---------------- members before delete ---------------- "
-        );
+        console.log(" ---------------- members before delete ---------------- ");
         console.log(members);
 
         if (balloting) {
@@ -104,42 +111,37 @@ const NewBc = () => {
         console.log(members);
 
         if (members.length <= +details.totalUsers) {
-          const data = {
+          const requestData = {
             title: details.title,
             type: BcType.Private,
-            selectionType: balloting
-              ? BcSelectionType.Auto
-              : BcSelectionType.Manual,
+            selectionType: balloting ? BcSelectionType.Auto : BcSelectionType.Manual,
             maxMembers: +details.totalUsers,
             amount: +details.amountPerMonth,
             bcMembers: members,
             commenceDate: date,
           };
 
-          console.log({ sayen: data.bcMembers });
-          const response = await apimiddleWare({
-            url: "/bcs",
-            method: "post",
-            data: data,
-            reduxDispatch: dispatch,
-            navigation,
-          });
-          if (response) {
-            console.log(`Bc is created: ${JSON.stringify(response)}`);
-            setIsDisabled(false);
+          console.log({ sayen: requestData.bcMembers });
 
-            dispatch(setMembers([]));
-            // navigation.dispatch(
-            //   CommonActions.navigate("BcCreated", {
-            //     bcId: response.id,
-            //   })
-            // );
-            navigation.goBack();
+          try {
+            // Start the Axios request using the `start` function
+            const response = await start({
+              data: requestData,
+            });
+
+            if (response) {
+              console.log(`Bc is created: ${JSON.stringify(response)}`);
+              dispatch(setMembers([]));
+              navigation.goBack();
+            }
+          } catch (error:any) {
+            console.error("Error creating BC:",  error.response?.data || error.message);
+            // Optionally handle and display error message to the user
+          } finally {
+            setIsDisabled(false);
           }
-          setIsDisabled(false);
         } else {
           setModalView(true);
-          // Alert.alert("Members can not be more than max members");
           setIsDisabled(false);
         }
       } else {
@@ -150,6 +152,7 @@ const NewBc = () => {
       dispatch(errors({ message: "Starting date is required", value: true }));
     }
   };
+
 
   const handleDialPress = () => {
     const phoneNumberURL = `tel:03163110456`;
