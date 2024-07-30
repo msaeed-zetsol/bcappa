@@ -39,7 +39,7 @@ import {
 import { useAppDispatch } from "../../hooks/hooks";
 import useAxios from "../../hooks/useAxios";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AuthStackParamList } from "../../navigators/StackNavigator/AuthStack";
+import { AuthStackParamList } from "../../navigators/stackNavigator/AuthStack";
 import PrimaryButton from "../../components/PrimaryButton";
 
 GoogleSignin.configure({

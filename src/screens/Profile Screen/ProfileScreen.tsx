@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React, { useState, useCallback } from "react";
 import { View, Text, Avatar, Button, Icon } from "native-base";
-import { verticalScale, horizontalScale } from "../../utilities/Dimensions";
+import { verticalScale, horizontalScale } from "../../utilities/dimensions";
 import { newColorTheme, wildWatermelon } from "../../constants/Colors";
 import { Fonts, Images } from "../../constants";
 import ImagePicker from "react-native-image-crop-picker";

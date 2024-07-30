@@ -283,7 +283,8 @@ const BcDetailsScreen = () => {
                     color="#06202E"
                     fontFamily={Fonts.POPPINS_SEMI_BOLD}
                   >
-                    {bcData[0].status === BcStatus.Pending && t("commence_date")}
+                    {bcData[0].status === BcStatus.Pending &&
+                      t("commence_date")}
                     {bcData[0].status === BcStatus.Active && t("due_date")}
                   </Text>
                   <Text
@@ -390,7 +391,14 @@ const BcDetailsScreen = () => {
                   fontFamily={Fonts.POPPINS_SEMI_BOLD}
                   fontSize={"lg"}
                 >
-                  {`/${bcData[0].maxMembers}`}
+                  /
+                </Text>
+                <Text
+                  color="GREY"
+                  fontFamily={Fonts.POPPINS_SEMI_BOLD}
+                  fontSize={"lg"}
+                >
+                  {`${bcData[0].maxMembers}`}
                 </Text>
               </View>
             </View>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text} from 'native-base';
 import {StatusBar} from 'react-native';
-import {horizontalScale, verticalScale} from '../../utilities/Dimensions';
+import {horizontalScale, verticalScale} from '../../utilities/dimensions';
 import Colors, {newColorTheme, wildWatermelon} from '../../constants/Colors';
 import {useNavigation} from '@react-navigation/native';
 import {Fonts, Images} from '../../constants';

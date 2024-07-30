@@ -52,7 +52,7 @@ const Message = ({
         <View style={styles.buttonContainer}>
         {secondButtonText && secondCallback && (
             <Button
-              backgroundColor={'blueGray.300'}
+              backgroundColor={'blueGray.400'}
               borderRadius={15}
               py={5}
               px={8} 

@@ -46,6 +46,7 @@ import {
   findLanguageByCode,
   forceUpdateLanguage,
 } from "../../localization/config";
+import useAxios from "../../hooks/useAxios";
 
 const HomeScreen = () => {
   const route: any = useRoute();
@@ -87,43 +88,37 @@ const HomeScreen = () => {
       }));
     }
   };
+  const [data, start] = useAxios("/bcs/active", "get", {
+    "Network Error": "Unable to connect. Please check your internet connection.",
+    "Request failed with status code 404": "Active BCs not found.",
+    "Request failed with status code 500": "Server error. Please try again later.",
+    "Some Error Message from Server": "An unexpected error occurred. Please try again.",
+  });
+
+  const [joinBcData, joinBcStart] = useAxios("/bcs/ready-to-join", "get", {
+    "Network Error": "Unable to connect. Please check your internet connection.",
+    "Request failed with status code 404": "No BCs available to join.",
+    "Request failed with status code 500": "Server error. Please try again later.",
+    "Some Error Message from Server": "An unexpected error occurred. Please try again.",
+  });
 
   const getActiveBc = async () => {
     setActiveLoad(true);
-    const getUserData: any = await AsyncStorage.getItem("loginUserData");
-    const userData = await JSON.parse(getUserData);
-    setUserInfo(userData);
-    const response = await apimiddleWare({
-      url: `/bcs/active`,
-      method: "get",
-      reduxDispatch: dispatch,
-      navigation,
-    });
-    if (response) {
-      setActiveBc(response);
-      setActiveLoad(false);
-      // setLoad(false);
+    const getUserData = await AsyncStorage.getItem("loginUserData");
+    if (getUserData) {
+      const userData = JSON.parse(getUserData);
+      setUserInfo(userData);
     }
+    start(); // Initiates the API request
   };
 
   const scrollingContainer = async () => {
     setLoad(true);
-    // const getUserData: any = await AsyncStorage.getItem('loginUserData');
-    // const userData = await JSON.parse(getUserData);
-    const response = await apimiddleWare({
-      url: `/bcs/ready-to-join`,
-      method: "get",
-      reduxDispatch: dispatch,
-      navigation,
-    });
-    if (response) {
-      setSwiperData(response);
-      setLoad(false);
-    }
-    // setLoad(false);
+    await joinBcStart(); // Initiates the API request
+    setLoad(false);
   };
 
-  const joinBc = async (id: any) => {
+  const joinBc = (id:any) => {
     navigation.dispatch(
       CommonActions.navigate("BcDetailsScreen", {
         item: id,
@@ -140,10 +135,23 @@ const HomeScreen = () => {
   );
 
   useEffect(() => {
+    if (data) {
+      setActiveBc(data);
+      setActiveLoad(false);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (joinBcData) {
+      setSwiperData(joinBcData);
+    }
+  }, [joinBcData]);
+
+  useEffect(() => {
     if (show) {
       setFirstSignup(true);
     }
-  }, []);
+  }, [show]);
 
   return (
     <ScrollView

@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "../../hooks/hooks";
 import OTPBox, { OTP } from "../../components/OTPBox";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AuthStackParamList } from "../../navigators/StackNavigator/AuthStack";
+import { AuthStackParamList } from "../../navigators/stackNavigator/AuthStack";
 import AppBar from "../../components/AppBar";
 
 type AccountVerificationProps = NativeStackScreenProps<

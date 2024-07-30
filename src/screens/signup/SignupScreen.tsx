@@ -45,7 +45,7 @@ import AppBar from "../../components/AppBar";
 import { setMembers } from "../../redux/members/membersSlice";
 import useAxios from "../../hooks/useAxios";
 import { NativeStackScreenProps } from "react-native-screens/lib/typescript/native-stack/types";
-import { AuthStackParamList } from "../../navigators/StackNavigator/AuthStack";
+import { AuthStackParamList } from "../../navigators/stackNavigator/AuthStack";
 import PrimaryButton from "../../components/PrimaryButton";
 
 type SignUpScreenProps = NativeStackScreenProps<

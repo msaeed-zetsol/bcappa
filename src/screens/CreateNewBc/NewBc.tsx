@@ -17,7 +17,7 @@ import {
   Icon,
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { horizontalScale, verticalScale } from "../../utilities/Dimensions";
+import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import Colors, { wildWatermelon } from "../../constants/Colors";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
