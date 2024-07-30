@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, Avatar, Button, Pressable, Image } from "native-base";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { Fonts, Images } from "../../constants";
@@ -25,7 +25,8 @@ import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setMembers } from "../../redux/members/membersSlice";
 import { useTranslation } from "react-i18next";
-import Message from '../../components/AlertMessage';
+import Message from "../../components/AlertMessage";
+import useAxios from "../../hooks/useAxios";
 
 const MyBcsScreen = () => {
   const dispatch: any = useDispatch();
@@ -78,32 +79,41 @@ const MyBcsScreen = () => {
     return link;
   };
 
-  const getAllBc = async () => {
+  const [data, start] = useAxios("/bcs/my", "get", {
+    "No Bc Found": "Sorry, we couldn't find any BCs. Try creating a new one!",
+    "Network Error":
+      "Unable to connect. Please check your internet connection.",
+  });
+
+  const getAllBc = useCallback(async () => {
     setLoading(true);
-    const getUserData: any = await AsyncStorage.getItem("loginUserData");
-    const userData = await JSON.parse(getUserData);
-
-    setUserData(userData);
-
-    const response = await apimiddleWare({
-      url: `/bcs/my`,
-      method: "get",
-      navigation,
-      reduxDispatch: dispatch,
-    });
-
-    console.log(`All BCS: ${JSON.stringify(response)}`);
-
-    if (response) {
-      setAllBc(response);
+    try {
+      const getUserData = await AsyncStorage.getItem("loginUserData");
+      if (getUserData) {
+        const parsedUserData = JSON.parse(getUserData);
+        setUserData(parsedUserData);
+      }
+      await start();
+    } catch (error: any) {
+      console.error(
+        "Error fetching BCS:",
+        error.response?.data || error.message
+      );
+    } finally {
       setLoading(false);
     }
-    setLoading(false);
-  };
+  }, [start]);
 
   const handleRefresh = () => {
     getAllBc();
   };
+
+  useEffect(() => {
+    if (data) {
+      console.log(`All BCS: ${JSON.stringify(data)}`);
+      setAllBc(data);
+    }
+  }, [data]);
 
   const setColor = (status: any) => {
     switch (status) {
@@ -133,7 +143,7 @@ const MyBcsScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       getAllBc();
-      return () => { };
+      return () => {};
     }, [])
   );
 

@@ -89,17 +89,11 @@ const HomeScreen = () => {
     }
   };
   const [data, start] = useAxios("/bcs/active", "get", {
-    "Network Error": "Unable to connect. Please check your internet connection.",
-    "Request failed with status code 404": "Active BCs not found.",
-    "Request failed with status code 500": "Server error. Please try again later.",
-    "Some Error Message from Server": "An unexpected error occurred. Please try again.",
+    "Network Error": "Unable to connect. Please check your internet connection.",    
   });
 
   const [joinBcData, joinBcStart] = useAxios("/bcs/ready-to-join", "get", {
-    "Network Error": "Unable to connect. Please check your internet connection.",
-    "Request failed with status code 404": "No BCs available to join.",
-    "Request failed with status code 500": "Server error. Please try again later.",
-    "Some Error Message from Server": "An unexpected error occurred. Please try again.",
+    "Network Error": "Unable to connect. Please check your internet connection.", 
   });
 
   const getActiveBc = async () => {

@@ -87,18 +87,19 @@ const NewBc = () => {
   });
 
   const [data, start] = useAxios("/bcs", "post", {
-    "Network Error": "Unable to connect. Please check your internet connection.",
-    "Request failed with status code 400": "Invalid request data. Please check your input.",
-    "Request failed with status code 500": "Server error. Please try again later.",
-    "Some Error Message from Server": "An unexpected error occurred. Please try again.",
+    "Network Error":
+      "Unable to connect. Please check your internet connection.",
+    "No Bc Found": "Sorry, we couldn't find any BCs. Try creating a new one!",
   });
 
-  const createBc = async (details:any) => {
+  const createBc = async (details: any) => {
     if (showDate) {
       setIsDisabled(true);
 
       if (members.length >= 1) {
-        console.log(" ---------------- members before delete ---------------- ");
+        console.log(
+          " ---------------- members before delete ---------------- "
+        );
         console.log(members);
 
         if (balloting) {
@@ -114,7 +115,9 @@ const NewBc = () => {
           const requestData = {
             title: details.title,
             type: BcType.Private,
-            selectionType: balloting ? BcSelectionType.Auto : BcSelectionType.Manual,
+            selectionType: balloting
+              ? BcSelectionType.Auto
+              : BcSelectionType.Manual,
             maxMembers: +details.totalUsers,
             amount: +details.amountPerMonth,
             bcMembers: members,
@@ -124,7 +127,6 @@ const NewBc = () => {
           console.log({ sayen: requestData.bcMembers });
 
           try {
-            // Start the Axios request using the `start` function
             const response = await start({
               data: requestData,
             });
@@ -134,9 +136,11 @@ const NewBc = () => {
               dispatch(setMembers([]));
               navigation.goBack();
             }
-          } catch (error:any) {
-            console.error("Error creating BC:",  error.response?.data || error.message);
-            // Optionally handle and display error message to the user
+          } catch (error: any) {
+            console.error(
+              "Error creating BC:",
+              error.response?.data || error.message
+            );
           } finally {
             setIsDisabled(false);
           }
@@ -152,7 +156,11 @@ const NewBc = () => {
       dispatch(errors({ message: "Starting date is required", value: true }));
     }
   };
-
+useEffect(()=>{
+  if (data) {
+    console.log("data: ", data);
+  }
+  }, [data])
 
   const handleDialPress = () => {
     const phoneNumberURL = `tel:03163110456`;
