@@ -26,3 +26,13 @@ type SignupFormValues = {
   dob: string;
   role: "customer";
 };
+
+type ForgotPasswordFormValues = {
+  email: string | undefined;
+  phone: string | undefined;
+};
+
+type NewPasswordFormValues = {
+  password: string;
+  confirmPassword: string;
+};

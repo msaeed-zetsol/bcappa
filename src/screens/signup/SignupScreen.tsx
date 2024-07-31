@@ -1,32 +1,13 @@
-import {
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  I18nManager,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { Fonts, Images } from "../../constants";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Text,
-  Box,
-  FormControl,
-  Pressable,
-  Icon,
-  Button,
-  View,
-  Select,
-  Toast,
-} from "native-base";
+import { Text, Box, Pressable, Icon, View, Select } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Colors, { newColorTheme } from "../../constants/Colors";
-import {
-  CommonActions,
-  StackActions,
-  useNavigation,
-} from "@react-navigation/native";
+import { CommonActions, StackActions } from "@react-navigation/native";
 import TextFieldComponent from "../../components/TextFieldComponent";
 import { apimiddleWare } from "../../utilities/helper-functions";
 import CheckBox from "@react-native-community/checkbox";
@@ -138,7 +119,11 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
         email: values.email,
         phone: values.phone,
         verificationType: "phone",
-        transferrableValues: values,
+        // This is important because the `Sign up` API accepts an ISO 8601 date string.
+        transferrableValues: {
+          ...values,
+          dob: selectedDate.toString(),
+        },
       });
       setLoading(false);
     }
@@ -146,14 +131,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
 
   useEffect(() => {
     return () => {
-      reset({
-        fullName: "",
-        email: "",
-        phone: "",
-        cnic: "",
-        password: "",
-        gender: "",
-      });
+      reset();
     };
   }, []);
 

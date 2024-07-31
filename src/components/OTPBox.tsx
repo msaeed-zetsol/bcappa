@@ -15,13 +15,20 @@ type OTPBoxProps = {
   onChange: (otp: OTP) => void;
   previous?: RefObject<TextInput>;
   next?: RefObject<TextInput>;
+  readonly?: boolean;
 };
 
 const OTPBox = forwardRef<TextInput, OTPBoxProps>(
-  ({ otp, index, onChange, previous, next }: OTPBoxProps, ref) => {
+  ({ otp, index, onChange, previous, next, readonly }: OTPBoxProps, ref) => {
     return (
-      <View style={styles.otpBox}>
+      <View
+        style={[
+          styles.otpBox,
+          readonly ? styles.readOnlyBox : styles.activeBox,
+        ]}
+      >
         <TextInput
+          readOnly={readonly}
           cursorColor={deepSkyBlue}
           style={styles.otpText}
           keyboardType="number-pad"
@@ -53,13 +60,14 @@ const OTPBox = forwardRef<TextInput, OTPBoxProps>(
 
 const styles = StyleSheet.create({
   otpBox: {
-    borderColor: Colors.GREY,
     borderWidth: 1,
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
     padding: verticalScale(12),
   },
+  activeBox: { borderColor: Colors.GREY },
+  readOnlyBox: { backgroundColor: "#ececec", borderColor: "#ececec" },
   otpText: {
     fontSize: 20,
     textAlign: "center",

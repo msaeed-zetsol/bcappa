@@ -1,4 +1,5 @@
 const auth = {
+  both_password_must_same: "دونوں پاس ورڈز ایک جیسے ہونے چاہئیں",
   and: "اور",
   it_only_takes_a_minute_create_account:
     "آپ کا اکاؤنٹ بنانے میں صرف ایک منٹ لگتا ہے",

@@ -4,23 +4,24 @@ import {
   TextInput,
   Keyboard,
   TouchableOpacity,
-  I18nManager,
   ActivityIndicator,
 } from "react-native";
 import React, { useRef, useState, useEffect } from "react";
-import { View, Pressable, Heading, Text, Button } from "native-base";
-import { Colors, Images, Fonts } from "../../constants";
+import { View, Text, Toast } from "native-base";
+import { Fonts } from "../../constants";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
-import { CommonActions, StackActions } from "@react-navigation/native";
+import { StackActions } from "@react-navigation/native";
 import { deepSkyBlue, newColorTheme } from "../../constants/Colors";
-import { apimiddleWare, formatTime } from "../../utilities/helper-functions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch } from "../../hooks/hooks";
 import OTPBox, { OTP } from "../../components/OTPBox";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigators/stackNavigator/AuthStack";
 import AppBar from "../../components/AppBar";
+import PrimaryButton from "../../components/PrimaryButton";
+import SecondaryButton from "../../components/SecondaryButton";
+import useAxios from "../../hooks/useAxios";
+import { formatTime } from "../../utilities/helper-functions";
 
 type AccountVerificationProps = NativeStackScreenProps<
   AuthStackParamList,
@@ -35,9 +36,6 @@ const AccountVerificationScreen = ({
 }: AccountVerificationProps) => {
   const { email, phone, verificationType, transferrableValues } = route.params;
 
-  const dispatch = useAppDispatch();
-
-  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
 
   const firstInput = useRef<TextInput>(null);
@@ -54,11 +52,31 @@ const AccountVerificationScreen = ({
     fifth: "",
   });
 
+  const [sendCodeResponse, sendVerificationCode] = useAxios("/otp", "post");
+  const [codeVerificationResponse, verifyCode] = useAxios(
+    "/otp/verify",
+    "post",
+    {
+      "No OTP exists for the provided phone number":
+        "Verification failed.\nPlease ensure you have entered the correct OTP.",
+      "The OTP has expired. Please request a new OTP.":
+        "The OTP has expired.\nPlease click `Resend Now` to request a new one.",
+    }
+  );
+  const [signupResponse, signup] = useAxios("/auth/signup", "post");
+  const [loginResponse, login] = useAxios("/auth/login", "post");
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   const [isSendingOTP, setSendingOTP] = useState(true);
 
   const [timer, setTimer] = useState(10);
   const [restart, setRestart] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [verifying, setVerifying] = useState(false);
+
+  const areBoxesFilled = () => Object.values(OTP).join("").length === 5;
 
   const isAlternativeOptionAvailable = () => {
     if (verificationType === "email") {
@@ -85,52 +103,98 @@ const AccountVerificationScreen = ({
     }
   }, [restart]);
 
+  const sendVerificationCodeTo = async (type: VerificationType) => {
+    setSendingOTP(true);
+    let data = type === "email" ? { email: email } : { phone: phone };
+    abortControllerRef.current = sendVerificationCode({ data: data });
+  };
+
   useEffect(() => {
     sendVerificationCodeTo(verificationType);
   }, []);
 
-  const sendVerificationCodeTo = async (type: VerificationType) => {
-    setSendingOTP(true);
-    let data = type === "email" ? { email: email } : { phone: phone };
-
-    await apimiddleWare({
-      url: "/otp",
-      method: "post",
-      data: data,
-      reduxDispatch: dispatch,
-      navigation,
-    });
-
-    setSendingOTP(false);
-    setRestart((it) => it + 1);
+  const handleOTPVerification = () => {
+    Keyboard.dismiss();
+    const code = Object.values(OTP).join("");
+    if (code.length < 5) {
+      Toast.show({ title: "Please enter otp" });
+    } else {
+      setVerifying(true);
+      const data =
+        verificationType == "email"
+          ? {
+              email: email,
+              otpCode: code,
+            }
+          : {
+              phone: phone,
+              otpCode: code,
+            };
+      abortControllerRef.current = verifyCode({ data: data });
+    }
   };
 
-  //verify Otp
-  const LoginHandler = async (details: any) => {
-    const getToken: any = await AsyncStorage.getItem("fcmToken");
-    const parsedFcmToken: any = await JSON.parse(getToken);
+  useEffect(() => {
+    if (sendCodeResponse === null) {
+      navigation.goBack();
+    }
 
-    Keyboard.dismiss();
-    setLoading(true);
+    if (sendCodeResponse) {
+      console.log(`OTP Response: ${JSON.stringify(sendCodeResponse)}`);
+      setSendingOTP(false);
+      setRestart((it) => it + 1);
+    }
+  }, [sendCodeResponse]);
 
-    const data = {
-      email: details.email,
-      password: details.password,
-      fcmToken: parsedFcmToken,
-    };
+  useEffect(() => {
+    console.log(codeVerificationResponse);
+    if (codeVerificationResponse === null) {
+      setVerifying(false);
+    }
 
-    try {
-      const response = await apimiddleWare({
-        url: "/auth/login",
-        method: "post",
-        data: data,
-        reduxDispatch: dispatch,
-        navigation: navigation,
+    if (codeVerificationResponse) {
+      if (transferrableValues !== undefined) {
+        abortControllerRef.current = signup({
+          data: {
+            ...transferrableValues,
+            dob: new Date(transferrableValues.dob),
+          },
+        });
+      } else {
+        // Forgot Password
+        navigation.replace("NewPassword", {
+          emailOrPhone: verificationType === "email" ? email! : phone!,
+        });
+      }
+    }
+  }, [codeVerificationResponse]);
+
+  useEffect(() => {
+    if (signupResponse === null) {
+      setVerifying(false);
+    }
+
+    if (signupResponse) {
+      AsyncStorage.getItem("fcmToken").then((token: any) => {
+        const data = {
+          email: transferrableValues!.email,
+          password: transferrableValues!.password,
+          fcmToken: JSON.parse(token),
+        };
+        abortControllerRef.current = login({ data: data });
       });
+    }
+  }, [signupResponse]);
 
-      if (response) {
-        const loginUserDataString = await JSON.stringify(response);
-        await AsyncStorage.setItem("loginUserData", loginUserDataString);
+  useEffect(() => {
+    if (loginResponse === null) {
+      setVerifying(false);
+    }
+
+    if (loginResponse) {
+      const loginUserDataString = JSON.stringify(loginResponse);
+      AsyncStorage.setItem("loginUserData", loginUserDataString).then(() => {
+        // TODO(Khuram): Fix this navigation function calling.
         navigation.dispatch(
           StackActions.replace("BottomNavigator", {
             screen: "HomeScreen",
@@ -140,91 +204,11 @@ const AccountVerificationScreen = ({
             },
           })
         );
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
+      });
     }
-  };
+  }, [loginResponse]);
 
-  // const verifyOtp = async () => {
-  //   setLoading(true);
-  //   Keyboard.dismiss();
-  //   const concatenatedOtp = Object.values(OTP).join("");
-
-  //   const payloadData: any = {
-  //     otpCode: concatenatedOtp,
-  //     phone: values.phone,
-  //   };
-
-  //   if (whatTosend === "email") {
-  //     payloadData.email = values.email;
-  //     delete payloadData.phone;
-  //   }
-
-  //   const response = await apimiddleWare({
-  //     url: "/otp/verify",
-  //     method: "post",
-  //     data: payloadData,
-  //     reduxDispatch: dispatch,
-  //     navigation,
-  //   });
-
-  //   if (response) {
-  //     const response = await apimiddleWare({
-  //       url: "/auth/signup",
-  //       method: "post",
-  //       data: values,
-  //       reduxDispatch: dispatch,
-  //       navigation,
-  //     });
-  //     if (response) {
-  //       await LoginHandler(values);
-  //       setLoading(false);
-  //     }
-  //   }
-  //   setLoading(false);
-  // };
-
-  // const verifyToGivenInfo = async () => {
-  //   setLoading(true);
-  //   Keyboard.dismiss();
-  //   const concatenatedOtp = Object.values(OTP).join("");
-
-  //   if (values.email) {
-  //     var payloadData: any = {
-  //       otpCode: concatenatedOtp,
-  //       email: values.email,
-  //     };
-  //   } else if (values.phone) {
-  //     var payloadData: any = {
-  //       otpCode: concatenatedOtp,
-  //       phone: values.phone,
-  //       Number,
-  //     };
-  //   }
-
-  //   const response = await apimiddleWare({
-  //     url: "/otp/verify",
-  //     method: "post",
-  //     data: payloadData,
-  //     reduxDispatch: dispatch,
-  //     navigation,
-  //   });
-
-  //   if (response) {
-  //     console.log({ response });
-  //     setLoading(false);
-  //     navigation.dispatch(
-  //       CommonActions.navigate("NewPassword", {
-  //         values,
-  //       })
-  //     );
-  //   }
-
-  //   setLoading(false);
-  // };
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
 
   return (
     <View style={styles.container}>
@@ -252,6 +236,7 @@ const AccountVerificationScreen = ({
 
             <View style={styles.otpContainer}>
               <OTPBox
+                readonly={verifying}
                 otp={OTP}
                 onChange={(it) => setOTP(it)}
                 index="first"
@@ -259,6 +244,7 @@ const AccountVerificationScreen = ({
                 ref={firstInput}
               />
               <OTPBox
+                readonly={verifying}
                 otp={OTP}
                 onChange={(it) => setOTP(it)}
                 index="second"
@@ -267,6 +253,7 @@ const AccountVerificationScreen = ({
                 ref={secondInput}
               />
               <OTPBox
+                readonly={verifying}
                 otp={OTP}
                 onChange={(it) => setOTP(it)}
                 index="third"
@@ -275,6 +262,7 @@ const AccountVerificationScreen = ({
                 ref={thirdInput}
               />
               <OTPBox
+                readonly={verifying}
                 otp={OTP}
                 onChange={(it) => setOTP(it)}
                 index="fourth"
@@ -283,6 +271,7 @@ const AccountVerificationScreen = ({
                 ref={fourthInput}
               />
               <OTPBox
+                readonly={verifying}
                 otp={OTP}
                 onChange={(it) => setOTP(it)}
                 index="fifth"
@@ -354,6 +343,7 @@ const AccountVerificationScreen = ({
                           {t("receive_otp_via")}
                         </Text>
                         <TouchableOpacity
+                          disabled={verifying}
                           onPress={() => {
                             const oppositeType =
                               verificationType === "email" ? "phone" : "email";
@@ -365,7 +355,7 @@ const AccountVerificationScreen = ({
                           }}
                         >
                           <Text
-                            color={"PRIMARY_COLOR"}
+                            color={verifying ? "#404040" : "PRIMARY_COLOR"}
                             fontFamily={Fonts.POPPINS_MEDIUM}
                           >
                             {" "}
@@ -396,74 +386,28 @@ const AccountVerificationScreen = ({
             {/* Buttons to verify and resend*/}
             <View style={{ flexDirection: "column" }}>
               {timer === 0 && (
-                <Button
-                  variant="outline"
-                  _loading={{
-                    _text: {
-                      color: deepSkyBlue,
-                      fontFamily: Fonts.POPPINS_SEMI_BOLD,
-                    },
-                  }}
-                  _text={{
-                    color: deepSkyBlue,
-                    fontFamily: Fonts.POPPINS_MEDIUM,
-                  }}
-                  _spinner={{
-                    color: deepSkyBlue,
-                  }}
-                  _pressed={{
-                    backgroundColor: "DISABLED_COLOR",
-                  }}
-                  spinnerPlacement="end"
-                  size={"lg"}
-                  mt={verticalScale(50)}
-                  p={"4"}
-                  borderRadius={16}
-                  borderColor={deepSkyBlue}
-                  borderWidth={2}
-                  isDisabled={loading}
-                  isPressed={loading}
-                  onPress={() => {
+                <SecondaryButton
+                  text={t("resend_now")}
+                  isDisabled={verifying}
+                  isLoading={false}
+                  onClick={() => {
                     sendVerificationCodeTo(verificationType);
                     setTimer(60);
                   }}
-                >
-                  {t("resend_now")}
-                </Button>
+                  props={{
+                    mt: verticalScale(50),
+                  }}
+                />
               )}
-              <Button
-                isLoading={loading}
-                variant="solid"
-                _loading={{
-                  _text: {
-                    color: "BLACK_COLOR",
-                    fontFamily: Fonts.POPPINS_SEMI_BOLD,
-                  },
+              <PrimaryButton
+                text={t("verify")}
+                isLoading={verifying}
+                onClick={handleOTPVerification}
+                props={{
+                  mt: verticalScale(timer === 0 ? 10 : 50),
                 }}
-                _text={{
-                  color: "WHITE_COLOR",
-                  fontFamily: Fonts.POPPINS_MEDIUM,
-                }}
-                _spinner={{
-                  color: "BLACK_COLOR",
-                }}
-                _pressed={{
-                  backgroundColor: "DISABLED_COLOR",
-                }}
-                spinnerPlacement="end"
-                backgroundColor={"PRIMARY_COLOR"}
-                size={"lg"}
-                mt={verticalScale(timer === 0 ? 10 : 50)}
-                p={"4"}
-                borderRadius={16}
-                isDisabled={loading}
-                isPressed={loading}
-                onPress={() => {
-                  // otp Verification
-                }}
-              >
-                {t("verify")}
-              </Button>
+                isDisabled={!areBoxesFilled()}
+              />
             </View>
           </View>
         </View>
@@ -480,43 +424,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalScale(28),
     paddingVertical: verticalScale(30),
   },
-
   otpContainer: {
     marginHorizontal: horizontalScale(5),
     marginTop: verticalScale(35),
     justifyContent: "space-evenly",
     alignItems: "center",
     flexDirection: "row",
-  },
-  otpBox: {
-    borderColor: Colors.GREY,
-    borderWidth: 1,
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: verticalScale(12),
-  },
-  otpText: {
-    fontSize: 20,
-    textAlign: "center",
-    paddingHorizontal: horizontalScale(4),
-    paddingVertical: verticalScale(2),
-    color: Colors.BLACK_COLOR,
-    fontWeight: "bold",
-  },
-  forgotButton: {
-    height: verticalScale(6),
-    borderRadius: 8,
-    marginHorizontal: 20,
-    justifyContent: "center",
-    marginTop: 20,
-    alignItems: "center",
-  },
-  resend: {
-    backgroundColor: Colors.PRIMARY_COLOR,
-    paddingVertical: verticalScale(5),
-    paddingHorizontal: horizontalScale(10),
-    borderRadius: 5,
   },
 });
 

@@ -33,13 +33,9 @@ import { modalEnums } from "../../types/Enums";
 import Swiper from "react-native-swiper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Profile } from "../../types/Interface";
-import {
-  apimiddleWare,
-  getFirstAndLastCharsUppercase,
-} from "../../utilities/helper-functions";
-import { useDispatch } from "react-redux";
+import { getFirstAndLastCharsUppercase } from "../../utilities/helper-functions";
 import { useTranslation } from "react-i18next";
-import LanguageToggle from "../../components/LanguageToggle";
+import ValueToggle from "../../components/ValueToggle";
 import ForceRestartModal from "../../components/ForceRestartModal";
 import i18next from "i18next";
 import {
@@ -51,7 +47,6 @@ import useAxios from "../../hooks/useAxios";
 const HomeScreen = () => {
   const route: any = useRoute();
   const show = route?.params?.show;
-  const dispatch: any = useDispatch();
   const [firstSignup, setFirstSignup] = useState(false);
   const [modals, setModals] = useState({
     accountVerification: false,
@@ -65,7 +60,7 @@ const HomeScreen = () => {
   const [swiperData, setSwiperData] = useState<any>([]);
   const [activeLoad, setActiveLoad] = useState(false);
   const AvatarName = getFirstAndLastCharsUppercase(userInfo?.fullName || "");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [languageCode, setLanguageCode] = useState(i18next.language);
   const [showRestartModal, setShowRestartModal] = useState(false);
 
@@ -88,6 +83,7 @@ const HomeScreen = () => {
       }));
     }
   };
+
   const [data, start] = useAxios("/bcs/active", "get", {
     "Network Error": "Unable to connect. Please check your internet connection.",    
   });
@@ -112,7 +108,7 @@ const HomeScreen = () => {
     setLoad(false);
   };
 
-  const joinBc = (id:any) => {
+  const joinBc = (id: any) => {
     navigation.dispatch(
       CommonActions.navigate("BcDetailsScreen", {
         item: id,
@@ -223,8 +219,12 @@ const HomeScreen = () => {
             </View>
           </View>
         </View>
-        <LanguageToggle
-          onToggle={(code) => {
+        <ValueToggle
+          leftText="Eng"
+          rightText="اردو"
+          initial={i18n.language === "en" ? "left" : "right"}
+          onToggle={(value) => {
+            const code = value === "left" ? "en" : "ur";
             if (i18next.language !== code) {
               setLanguageCode(code);
               setShowRestartModal(true);

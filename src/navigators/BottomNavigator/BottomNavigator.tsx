@@ -5,11 +5,11 @@ import { verticalScale } from "../../utilities/dimensions";
 import { Colors, Images } from "../../constants";
 import { useTranslation } from "react-i18next";
 import BottomNavIcon from "../../components/BottomNavIcon";
-import HomeScreen from "../../screens/HomeScreen/HomeScreen";
-import MyBcsScreen from "../../screens/My BC's Screen/MyBcsScreen";
+import HomeScreen from "../../screens/home/HomeScreen";
+import MyBcsScreen from "../../screens/bcs/MyBcsScreen";
 import ExploreScreen from "../../screens/explore/ExploreScreen";
 import NotificationScreen from "../../screens/notifications/NotificationScreen";
-import ProfileScreen from "../../screens/Profile Screen/ProfileScreen";
+import ProfileScreen from "../../screens/profile/ProfileScreen";
 import { Image } from "native-base";
 import { wildWatermelon } from "../../constants/Colors";
 

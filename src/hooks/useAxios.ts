@@ -38,8 +38,8 @@ const errorMessage = (it: string | string[]) =>
   typeof it === "string" ? it : it.join(",");
 
 const useAxios = <O>(
-  url?: string,
-  method?: Method | string,
+  url: string,
+  method: Method | string,
   errorMap?: ErrorMessagesMap
 ): useAxiosHook<O> => {
   const [data, setData] = useState<O | null | undefined>(undefined);
@@ -68,10 +68,23 @@ const useAxios = <O>(
     [dispatcher]
   );
 
+  /**
+   * Displays an error message to the user via a modal dialog.
+   * Maps and displays the provided error messages if any are supplied.
+   * If the API call is canceled, the function exits without displaying an error.
+   *
+   * @param {AxiosError} error - The error object caught from an Axios API call.
+   */
   const handleAxiosError = (error: AxiosError<ApiError>) => {
     if (error.response) {
       apply(errorMessage(error.response.data.message), (it) => {
-        dispatch(errorMap?.[it] ?? it);
+        if (it.includes("Duplicate entry")) {
+          dispatch(
+            "It looks like something went wrong on our side. Please try again in a little bit."
+          );
+        } else {
+          dispatch(errorMap?.[it] ?? it);
+        }
         navigateToLoginIf(
           it.includes("Unauthorized" || "User Does Not Exits.")
         );

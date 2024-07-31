@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   Keyboard,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Images, Fonts } from "../../constants";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { useForm, Controller } from "react-hook-form";
@@ -16,15 +16,10 @@ import {
   FormControl,
   Pressable,
   Icon,
-  Button,
   View,
 } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import {
-  CommonActions,
-  StackActions,
-  useNavigation,
-} from "@react-navigation/native";
+import { StackActions } from "@react-navigation/native";
 import { newColorTheme } from "../../constants/Colors";
 import { apimiddleWare } from "../../utilities/helper-functions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -72,7 +67,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
   });
 
   const [data, start] = useAxios("/auth/login", "post", {
-    "Email or Password is Invalid.": "Incorrect Email or Password",
+    "Email or Password is Invalid.": "Incorrect email or password.",
   });
   const [loading, setLoading] = useState(false);
 
@@ -385,11 +380,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
         </FormControl>
       </Box>
 
-      <TouchableOpacity
-        onPress={() => {
-          navigation.dispatch(CommonActions.navigate("Forgot"));
-        }}
-      >
+      <TouchableOpacity onPress={() => navigation.navigate("Forgot")}>
         <Text
           color="PRIMARY_COLOR"
           fontSize="sm"
@@ -488,11 +479,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
         >
           {t("dont_have_an_account")}
         </Text>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.dispatch(CommonActions.navigate("SignupScreen"));
-          }}
-        >
+        <TouchableOpacity onPress={() => navigation.navigate("SignupScreen")}>
           <Text
             color={"PRIMARY_COLOR"}
             letterSpacing={0.3}

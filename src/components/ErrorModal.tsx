@@ -2,20 +2,22 @@ import { StyleSheet, Text, Modal } from "react-native";
 import React from "react";
 import { horizontalScale, verticalScale } from "../utilities/dimensions";
 import { Fonts, Colors, Images } from "../constants";
-import { useDispatch } from "react-redux";
 import { errors } from "../redux/user/userSlice";
 import { Button } from "native-base";
 import { View } from "react-native-animatable";
+import { useAppDispatch } from "../hooks/hooks";
 
 const ErrorModal = ({ message }: any) => {
-  const dispatch: any = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <Modal
+      statusBarTranslucent
+      transparent
+      presentationStyle="overFullScreen"
       style={{
         flex: 1,
       }}
-      transparent
       visible={true}
     >
       <View style={styles.centeredView}>
@@ -46,8 +48,6 @@ const ErrorModal = ({ message }: any) => {
     </Modal>
   );
 };
-
-export default ErrorModal;
 
 const styles = StyleSheet.create({
   closeButton: {
@@ -89,3 +89,5 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.POPPINS_SEMI_BOLD,
   },
 });
+
+export default ErrorModal;

@@ -1,109 +1,85 @@
-import { StyleSheet, View, TouchableOpacity, I18nManager } from "react-native";
+import { StyleSheet, View, I18nManager, Keyboard } from "react-native";
 import { Text, FormControl, Button, Icon } from "native-base";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { newColorTheme } from "../../constants/Colors";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { Pressable } from "native-base";
-import { useNavigation } from "@react-navigation/native";
 import { Fonts, Images } from "../../constants";
 import { useForm, Controller } from "react-hook-form";
 import TextFieldComponent from "../../components/TextFieldComponent";
 import { useTranslation } from "react-i18next";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import CountryCodePicker from "../../components/CountryCodePicker";
-import { useAppDispatch } from "../../hooks/hooks";
-import { apimiddleWare } from "../../utilities/helper-functions";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AuthStackParamList } from "../../navigators/stackNavigator/AuthStack";
+import useAxios from "../../hooks/useAxios";
+import PrimaryButton from "../../components/PrimaryButton";
+import ValueToggle from "../../components/ValueToggle";
+import globalStyles from "../../styles/global";
 
-type EmailVerification = {
-  email: string;
-};
+type ForgotPasswordProps = NativeStackScreenProps<AuthStackParamList, "Forgot">;
 
-type PhoneVerification = {
-  phone: string;
-};
-
-type UserVerification = EmailVerification | PhoneVerification;
-
-type ForgotPasswordForm = {
-  email: string;
-  phoneNumber: string;
-};
-
-const ForgotPassword = () => {
+const ForgotPassword = ({ navigation }: ForgotPasswordProps) => {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
-  const navigation: any = useNavigation();
+  const [isLoading, setLoading] = useState(false);
   const [isEmailSelected, setIsEmailSelected] = useState(true);
-  const dispatch = useAppDispatch();
   const [showCountryCodePicker, setShowCountryCodePicker] = useState(false);
   const [countryCode, setCountryCode] = useState("+92");
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     reset,
-  } = useForm<ForgotPasswordForm>({
+    getValues,
+  } = useForm<ForgotPasswordFormValues>({
     defaultValues: {
-      email: "",
-      phoneNumber: "",
+      email: undefined,
+      phone: undefined,
     },
+    mode: "onChange",
+    reValidateMode: "onChange",
+    criteriaMode: "firstError",
   });
 
-  const handleSendOTP = async (details: ForgotPasswordForm) => {
-    setIsLoading(true);
-    const data = isEmailSelected
-      ? { email: details.email }
-      : { phone: countryCode + details.phoneNumber };
-    const exists = await doesUserExists(data);
-    if (exists) {
-      forgotHandler(details);
-    } else {
-      setIsLoading(false);
-    }
+  const [data, start] = useAxios<MessageResponse>("/auth/check-user", "post", {
+    "phone must be a valid phone number": "Please enter a valid phone number",
+    "User Does Not Exist.":
+      "Sorry, no account found with the provided information",
+  });
+
+  const getPhoneValue = () => {
+    const phone = getValues("phone");
+    return phone !== undefined ? countryCode + phone : undefined;
   };
 
-  const doesUserExists = async (data: UserVerification): Promise<boolean> => {
-    const response = await apimiddleWare({
-      url: "/auth/check-user",
-      method: "post",
-      data: data,
-      reduxDispatch: dispatch,
-      navigation,
-    });
-
-    if (response && response.message === "Success") {
-      return true;
-    } else {
-      return false;
+  useEffect(() => {
+    if (data === null) {
+      setLoading(false);
     }
-  };
 
-  const forgotHandler = async (details: ForgotPasswordForm) => {
-    const data = isEmailSelected
-      ? { email: details.email }
-      : { phone: countryCode + details.phoneNumber };
-
-    const response = await apimiddleWare({
-      url: "/otp",
-      method: "post",
-      data,
-      reduxDispatch: dispatch,
-      navigation,
-    });
-
-    console.log(`Account Verification: ${JSON.stringify(response)}`);
-
-    if (response) {
+    if (data && data.message === "Success") {
       navigation.navigate("AccountVerificationScreen", {
-        data: data,
-        show: true,
-        from: "forgot",
-        hide: true,
-        verificationType: "phone",
+        email: getValues("email"),
+        phone: getPhoneValue(),
+        verificationType: isEmailSelected ? "email" : "phone",
       });
+      setLoading(false);
     }
-    setIsLoading(false);
+  }, [data]);
+
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
+
+  const checkIfUserExists = async (details: ForgotPasswordFormValues) => {
+    Keyboard.dismiss();
+    setLoading(true);
+    const data = isEmailSelected
+      ? { email: details.email }
+      : { phone: countryCode + details.phone };
+    abortControllerRef.current = start({
+      data: data,
+    });
   };
 
   return (
@@ -153,52 +129,16 @@ const ForgotPassword = () => {
         {t("please_enter_email_phone")}
       </Text>
 
-      <View style={styles.Togglecontainer}>
-        <TouchableOpacity
-          onPress={() => {
-            reset({
-              phoneNumber: "",
-              email: "",
-            });
-            setIsEmailSelected(true);
-          }}
-        >
-          <Text
-            style={[
-              styles.text,
-              isEmailSelected ? styles.selectedText : styles.unSelectedText,
-              {
-                borderTopLeftRadius: 5,
-                borderBottomLeftRadius: 5,
-              },
-            ]}
-          >
-            {t("email")}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            reset({
-              phoneNumber: "",
-              email: "",
-            });
-            setIsEmailSelected(false);
-          }}
-        >
-          <Text
-            style={[
-              styles.text,
-              !isEmailSelected ? styles.selectedText : styles.unSelectedText,
-              {
-                borderTopRightRadius: 5,
-                borderBottomRightRadius: 5,
-              },
-            ]}
-          >
-            {t("phone_captialized")}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <ValueToggle
+        leftText={t("email")}
+        rightText={t("phone_captialized")}
+        initial={"left"}
+        onToggle={(value) => {
+          reset();
+          setIsEmailSelected(value === "left");
+        }}
+        isDisabled={isLoading}
+      />
 
       <FormControl mt={verticalScale(20)}>
         {isEmailSelected ? (
@@ -207,6 +147,7 @@ const ForgotPassword = () => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
+                  readOnly={isLoading}
                   placeholder={t("enter_email_id")}
                   value={value}
                   onBlur={onBlur}
@@ -225,13 +166,7 @@ const ForgotPassword = () => {
               defaultValue=""
             />
             {errors.email && (
-              <Text
-                color={"ERROR"}
-                marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}
-              >
-                {errors.email.message}
-              </Text>
+              <Text style={globalStyles.errorText}>{errors.email.message}</Text>
             )}
           </>
         ) : (
@@ -240,13 +175,16 @@ const ForgotPassword = () => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
+                  readOnly={isLoading}
                   placeholder={t("phone_number")}
                   value={value}
                   onBlur={onBlur}
                   onChange={onChange}
                   keyboardType={"number-pad"}
+                  maxLength={10}
                   InputLeftElement={
                     <Pressable
+                      isDisabled={isLoading}
                       onPress={() => setShowCountryCodePicker(true)}
                       flexDirection={"row"}
                       alignItems={"center"}
@@ -275,63 +213,34 @@ const ForgotPassword = () => {
                   }
                 />
               )}
-              name="phoneNumber"
+              name="phone"
               rules={{
                 required: t("phone_is_required"),
-                maxLength: {
+                minLength: {
                   value: 10,
                   message: t("phone_is_invalid"),
                 },
               }}
               defaultValue=""
             />
-            {errors.phoneNumber && (
-              <Text
-                color={"ERROR"}
-                marginTop={verticalScale(5)}
-                fontFamily={Fonts.POPPINS_MEDIUM}
-              >
-                {errors.phoneNumber.message}
-              </Text>
+            {errors.phone && (
+              <Text style={globalStyles.errorText}>{errors.phone.message}</Text>
             )}
           </>
         )}
       </FormControl>
-      <Button
+      <PrimaryButton
+        text={t("send_otp")}
+        onClick={handleSubmit(checkIfUserExists)}
+        isDisabled={!isValid}
         isLoading={isLoading}
-        variant="solid"
-        _text={{
-          color: "WHITE_COLOR",
-          fontFamily: Fonts.POPPINS_SEMI_BOLD,
+        props={{
+          mt: verticalScale(20),
         }}
-        _loading={{
-          _text: {
-            color: "BLACK_COLOR",
-            fontFamily: Fonts.POPPINS_MEDIUM,
-          },
-        }}
-        _spinner={{
-          color: "BLACK_COLOR",
-        }}
-        _pressed={{
-          backgroundColor: "DISABLED_COLOR",
-        }}
-        spinnerPlacement="end"
-        backgroundColor={"PRIMARY_COLOR"}
-        size={"lg"}
-        mt={verticalScale(20)}
-        p={"4"}
-        borderRadius={16}
-        isPressed={isLoading}
-        onPress={handleSubmit(handleSendOTP)}
-      >
-        {t("send_otp")}
-      </Button>
+      />
     </View>
   );
 };
-
-export default ForgotPassword;
 
 const styles = StyleSheet.create({
   container: {
@@ -359,3 +268,5 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
 });
+
+export default ForgotPassword;

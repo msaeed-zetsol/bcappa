@@ -6,37 +6,51 @@ import {
   ViewStyle,
 } from "react-native";
 import { Fonts } from "../constants";
-import { useEffect, useState } from "react";
-import i18next from "i18next";
-import {
-  findLanguageByCode,
-  forceUpdateLanguage,
-  languages,
-} from "../localization/config";
+import { useState } from "react";
 
-type LanguageToggleProps = {
-  onToggle: (code: string) => void;
+type ToggleValue = "left" | "right";
+
+type ValueToggleProps = {
+  leftText: string;
+  rightText: string;
+  initial: ToggleValue;
+  onToggle: (value: ToggleValue) => void;
+  isDisabled: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
-const LanguageToggle = ({ onToggle: onClick, style }: LanguageToggleProps) => {
-  const selectedLanguage = i18next.language;
-
+const ValueToggle = ({
+  leftText,
+  rightText,
+  initial,
+  onToggle,
+  isDisabled,
+  style,
+}: ValueToggleProps) => {
+  const [selected, setSelected] = useState<ToggleValue>(initial);
   return (
     <View style={[style, styles.container]}>
       <ToggleView
-        text="Eng"
-        isSelected={selectedLanguage === "en"}
-        onPress={() => onClick("en")}
+        isDisabled={isDisabled}
+        text={leftText}
+        isSelected={selected === "left"}
+        onPress={() => {
+          setSelected("left");
+          onToggle("left");
+        }}
         style={{
           borderTopStartRadius: 5,
           borderBottomStartRadius: 5,
         }}
       />
       <ToggleView
-        text="اردو"
-        isSelected={selectedLanguage === "ur"}
-        onPress={() => onClick("ur")}
+        isDisabled={isDisabled}
+        text={rightText}
+        isSelected={selected === "right"}
+        onPress={() => {
+          setSelected("right");
+          onToggle("right");
+        }}
         style={{
           borderTopEndRadius: 5,
           borderBottomEndRadius: 5,
@@ -50,12 +64,13 @@ type ToggleViewProps = {
   text: string;
   isSelected: boolean;
   onPress: () => void;
+  isDisabled: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
 const ToggleView = (props: ToggleViewProps) => {
   return (
-    <TouchableOpacity onPress={props.onPress}>
+    <TouchableOpacity disabled={props.isDisabled} onPress={props.onPress}>
       <View
         style={[
           props.style,
@@ -89,4 +104,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LanguageToggle;
+export default ValueToggle;

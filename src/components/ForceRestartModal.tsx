@@ -1,12 +1,8 @@
 import { StyleSheet, Text, Modal } from "react-native";
 import React from "react";
-import {
-  height,
-  horizontalScale,
-  verticalScale,
-} from "../utilities/dimensions";
-import { Fonts, Colors, Images } from "../constants";
-import { Button, Image } from "native-base";
+import { horizontalScale, verticalScale } from "../utilities/dimensions";
+import { Fonts, Colors } from "../constants";
+import { Button } from "native-base";
 import { View } from "react-native-animatable";
 import { useTranslation } from "react-i18next";
 import { deepSkyBlue } from "../constants/Colors";

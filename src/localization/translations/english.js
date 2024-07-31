@@ -1,4 +1,5 @@
 const auth = {
+  both_password_must_same: "Both passwords must be same",
   and: "and",
   it_only_takes_a_minute_create_account:
     "It only takes a minute to create your account",

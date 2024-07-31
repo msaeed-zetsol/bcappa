@@ -1,104 +1,86 @@
-import { StyleSheet, I18nManager, Modal, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, I18nManager, Modal, Keyboard } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { Text, FormControl, Button, Pressable, Input, Icon } from "native-base";
 import { newColorTheme } from "../../constants/Colors";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { Fonts, Colors, Images } from "../../constants";
-import {
-  StackActions,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { StackActions } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { apimiddleWare } from "../../utilities/helper-functions";
-import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native-animatable";
 import Message from "../../components/AlertMessage";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AuthStackParamList } from "../../navigators/stackNavigator/AuthStack";
+import { useAppDispatch } from "../../hooks/hooks";
+import useAxios from "../../hooks/useAxios";
+import PrimaryButton from "../../components/PrimaryButton";
+import globalStyles from "../../styles/global";
 
-const NewPassword = () => {
+type NewPasswordProps = NativeStackScreenProps<
+  AuthStackParamList,
+  "NewPassword"
+>;
+
+const NewPassword = ({ route, navigation }: NewPasswordProps) => {
   const { t } = useTranslation();
-  const [show, setShow] = useState<boolean>(false);
-  const [show1, setShow1] = useState<boolean>(false);
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [modalView, setModalView] = useState(false);
-  const dispatch: any = useDispatch();
-  const navigation = useNavigation();
-  const route: any = useRoute();
-  const { data } = route?.params;
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
+  const [showChangedSuccessModal, setShowChangedSuccessModal] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const { emailOrPhone } = route.params;
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
+    formState: { errors, isValid },
+    clearErrors,
+  } = useForm<NewPasswordFormValues>({
     defaultValues: {
       password: "",
       confirmPassword: "",
     },
     reValidateMode: "onChange",
-    mode: "onChange",
+    mode: "all",
     criteriaMode: "firstError",
   });
 
-  const changePass = async (details: {
-    password: any;
-    confirmPassword: any;
-  }) => {
-    console.log({ details });
-    if (details.password === details.confirmPassword) {
-      const datas = {
-        emailOrPhone: data.email ? data.email : data.phone,
-        newPassword: details.password,
-      };
-      setIsLoading(true);
-      const response = await apimiddleWare({
-        url: "/auth/forget-password",
-        method: "put",
-        data: datas,
-        reduxDispatch: dispatch,
-      });
-      setIsLoading(false);
-      if (response) {
-        console.log({ response });
-        setModalVisible(true);
-      }
-    } else {
-      setModalView(true);
-    }
+  const [data, start] = useAxios("/auth/forget-password", "put");
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const changePassword = (formValues: NewPasswordFormValues) => {
+    Keyboard.dismiss();
+    setLoading(true);
+    abortControllerRef.current = start({
+      data: {
+        emailOrPhone: emailOrPhone,
+        newPassword: formValues.password,
+      },
+    });
   };
 
-  const handleLogin = () => {
-    setModalVisible(false);
-    navigation.dispatch(
-      StackActions.replace("AuthStack", {
-        screen: "LoginScreen",
-      })
-    );
-  };
+  useEffect(() => {
+    if (data === null) {
+      setLoading(false);
+    }
+
+    if (data) {
+      setShowChangedSuccessModal(true);
+    }
+  }, [data]);
+
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
 
   return (
     <View style={styles.container}>
-      {modalView && (
-        <Message
-          Photo={() => <Images.AccountNotVerified />}
-          message={t("password_must_match_confirm_password_please_try_again")}
-          buttonText={t("ok")}
-          callback={() => setModalView(false)}
-          secondButtonText={t("cancel")}
-          secondCallback={() => setModalView(false)}
-          show={modalView}
-        />
-      )}
       <Modal
         style={{
           flex: 1,
         }}
-        visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        visible={showChangedSuccessModal}
+        onRequestClose={() => setShowChangedSuccessModal(false)}
         transparent
       >
         <View style={styles.centeredView}>
@@ -123,13 +105,14 @@ const NewPassword = () => {
             <Button
               colorScheme={"info"}
               style={styles.loginButton}
-              onPress={handleLogin}
+              onPress={() => navigation.pop(2)}
             >
               <Text style={styles.loginButtonLabel}>{t("login")}</Text>
             </Button>
           </View>
         </View>
       </Modal>
+
       <View
         style={{
           flexDirection: "row",
@@ -179,9 +162,18 @@ const NewPassword = () => {
               value: /^[a-zA-Z0-9]+$/,
               message: t("password_alpha_numeric_only"),
             },
+            validate: (_, formValues) => {
+              if (formValues.password === formValues.confirmPassword) {
+                clearErrors("confirmPassword");
+                return undefined;
+              } else {
+                return t("both_password_must_same");
+              }
+            },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
+              readOnly={isLoading}
               placeholder={t("new_password")}
               w="100%"
               size="lg"
@@ -192,18 +184,18 @@ const NewPassword = () => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              type={show ? "text" : "password"}
+              type={showPassword ? "text" : "password"}
               borderColor="BORDER_COLOR"
               placeholderTextColor={"GREY"}
               color={"BLACK_COLOR"}
               fontSize={"sm"}
               fontFamily={Fonts.POPPINS_REGULAR}
               InputRightElement={
-                <Pressable onPress={() => setShow(!show)}>
+                <Pressable onPress={() => setShowPassword(!showPassword)}>
                   <Icon
                     as={
                       <MaterialIcons
-                        name={show ? "visibility" : "visibility-off"}
+                        name={showPassword ? "visibility" : "visibility-off"}
                       />
                     }
                     size={5}
@@ -216,14 +208,7 @@ const NewPassword = () => {
           )}
         />
         {errors.password && (
-          <Text
-            style={{ marginStart: 16, fontSize: 13 }}
-            color={"ERROR"}
-            marginTop={verticalScale(3)}
-            fontFamily={Fonts.POPPINS_MEDIUM}
-          >
-            {errors.password.message}
-          </Text>
+          <Text style={globalStyles.errorText}>{errors.password.message}</Text>
         )}
         <Controller
           control={control}
@@ -238,9 +223,18 @@ const NewPassword = () => {
               value: /^[a-zA-Z0-9]+$/,
               message: t("password_alpha_numeric_only"),
             },
+            validate: (_, formValues) => {
+              if (formValues.password === formValues.confirmPassword) {
+                clearErrors("password");
+                return undefined;
+              } else {
+                return t("both_password_must_same");
+              }
+            },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
+              readOnly={isLoading}
               placeholder={t("confirm_password")}
               w="100%"
               size="lg"
@@ -251,18 +245,22 @@ const NewPassword = () => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              type={show1 ? "text" : "password"}
+              type={showConfirmPassword ? "text" : "password"}
               borderColor="BORDER_COLOR"
               placeholderTextColor={"GREY"}
               color={"BLACK_COLOR"}
               fontSize={"sm"}
               fontFamily={Fonts.POPPINS_REGULAR}
               InputRightElement={
-                <Pressable onPress={() => setShow1(!show1)}>
+                <Pressable
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
                   <Icon
                     as={
                       <MaterialIcons
-                        name={show1 ? "visibility" : "visibility-off"}
+                        name={
+                          showConfirmPassword ? "visibility" : "visibility-off"
+                        }
                       />
                     }
                     size={5}
@@ -275,46 +273,20 @@ const NewPassword = () => {
           )}
         />
         {errors.confirmPassword && (
-          <Text
-            style={{ marginStart: 16, fontSize: 13 }}
-            color={"ERROR"}
-            marginTop={verticalScale(3)}
-            fontFamily={Fonts.POPPINS_MEDIUM}
-          >
+          <Text style={globalStyles.errorText}>
             {errors.confirmPassword.message}
           </Text>
         )}
       </FormControl>
-      <Button
+      <PrimaryButton
+        text={t("save")}
+        isDisabled={!isValid}
         isLoading={isLoading}
-        variant="solid"
-        _text={{
-          color: "WHITE_COLOR",
-          fontFamily: Fonts.POPPINS_SEMI_BOLD,
+        onClick={handleSubmit(changePassword)}
+        props={{
+          mt: verticalScale(20),
         }}
-        _loading={{
-          _text: {
-            color: "BLACK_COLOR",
-            fontFamily: Fonts.POPPINS_MEDIUM,
-          },
-        }}
-        _spinner={{
-          color: "BLACK_COLOR",
-        }}
-        _pressed={{
-          backgroundColor: "DISABLED_COLOR",
-        }}
-        spinnerPlacement="end"
-        backgroundColor={"PRIMARY_COLOR"}
-        size={"lg"}
-        mt={verticalScale(20)}
-        p={"4"}
-        borderRadius={16}
-        isPressed={isLoading}
-        onPress={handleSubmit(changePass)}
-      >
-        {t("save")}
-      </Button>
+      />
     </View>
   );
 };

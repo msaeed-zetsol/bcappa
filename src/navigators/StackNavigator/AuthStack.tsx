@@ -20,9 +20,11 @@ export type AuthStackParamList = {
     email?: string;
     phone?: string;
     verificationType: VerificationType;
-    transferrableValues: SignupFormValues;
+    transferrableValues?: SignupFormValues;
   };
-  NewPassword: undefined;
+  NewPassword: {
+    emailOrPhone: string;
+  };
 };
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
