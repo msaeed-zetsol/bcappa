@@ -217,13 +217,9 @@ const UpdateBc = () => {
 
     try {
       updateStart({ data });
-      if (updateData) {
-        console.log({ response: updateData });
-        dispatch(removeMembers(null));
-        navigation.goBack();
-      } else {
-        console.error("Update failed");
-      }
+      console.log({ response: data });
+      dispatch(removeMembers(null));
+      navigation.goBack();
     } catch (error: any) {
       console.error(
         "Error updating BC:",
