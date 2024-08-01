@@ -237,7 +237,7 @@ const UserSchedule = () => {
                         item.paid === true ? Colors.PRIMARY_COLOR : "#FF696D",
                       backgroundColor:
                         item.paid === true ? Colors.PRIMARY_COLOR : "#FF696D",
-                      borderRadius: 5,
+                      borderRadius:5,
                       paddingVertical: verticalScale(1),
                       paddingHorizontal: horizontalScale(8),
                     }}
@@ -245,6 +245,7 @@ const UserSchedule = () => {
                     <Text
                       style={{
                         color: "white",
+                        fontSize: verticalScale(12),
                       }}
                     >
                       {item.paid === true ? t("paid") : t("pending")}

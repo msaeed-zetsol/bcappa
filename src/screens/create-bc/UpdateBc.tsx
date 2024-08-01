@@ -41,7 +41,22 @@ import AppBar from "../../components/AppBar";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import Message from "../../components/AlertMessage";
 import { apply } from "../../utilities/scope-functions";
+import useAxios from "../../hooks/useAxios";
 
+interface Member {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  openingPrecedence: number;
+}
+
+interface BcDetails {
+  id: number;
+  bcMembers: Member[];
+  commenceDate: string;
+  selectionType: string;
+}
 const UpdateBc = () => {
   const numberformatter = useMemo(() => new Intl.NumberFormat(), []);
   const navigation = useNavigation();
@@ -49,7 +64,7 @@ const UpdateBc = () => {
   const route: any = useRoute();
   const { item } = route.params;
   const [bcTotal, setBcTotal] = useState("0");
-  const [bcData, setBcData] = useState<any>();
+  const [bcData, setBcData] = useState<BcDetails | any>("");
   const [disabled, setIsDisabled] = useState(false);
   const [scroll, setScroll] = useState(true);
   const [date, setDate] = useState<any>(new Date());
@@ -58,7 +73,6 @@ const UpdateBc = () => {
   const [load, setLoad] = useState(true);
   const [bcId, setBcId] = useState(0);
   const members = useAppSelector((state) => state.members);
-  const [totalExpected, setTotalExpected] = useState(0);
   const [maxUsers, setMaxUsers] = useState(item.maxMembers);
   const [modalView, setModalView] = useState(false);
   const [balloting, setBalloting] = useState(
@@ -91,39 +105,61 @@ const UpdateBc = () => {
       return date.setDate(date.getDate() + 1);
     });
   };
+  const [data, start] = useAxios<BcDetails[]>(
+    `/bcs/details/${item.id}`,
+    "get",
+    {
+      "Network Error":
+        "Unable to connect. Please check your internet connection.",
+      "Something went wrong.": "Something went wrong. Please try again later.",
+    }
+  );
 
+  const [updateData, updateStart] = useAxios<BcDetails>(
+    `/bcs/${item.id}`,
+    "put",
+    {
+      "Network Error":
+        "Unable to connect. Please check your internet connection.",
+    }
+  );
   const getData = async () => {
     setLoad(true);
-    const response = await apimiddleWare({
-      url: `/bcs/details/${item.id}`,
-      method: "get",
-    });
-    if (response) {
-      setBcId(response[0].id);
-      console.log({ sayen: response[0].bcMembers });
-      setBcData(response[0]);
-      response[0].bcMembers.sort(
-        (a: any, b: any) => a.openingPrecedence - b.openingPrecedence
+    try {
+      await start();
+    } catch (error: any) {
+      console.error(
+        "Error fetching BC details:",
+        error.response?.data || error.message
       );
+    } finally {
+      setLoad(false);
+    }
+  };
 
-      const mem = response[0].bcMembers.map((item: any) => {
-        return {
-          id: item?.id,
-          fullName: item?.user?.fullName,
-          email: item?.user?.email,
-          phone: item?.user?.phone,
-          openingPrecedence: item?.openingPrecedence,
-        };
-      });
+  useEffect(() => {
+    if (data && data.length > 0) {
+      const bcDetail = data[0];
+      setBcId(bcDetail.id);
+      setBcData(bcDetail);
+      const d = bcDetail.commenceDate.split("T")[0];
+      setShowDate(d);
+      const mem = bcDetail.bcMembers.map((item: any) => ({
+        id: item.id,
+        fullName: item.user?.fullName,
+        email: item.user?.email,
+        phone: item.user?.phone,
+        openingPrecedence: item.openingPrecedence,
+      }));
 
       dispatch(setMembers(mem));
-      setLoad(false);
-      const d = response[0].commenceDate.split("T")[0];
-      setShowDate(d);
-      setBalloting(bcData.selectionType === BcSelectionType.Auto);
+      // setBalloting(bcData.selectionType === BcSelectionType.Auto);
     }
-    setLoad(false);
-  };
+  }, [data, dispatch]);
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const {
     control: newBcControl,
@@ -179,24 +215,25 @@ const UpdateBc = () => {
       commenceDate: date,
     };
 
-    const response = await apimiddleWare({
-      url: `/bcs/${item.id}`,
-      method: "put",
-      data: data,
-      reduxDispatch: dispatch,
-      navigation,
-    });
-
-    if (response) {
-      console.log({ response });
+    try {
+      updateStart({ data });
+      if (updateData) {
+        console.log({ response: updateData });
+        dispatch(removeMembers(null));
+        navigation.goBack();
+      } else {
+        console.error("Update failed");
+      }
+    } catch (error: any) {
+      console.error(
+        "Error updating BC:",
+        error.response?.data || error.message
+      );
+      throw error;
+    } finally {
       setIsDisabled(false);
-      dispatch(removeMembers(null));
-      navigation.goBack();
     }
-
-    setIsDisabled(false);
   };
-
   useEffect(() => {
     getData();
   }, []);
