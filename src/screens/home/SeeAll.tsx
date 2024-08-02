@@ -1,4 +1,4 @@
-import {  FlatList, ActivityIndicator } from "react-native";
+import { FlatList, ActivityIndicator } from "react-native";
 import { View, Text, Avatar, Button } from "native-base";
 import React, { useEffect, useState } from "react";
 import { newColorTheme } from "../../constants/Colors";
@@ -13,7 +13,12 @@ import { apimiddleWare } from "../../utilities/helper-functions";
 import { Fonts, Colors } from "../../constants";
 import { useTranslation } from "react-i18next";
 import AppBar from "../../components/AppBar";
+import useAxios from "../../hooks/useAxios";
 
+type DataResponse = {
+  id: string;
+  name: string;
+};
 const SeeAll = () => {
   const route: any = useRoute();
   const navigation = useNavigation();
@@ -21,18 +26,33 @@ const SeeAll = () => {
   const { name, api, btn } = route.params;
   const [isLoading, setIsLoading] = useState(true);
   const [allData, setAllData] = useState<any>([]);
-
+  const [data, start] = useAxios<DataResponse[]>(api, "get", {
+    "Network Error": "Unable to connect. Please check your internet connection.",
+  });
+  
   const getData = async () => {
-    setIsLoading(true);
-    const response = await apimiddleWare({
-      url: api,
-      method: "get",
-    });
-    if (response) {
-      setAllData(response);
-      setIsLoading(false);
+    setIsLoading(true); 
+    try {
+      await start();
+      if (data) {
+        console.log("Data fetched successfully:", data)
+      } 
+    } catch (error: any) {
+      console.error("Error fetching data:", error.response?.data || error.message);
+    } finally {
+      setIsLoading(false); 
     }
   };
+
+  useEffect(() => {
+    if (data) {
+      setAllData(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    getData();
+  }, []);
   const join = (id: any) => {
     navigation.dispatch(
       CommonActions.navigate("BcDetailsScreen", {

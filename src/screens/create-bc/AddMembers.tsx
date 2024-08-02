@@ -26,6 +26,7 @@ import { store } from "../../redux/store";
 import { useAppDispatch } from "../../hooks/hooks";
 import AppBar from "../../components/AppBar";
 import { apimiddleWare } from "../../utilities/helper-functions";
+import useAxios from "../../hooks/useAxios";
 
 type RouteParams = {
   bcId: string;
@@ -59,24 +60,30 @@ const AddMembers = () => {
     criteriaMode: "firstError",
   });
 
+  const [removeData, removeStart] = useAxios('/bcs/private/remove-members', 'delete', {
+    "Network Error": "Please check your connection and try again.",
+    "All element in membersId must be string": "Invalid member IDs. Please try again.",
+    "Not Found": "Member not found. Please check the details.",
+    "One or more members not found": "Some members not found. Please verify and try again."
+  });
+  
   const removeBcMember = async (member: Member) => {
     const data = {
       bcId: bcId,
-      membersId: [member.id],
+      membersId: [member.id!.toString()],
     };
+  
+    try {
+     removeStart({ data });  
+      if (removeData) {
+        console.log(`Bc Member Removed: ${JSON.stringify(removeData)}`);
+      }
+    } catch (error: any) {
+      console.error("Error removing BC member:", error.response?.data || error.message);
 
-    const response = await apimiddleWare({
-      url: "/bcs/private/remove-members",
-      method: "delete",
-      data: data,
-      reduxDispatch: dispatch,
-      navigation: navigation,
-    });
-
-    if (response) {
-      console.log(`Bc Member Removed: ${JSON.stringify(response)}`);
     }
   };
+
 
   const renderItem = ({ item, getIndex, drag }: RenderItemParams<Member>) => (
     <MemberListItem

@@ -1,8 +1,4 @@
-import {
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import {
   View,
   Text,
@@ -32,6 +28,7 @@ import { useTranslation } from "react-i18next";
 import CountryCodePicker from "../../components/CountryCodePicker";
 import { apply } from "../../utilities/scope-functions";
 import AppBar from "../../components/AppBar";
+import useAxios from "../../hooks/useAxios";
 
 const initialDate = new Date();
 initialDate.setDate(initialDate.getDate() - 1); // Set initial date to one day before today
@@ -56,45 +53,52 @@ const PersonalInformationScreen = () => {
     bcAmount: 0,
   });
   const { t } = useTranslation();
-
+  const [data, start] = useAxios<any>("/user/profile", "get", {
+    "Network Error": "Please check your connection and try again.",
+    "Request failed": "Invalid request data. Please check your input.",
+  });
   const getPersonalData = async () => {
     try {
-      const response = await apimiddleWare({
-        url: "/user/profile",
-        method: "get",
-        reduxDispatch: dispatch,
-        navigation: navigation,
-      });
+      start();
+      if (data) {
+        console.log({ response: data?.dob });
 
-      if (response) {
-        console.log({ response: response?.dob });
-
-        if (response?.dob) {
-          const d = response?.dob?.split("T")[0];
+        if (data?.dob) {
+          const d = data?.dob?.split("T")[0];
           setShowDate(d);
         }
 
         let phoneNumber: PhoneNumber | undefined;
 
-        if (response?.phone) {
-          phoneNumber = parsePhoneNumber(response?.phone);
+        if (data?.phone) {
+          phoneNumber = parsePhoneNumber(data?.phone);
           setCountryCode("+" + phoneNumber?.countryCallingCode);
         }
+        console.log("data", data);
 
         setPersonalData({
-          fullName: response?.fullName || "",
-          email: response?.email || "",
+          fullName: data?.fullName || "",
+          email: data?.email || "",
           phone: phoneNumber?.nationalNumber?.toString() || "",
-          cnic: response?.cnic || "",
-          dob: response?.dob || "",
-          gender: response?.gender || "",
-          bcAmount: response?.monthlyAmount || 0, // Assuming it's a number, replace with appropriate default value if needed
+          cnic: data?.cnic || "",
+          dob: data?.dob || "",
+          gender: data?.gender || "",
+          bcAmount: data?.monthlyAmount || 0, // Assuming it's a number, replace with appropriate default value if needed
         });
       }
     } catch (error) {
       console.error("Error fetching personal data:", error);
     }
   };
+  useEffect(() => {
+    if (data) {
+      getPersonalData();
+    }
+  }, [data]);
+  useEffect(()=>{
+    getPersonalData();
+  },[]) 
+  
 
   const getMaximumDate = (): Date => {
     return apply(new Date(), (date) => {

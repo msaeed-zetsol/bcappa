@@ -32,6 +32,7 @@ import { useDispatch } from "react-redux";
 import * as Animatable from "react-native-animatable";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useTranslation } from "react-i18next";
+import useAxios from "../../hooks/useAxios";
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -123,6 +124,10 @@ const ProfileScreen = () => {
       await setImage(image);
     });
   };
+  const [data, start] = useAxios<any>("/user/profile", "put", {
+    "Network Error": "Please check your connection and try again.",
+    "Request failed": "Invalid request data. Please check your input.",
+  });
 
   const setImage = async (img: any) => {
     const data = {
@@ -140,33 +145,40 @@ const ProfileScreen = () => {
 
     console.log({ data: data.profileImg });
 
-    const response = await apimiddleWare({
-      url: "/user/profile",
-      method: "put",
-      data: createFormData(data),
-      contentType: Content_Type.FORM_DATA,
-      reduxDispatch: dispatch,
-      navigation: navigation,
-    });
+    try {
+      await start({
+        data: createFormData(data),
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log({ response: data });
 
-    console.log({ response });
+      if (data) {
+        setProfileImage(data.profileImg.uri);
 
-    if (response) {
-      setProfileImage(data.profileImg.uri);
-      const getItems: any = await AsyncStorage.getItem("loginUserData");
-      const parsedItem: any = await JSON.parse(getItems);
-      parsedItem.profileImg = data.profileImg.uri;
-      const stringifyResponse = await JSON.stringify(parsedItem);
-      await AsyncStorage.setItem("loginUserData", stringifyResponse);
+        const getItems = await AsyncStorage.getItem("loginUserData");
+        if (getItems) {
+          const parsedItem = JSON.parse(getItems);
+          parsedItem.profileImg = data.profileImg.uri;
+          const stringifyResponse = JSON.stringify(parsedItem);
+          await AsyncStorage.setItem("loginUserData", stringifyResponse);
+        }
+      }
+    } catch (error: any) {
+      console.error(
+        "Error updating profile image:",
+        error.response?.data || error.message
+      );
     }
   };
 
   const getData = async () => {
-    const getUserData: any = await AsyncStorage.getItem("loginUserData");
-    const userData = await JSON.parse(getUserData);
-    setUserInfo(userData);
-    setProfileImage(userData.profileImg);
-    console.log({ userData });
+    const getUserData = await AsyncStorage.getItem("loginUserData");
+    if (getUserData) {
+      const userData = JSON.parse(getUserData);
+      setUserInfo(userData);
+      setProfileImage(userData.profileImg);
+      console.log({ userData });
+    }
   };
 
   useFocusEffect(
