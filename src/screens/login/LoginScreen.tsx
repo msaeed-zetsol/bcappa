@@ -23,7 +23,7 @@ import { StackActions } from "@react-navigation/native";
 import { newColorTheme } from "../../constants/Colors";
 import { apimiddleWare } from "../../utilities/helper-functions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { requestUserPermission } from "../../firebase/Notifications";
+import { requestUserPermission } from "../../utilities/firebase-notifications";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import {
   LoginManager,

@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import useSplash, { saveSplash } from "../../hooks/useSplash";
 import dynamicLinks from "@react-native-firebase/dynamic-links";
-import { notificationListener } from "../../firebase/Notifications";
+import { notificationListener } from "../../utilities/firebase-notifications";
 import { getColors } from "react-native-image-colors";
 
 type Destination =

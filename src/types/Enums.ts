@@ -43,7 +43,6 @@ export const PublicBcSteps = {
 };
 
 export const BcMemberStatus = {
-  Pending: 'pending',
-  Opened: 'opened',
-  // Current = 'current',
+  Pending: "pending",
+  Opened: "opened",
 };

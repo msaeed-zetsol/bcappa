@@ -6,7 +6,7 @@ import { newColorTheme } from "./src/constants/Colors";
 import {
   onDisplayNotification,
   requestUserPermission,
-} from "./src/firebase/Notifications";
+} from "./src/utilities/firebase-notifications";
 import { useSelector } from "react-redux";
 import { RootState } from "./src/redux/store";
 import ErrorModal from "./src/components/ErrorModal";

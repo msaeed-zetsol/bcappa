@@ -129,11 +129,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
     }
   }, [data]);
 
-  useEffect(() => {
-    return () => {
-      reset();
-    };
-  }, []);
+  useEffect(() => reset, []);
 
   const googleLogin = async () => {
     try {
