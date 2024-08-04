@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { errors } from "../redux/user/userSlice";
+import { setErrors } from "../redux/user/userSlice";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import axios, {
   AxiosError,
@@ -63,7 +63,7 @@ const useAxios = <O>(
 
   const dispatch = useCallback(
     (msg: string) => {
-      dispatcher(errors({ message: msg, value: true }));
+      dispatcher(setErrors({ message: msg, value: true }));
     },
     [dispatcher]
   );
@@ -89,7 +89,11 @@ const useAxios = <O>(
           it.includes("Unauthorized" || "User Does Not Exits.")
         );
       });
-    } else {
+    } else if (error.message === "Network Error") {
+      dispatch(
+        "Unable to communicate with services. Please check your internet connection."
+      );
+    } else if (error.message !== "canceled") {
       dispatch(error.message);
     }
   };

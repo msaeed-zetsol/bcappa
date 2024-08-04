@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IFilter, apiMiddleware } from "../types/Interface";
 import { BASE_API_URL, Content_Type } from "../constants/Base_Url";
 import axios from "axios";
-import { errors } from "../redux/user/userSlice";
+import { setErrors } from "../redux/user/userSlice";
 
 export const apimiddleWare = async (payload: apiMiddleware) => {
   const getUserData: any = await AsyncStorage.getItem("loginUserData");
@@ -51,14 +51,14 @@ export const apimiddleWare = async (payload: apiMiddleware) => {
     console.log(axios.isAxiosError(err));
 
     if (axios.isAxiosError(err) || err.response === undefined) {
-      payload.reduxDispatch(errors({ message: err.message, value: true }));
+      payload.reduxDispatch(setErrors({ message: err.message, value: true }));
     }
     if (err.response.data) {
       const { message, error, statusCode } = err.response.data;
       console.log({ message });
       console.log({ error });
       console.log({ statusCode });
-      payload.reduxDispatch(errors({ message: message, value: true }));
+      payload.reduxDispatch(setErrors({ message: message, value: true }));
 
       if (message == "Unauthorized" || message === "User Does Not Exits.") {
         await AsyncStorage.removeItem("loginUserData");
@@ -128,3 +128,33 @@ export const formatTime = (time: any) => {
 
   return `${formattedMinutes}:${formattedSeconds}`;
 };
+
+export const getBcStatusColor: (status: BcStatus) => BcStatusColor = (
+  status: string
+) => {
+  switch (status) {
+    case "active":
+      return {
+        color: "#02A7FD",
+        backgroundColor: "#E6F6FF",
+      };
+    case "pending":
+      return {
+        color: "#FAC245",
+        backgroundColor: "#FFF9EC",
+      };
+    case "complete":
+      return {
+        color: "#00D100",
+        backgroundColor: "#C3FFC3",
+      };
+    default:
+      return {
+        color: "black",
+        backgroundColor: "white",
+      };
+  }
+};
+
+export const capitalize = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1);

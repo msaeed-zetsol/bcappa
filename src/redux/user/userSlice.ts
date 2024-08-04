@@ -36,7 +36,7 @@ const initialState: UserState = {
   removeUser: [],
 };
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     updateTheModelValue: (state, action: PayloadAction<any>) => {
@@ -49,12 +49,12 @@ export const userSlice = createSlice({
       state.ranges.low = action.payload.low;
       state.ranges.high = action.payload.high;
     },
-    errors: (state, action: PayloadAction<any>) => {
+    setErrors: (state, action: PayloadAction<any>) => {
       state.ErrorModal.message = action.payload.message;
       state.ErrorModal.value = action.payload.value;
     },
     removeMembers: (state: any, action: PayloadAction<any>) => {
-      console.log({action: state.removeUser});
+      console.log({ action: state.removeUser });
       return {
         ...state,
         removeUser: [...state.removeUser, action.payload],
@@ -63,7 +63,11 @@ export const userSlice = createSlice({
   },
 });
 
-export const {updateTheModelValue, rangeValues, errors, removeMembers} =
-  userSlice.actions; //you can use this in update.js to send paylods to this update reducer
+export const {
+  updateTheModelValue,
+  rangeValues,
+  setErrors,
+  removeMembers,
+} = userSlice.actions; //you can use this in update.js to send paylods to this update reducer
 
 export default userSlice.reducer; //use this in store

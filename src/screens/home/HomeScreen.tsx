@@ -43,6 +43,7 @@ import {
   forceUpdateLanguage,
 } from "../../localization/config";
 import useAxios from "../../hooks/useAxios";
+import AddFloatingActionButton from "../../components/AddFloatingActionButton";
 
 const HomeScreen = () => {
   const route: any = useRoute();
@@ -85,11 +86,13 @@ const HomeScreen = () => {
   };
 
   const [data, start] = useAxios("/bcs/active", "get", {
-    "Network Error": "Unable to connect. Please check your internet connection.",    
+    "Network Error":
+      "Unable to connect. Please check your internet connection.",
   });
 
   const [joinBcData, joinBcStart] = useAxios("/bcs/ready-to-join", "get", {
-    "Network Error": "Unable to connect. Please check your internet connection.", 
+    "Network Error":
+      "Unable to connect. Please check your internet connection.",
   });
 
   const getActiveBc = async () => {
@@ -220,6 +223,7 @@ const HomeScreen = () => {
           </View>
         </View>
         <ValueToggle
+          isDisabled={false}
           leftText="Eng"
           rightText="اردو"
           initial={i18n.language === "en" ? "left" : "right"}
@@ -809,39 +813,13 @@ const HomeScreen = () => {
           />
         </View>
       )}
-      <TouchableOpacity
-        onPress={() => {
-          navigation.dispatch(CommonActions.navigate("NewBc"));
-        }}
-        style={{
-          width: 64,
-          height: 64,
-          backgroundColor: wildWatermelon,
-          position: "absolute",
-          bottom: verticalScale(20),
-          right: horizontalScale(15),
-          zIndex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 15,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.2,
-          shadowRadius: 1.41,
-
-          elevation: 2,
-        }}
-      >
-        <Image
-          source={require("../../assets/images/add.png")}
-          size={verticalScale(24)}
-          alt="create bc"
-        />
-      </TouchableOpacity>
-
+      <AddFloatingActionButton
+        onClick={() =>
+          navigation.dispatch(
+            CommonActions.navigate("CreateOrUpdateBcScreen", { bc: undefined })
+          )
+        }
+      />
       <Modal
         isOpen={firstSignup}
         safeAreaTop={true}

@@ -2,150 +2,100 @@ import {
   StyleSheet,
   StatusBar,
   FlatList,
-  TouchableOpacity,
   Share,
-  Alert,
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, Avatar, Button, Pressable, Image } from "native-base";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text } from "native-base";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
-import { Fonts, Images } from "../../constants";
-import { BcStatus, BcType } from "../../types/Enums";
-import {
-  CommonActions,
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
-import Colors, { newColorTheme, wildWatermelon } from "../../constants/Colors";
+import { Fonts } from "../../constants";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import Colors, { deepSkyBlue, newColorTheme } from "../../constants/Colors";
 import dynamicLinks from "@react-native-firebase/dynamic-links";
-import { apimiddleWare } from "../../utilities/helper-functions";
-import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setMembers } from "../../redux/members/membersSlice";
 import { useTranslation } from "react-i18next";
-import Message from "../../components/AlertMessage";
 import useAxios from "../../hooks/useAxios";
+import AddFloatingActionButton from "../../components/AddFloatingActionButton";
+import BcCard from "../../components/BcCard";
 
 const MyBcsScreen = () => {
-  const dispatch: any = useDispatch();
   const navigation = useNavigation();
-  const [allBc, setAllBc] = useState<any>([]);
   const [loading, setLoading] = useState(false);
-  const [userDatas, setUserData] = useState<any>();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [user, setUser] = useState<User>();
   const { t } = useTranslation();
+  const dynamicLink = useRef<string | null>(null);
 
-  const onShare = async (link: string) => {
-    try {
-      const result = await Share.share({
-        message: link,
-        // You can include title and url if needed
-        // title: 'Bc Appa',
-        // url: link,
-      });
-
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // Shared with activity type of result.activityType
-        } else {
-          // Shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // Dismissed
-      }
-    } catch (error: any) {
-      setModalVisible(true);
-      // Alert.alert("Error sharing:", error);
-    }
+  const shareDynamicLink = (id: string) => {
+    buildLink(id).then((link) => {
+      Share.share({ message: link });
+    });
   };
 
-  const buildLink = async (id: any) => {
-    const link = await dynamicLinks().buildShortLink(
-      {
-        link: `https://invertase.io/offer?id=${id}`,
-        domainUriPrefix: "https://bcappa.page.link",
-        analytics: {
-          campaign: "banner",
+  const buildLink: (id: string) => Promise<string> = async (id: string) => {
+    if (dynamicLink.current === null) {
+      dynamicLink.current = await dynamicLinks().buildShortLink(
+        {
+          link: `https://invertase.io/offer?id=${id}`,
+          domainUriPrefix: "https://bcappa.page.link",
+          analytics: {
+            campaign: "banner",
+          },
+          android: {
+            packageName: "com.bcappa",
+          },
         },
-        android: {
-          packageName: "com.bcappa",
-        },
-      },
-      dynamicLinks.ShortLinkType.DEFAULT
+        dynamicLinks.ShortLinkType.DEFAULT
+      );
+    }
+    return dynamicLink.current;
+  };
+
+  const navigateToUpdateBc = (bc: MyBc) => {
+    navigation.dispatch(
+      CommonActions.navigate("CreateOrUpdateBcScreen", {
+        bc: bc,
+      })
+    );
+  };
+
+  const navigateToDetails = (id: string) => {
+    navigation.dispatch(
+      CommonActions.navigate("BcDetailsScreen", {
+        item: id,
+        deeplink: false,
+      })
+    );
+  };
+
+  const navigateToCreateBcScreen = () =>
+    navigation.dispatch(
+      CommonActions.navigate("CreateOrUpdateBcScreen", { bc: undefined })
     );
 
-    return link;
-  };
+  const [response, start] = useAxios<MyBcsResponse>("/bcs/my", "get");
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  const [data, start] = useAxios("/bcs/my", "get", {
-    "No Bc Found": "Sorry, we couldn't find any BCs. Try creating a new one!",
-    "Network Error":
-      "Unable to connect. Please check your internet connection.",
-  });
-
-  const getAllBc = useCallback(async () => {
+  const getMyBcs = async () => {
     setLoading(true);
-    try {
-      const getUserData = await AsyncStorage.getItem("loginUserData");
-      if (getUserData) {
-        const parsedUserData = JSON.parse(getUserData);
-        setUserData(parsedUserData);
+    AsyncStorage.getItem("loginUserData").then((it) => {
+      if (it) {
+        setUser(JSON.parse(it));
       }
-      await start();
-    } catch (error: any) {
-      console.error(
-        "Error fetching BCS:",
-        error.response?.data || error.message
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [start]);
-
-  const handleRefresh = () => {
-    getAllBc();
+    });
+    abortControllerRef.current = start();
   };
 
   useEffect(() => {
-    if (data) {
-      console.log(`All BCS: ${JSON.stringify(data)}`);
-      setAllBc(data);
+    if (response !== undefined) {
+      setLoading(false);
     }
-  }, [data]);
+  }, [response]);
 
-  const setColor = (status: any) => {
-    switch (status) {
-      case "active":
-        return {
-          col: "#02A7FD",
-          bg: "#E6F6FF",
-        };
-      case "pending":
-        return {
-          col: "#FAC245",
-          bg: "#FFF9EC",
-        };
-      case "complete":
-        return {
-          col: "#00D100",
-          bg: "#C3FFC3",
-        };
-      default:
-        return {
-          col: "black",
-          bg: "white",
-        };
-    }
-  };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      getAllBc();
-      return () => {};
-    }, [])
-  );
+  useEffect(() => {
+    getMyBcs();
+    return () => abortControllerRef.current?.abort();
+  }, []);
 
   return (
     <View flex={1} bg={"BACKGROUND_COLOR"} pt={verticalScale(15)}>
@@ -153,290 +103,88 @@ const MyBcsScreen = () => {
         barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
-      {modalVisible && (
-        <Message
-          Photo={() => <Images.AccountNotVerified />}
-          message={t("Error_sharing")}
-          buttonText={t("ok")}
-          callback={() => setModalVisible(false)}
-          secondButtonText={t("Cancel")}
-          secondCallback={() => setModalVisible(false)}
-          show={modalVisible}
-        />
-      )}
-      <View mt={5} mx={horizontalScale(20)}>
-        <Text
-          fontSize={verticalScale(22)}
-          color={"#06202E"}
-          letterSpacing={0.2}
-          fontFamily={Fonts.POPPINS_BOLD}
-        >
-          {t("my_bcs")}
-        </Text>
-      </View>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.dispatch(CommonActions.navigate("NewBc"));
-        }}
-        style={{
-          width: 64,
-          height: 64,
-          backgroundColor: wildWatermelon,
-          position: "absolute",
-          bottom: verticalScale(20),
-          right: horizontalScale(15),
-          zIndex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 15,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.2,
-          shadowRadius: 1.41,
 
-          elevation: 2,
-        }}
+      <View
+        mt={verticalScale(16)}
+        mb={verticalScale(16)}
+        mx={horizontalScale(20)}
       >
-        <Image
-          source={require("../../assets/images/add.png")}
-          size={verticalScale(24)}
-          alt="create bc"
-        />
-      </TouchableOpacity>
-      {!loading ? (
-        allBc.length > 0 ? (
-          <FlatList
-            data={allBc}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: verticalScale(30) }}
-            refreshControl={
-              <RefreshControl
-                refreshing={loading}
-                onRefresh={handleRefresh}
-                colors={["#009387"]} // Customize the color of the loading indicator
-              />
-            }
-            // keyExtractor={item => item.id}
-            renderItem={({ item, index }) => {
-              const { col, bg } = setColor(item.status);
-              return (
-                <View
-                  key={index}
-                  bg={"WHITE_COLOR"}
-                  borderRadius={20}
-                  mx={horizontalScale(20)}
-                  py={2}
-                  px={3}
-                  mt={6}
-                  style={{
-                    elevation: 5, // Elevation level (adjust as needed)
-                    shadowColor: "#000", // Shadow color
-                    shadowOpacity: 0.2, // Shadow opacity (adjust as needed)
-                    shadowOffset: {
-                      width: 10, // Horizontal offset of the shadow
-                      height: 2, // Vertical offset of the shadow
-                    },
-                    shadowRadius: 5,
-                  }}
-                >
-                  <View
-                    flexDirection="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb={3}
-                  >
-                    <View
-                      flexDirection="row"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      <View
-                        borderColor={col}
-                        borderRadius={8}
-                        borderWidth={1}
-                        py={1}
-                        px={2}
-                        alignItems="center"
-                        justifyContent="center"
-                        bg={bg}
-                      >
-                        <Text color={col} fontFamily={Fonts.POPPINS_MEDIUM}>
-                          {item.status.charAt(0).toUpperCase() +
-                            item.status.slice(1)}
-                        </Text>
-                      </View>
-                    </View>
-                    {item.type === BcType.Private &&
-                      item.user.id === userDatas.id && (
-                        <TouchableOpacity
-                          onPress={() => {
-                            navigation.dispatch(
-                              CommonActions.navigate("UpdateBc", {
-                                item,
-                              })
-                            );
-                          }}
-                        >
-                          <Images.Pencil />
-                        </TouchableOpacity>
-                      )}
+        <Text style={styles.title}>{t("my_bcs")}</Text>
+      </View>
 
-                    {item.type === BcType.Public &&
-                      item.status === BcStatus.Pending && (
-                        <TouchableOpacity
-                          onPress={async () => {
-                            try {
-                              const link = await buildLink(item.id);
-                              if (link) {
-                                await onShare(link);
-                              } else {
-                                console.warn(
-                                  "Invalid link returned from buildLink"
-                                );
-                              }
-                            } catch (error: any) {
-                              console.error("Error building link:", error);
-                            }
-                          }}
-                        >
-                          <Images.Send />
-                        </TouchableOpacity>
-                      )}
-                  </View>
-                  <View flexDirection={"row"} alignItems={"center"}>
-                    <Text
-                      mr={horizontalScale(3)}
-                      color={"#06202E"}
-                      fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                      fontSize={verticalScale(20)}
-                    >
-                      {item.title}
-                    </Text>
-                    {item.type === BcType.Private ? (
-                      <Images.RedLock
-                        width={horizontalScale(22)}
-                        height={verticalScale(20)}
-                      />
-                    ) : (
-                      <Images.Global
-                        width={horizontalScale(22)}
-                        height={verticalScale(20)}
-                      />
-                    )}
-                  </View>
-                  <Text
-                    color={"PRIMARY_COLOR"}
-                    fontFamily={Fonts.POPPINS_SEMI_BOLD}
-                    fontSize={verticalScale(20)}
-                    mt={1}
-                  >
-                    {item.amount}{" "}
-                    <Text
-                      color={"#5A5A5C69"}
-                      fontFamily={Fonts.POPPINS_REGULAR}
-                    >
-                      {t("per_month")}
-                    </Text>
-                  </Text>
-                  <View
-                    flexDirection={"row"}
-                    justifyContent={"space-between"}
-                    pl={horizontalScale(15)}
-                    mt={verticalScale(5)}
-                  >
-                    <View flexDirection={"row"} alignItems="center">
-                      <Avatar.Group
-                        _avatar={{
-                          size: "sm",
-                        }}
-                        max={3}
-                      >
-                        {[
-                          "1494790108377-be9c29b29330",
-                          "1603415526960-f7e0328c63b1",
-                          "1607746882042-944635dfe10e",
-                        ].map((item, index) => {
-                          return (
-                            <Avatar
-                              key={index}
-                              bg="green.500"
-                              source={{
-                                uri: `https://images.unsplash.com/photo-${item}?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80`,
-                              }}
-                            >
-                              AJ
-                            </Avatar>
-                          );
-                        })}
-                      </Avatar.Group>
-                      <Text
-                        color={"#5A5A5C"}
-                        fontFamily={Fonts.POPPINS_MEDIUM}
-                        ml={2}
-                        fontSize={verticalScale(17)}
-                      >
-                        {item?.totalMembers}/{item.maxMembers}
-                      </Text>
-                    </View>
-                    <Button
-                      onPress={() => {
-                        navigation.dispatch(
-                          CommonActions.navigate("BcDetailsScreen", {
-                            item: item.id,
-                            deeplink: false,
-                          })
-                        );
-                      }}
-                      size="md"
-                      variant={"solid"}
-                      borderRadius={12}
-                      _text={{
-                        color: "WHITE_COLOR",
-                        fontFamily: Fonts.POPPINS_MEDIUM,
-                      }}
-                      _pressed={{
-                        backgroundColor: "DISABLED_COLOR",
-                      }}
-                      backgroundColor={"PRIMARY_COLOR"}
-                      px={horizontalScale(30)}
-                    >
-                      {t("details")}
-                    </Button>
-                  </View>
-                </View>
-              );
-            }}
-          />
-        ) : (
-          <View style={styles.genralContainer}>
-            <Text
-              style={{
-                fontSize: verticalScale(20),
-                fontFamily: Fonts.POPPINS_BOLD,
-              }}
-            >
-              {t("no_bc_found")}
-            </Text>
-          </View>
-        )
-      ) : (
-        <View style={styles.genralContainer}>
+      <AddFloatingActionButton onClick={navigateToCreateBcScreen} />
+
+      {response === undefined && (
+        <View style={styles.container}>
           <ActivityIndicator size={"large"} color={Colors.PRIMARY_COLOR} />
         </View>
+      )}
+
+      {response && (
+        <FlatList
+          data={response}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: verticalScale(100),
+            flexGrow: 1,
+          }}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            return (
+              <BcCard
+                bc={item}
+                currentUserId={user?.id ?? ""}
+                onClickShare={shareDynamicLink}
+                onClickUpdate={navigateToUpdateBc}
+                onClickDetails={navigateToDetails}
+              />
+            );
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={getMyBcs}
+              colors={[deepSkyBlue]}
+            />
+          }
+          ListEmptyComponent={() => {
+            return (
+              <View style={styles.emptyTextContainer}>
+                <Text
+                  style={{
+                    fontSize: verticalScale(20),
+                    fontFamily: Fonts.POPPINS_BOLD,
+                  }}
+                >
+                  {t("no_bc_found")}
+                </Text>
+              </View>
+            );
+          }}
+        />
       )}
     </View>
   );
 };
 
-export default MyBcsScreen;
-
 const styles = StyleSheet.create({
-  genralContainer: {
+  container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+  title: {
+    fontSize: verticalScale(22),
+    color: "#06202E",
+    letterSpacing: 0.2,
+    fontFamily: Fonts.POPPINS_BOLD,
+  },
+  emptyTextContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "yellow",
+  },
 });
+
+export default MyBcsScreen;

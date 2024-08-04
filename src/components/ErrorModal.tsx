@@ -2,7 +2,7 @@ import { StyleSheet, Text, Modal } from "react-native";
 import React from "react";
 import { horizontalScale, verticalScale } from "../utilities/dimensions";
 import { Fonts, Colors, Images } from "../constants";
-import { errors } from "../redux/user/userSlice";
+import { setErrors } from "../redux/user/userSlice";
 import { Button } from "native-base";
 import { View } from "react-native-animatable";
 import { useAppDispatch } from "../hooks/hooks";
@@ -39,7 +39,7 @@ const ErrorModal = ({ message }: any) => {
           <Button
             colorScheme={"error"}
             style={styles.closeButton}
-            onPress={() => dispatch(errors({ value: false }))}
+            onPress={() => dispatch(setErrors({ value: false }))}
           >
             <Text style={styles.closeButtonLabel}>Close</Text>
           </Button>

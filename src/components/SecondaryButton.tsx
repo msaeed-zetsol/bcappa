@@ -7,6 +7,7 @@ type SecondaryButtonProps = {
   isLoading: boolean;
   isDisabled: boolean;
   onClick: () => void;
+  color?: string;
   props?: IButtonProps;
 };
 
@@ -15,6 +16,7 @@ const SecondaryButton = ({
   isLoading,
   isDisabled,
   onClick,
+  color,
   props,
 }: SecondaryButtonProps) => {
   return (
@@ -25,9 +27,9 @@ const SecondaryButton = ({
       android_ripple={{
         color: "#cee4f0",
       }}
-      borderColor={deepSkyBlue}
+      borderColor={color ? color : deepSkyBlue}
       _text={{
-        color: deepSkyBlue,
+        color: color ? color : deepSkyBlue,
         fontFamily: Fonts.POPPINS_SEMI_BOLD,
       }}
       _loading={{
@@ -38,7 +40,7 @@ const SecondaryButton = ({
         padding: 1,
       }}
       _pressed={{
-        backgroundColor: deepSkyBlue,
+        backgroundColor: color ? color : deepSkyBlue,
         _text: {
           color: "white",
         },

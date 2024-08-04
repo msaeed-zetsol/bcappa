@@ -6,6 +6,8 @@ type PrimaryButtonProps = {
   isLoading: boolean;
   isDisabled: boolean;
   onClick: () => void;
+  textColor?: string;
+  backgroundColor?: string;
   props?: IButtonProps;
 };
 
@@ -14,6 +16,8 @@ const PrimaryButton = ({
   isLoading,
   isDisabled,
   onClick,
+  textColor,
+  backgroundColor,
   props,
 }: PrimaryButtonProps) => {
   return (
@@ -25,7 +29,7 @@ const PrimaryButton = ({
         color: "#cee4f0",
       }}
       _text={{
-        color: "white",
+        color: textColor ? textColor : "white",
         fontFamily: Fonts.POPPINS_SEMI_BOLD,
       }}
       _loading={{
@@ -36,7 +40,7 @@ const PrimaryButton = ({
         padding: 1,
       }}
       spinnerPlacement="start"
-      backgroundColor={"PRIMARY_COLOR"}
+      backgroundColor={backgroundColor ? backgroundColor : "PRIMARY_COLOR"}
       _disabled={{
         backgroundColor: "#cecece",
         _text: {

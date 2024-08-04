@@ -7,13 +7,14 @@ import {
 import { Text, View } from "native-base";
 import { Fonts, Images } from "../constants";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { verticalScale } from "../utilities/dimensions";
+import { horizontalScale, verticalScale } from "../utilities/dimensions";
 import { blackPearl, deepSkyBlue, smoky } from "../constants/Colors";
 import { useTranslation } from "react-i18next";
 
 type MemberListItemProps = {
   member: Member;
   index: number;
+  isBalloting: boolean;
   onPressIn: () => void;
   onDelete: (member: Member) => void;
   style?: StyleProp<ViewStyle>;
@@ -22,16 +23,27 @@ type MemberListItemProps = {
 const MemberListItem = ({
   member,
   index,
+  isBalloting,
   onPressIn,
   onDelete,
   style,
 }: MemberListItemProps) => {
   const { t } = useTranslation();
   return (
-    <View style={[styles.row, style, { marginTop: verticalScale(10) }]}>
-      <TouchableOpacity onPressIn={onPressIn} style={styles.touchableContainer}>
-        <Images.DragIcon />
-      </TouchableOpacity>
+    <View
+      key={member.openingPrecedence}
+      style={[styles.row, style, { marginTop: verticalScale(10) }]}
+    >
+      {!isBalloting ? (
+        <TouchableOpacity
+          onPressIn={onPressIn}
+          style={styles.touchableContainer}
+        >
+          <Images.DragIcon />
+        </TouchableOpacity>
+      ) : (
+        <View style={{ paddingStart: horizontalScale(20) }}></View>
+      )}
 
       <View style={styles.contentColumn}>
         <View style={styles.fullNameRow}>
@@ -44,7 +56,9 @@ const MemberListItem = ({
         </View>
 
         <View style={{ flexDirection: "column", marginTop: 8 }}>
-          <Text style={[styles.text, { color: blackPearl }]}>{t("phone")}</Text>
+          <Text style={[styles.text, { color: blackPearl }]}>
+            {t("phone_captialized")}
+          </Text>
           <Text style={[styles.text, { color: smoky, marginTop: 1 }]}>
             {member.phone}
           </Text>

@@ -100,6 +100,7 @@ const newBcForm = {
   amount_per_month: "Amount /Month",
   amount_per_month_required: "Amount Per Month is required",
   starting_date: "Starting Date",
+  starting_date_required: "Starting Date is required",
   total_expected_bc_amount: "Total expected BC amount",
   bc_balloting: "BC Balloting",
   members: "Members",
@@ -149,7 +150,6 @@ const home = {
   map_feature_description: `Your Safety Net! We're thrilled to announce that our upcoming app feature, Insurance, is coming soon!. Stay tuned for updates on this exciting new app feature!`,
   account_not_verified: "your account is not currently verified with Jazzdost.",
   ok: "OK",
-  Cancle: "Cancle",
   verify_now: "Verify Now",
 };
 

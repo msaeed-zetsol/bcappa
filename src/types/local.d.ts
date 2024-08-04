@@ -1,12 +1,16 @@
 /**
  * These type represent ephemeral state of the app.
  */
-
 type Member = {
   id?: string;
   fullName: string;
   phone: string;
-  openingPrecedence: number;
+  openingPrecedence?: number;
+};
+
+type BcStatusColor = {
+  color: string;
+  backgroundColor: string;
 };
 
 // Forms
@@ -35,4 +39,12 @@ type ForgotPasswordFormValues = {
 type NewPasswordFormValues = {
   password: string;
   confirmPassword: string;
+};
+
+type CreateBcFormValues = {
+  title: string;
+  maxUsers: string;
+  amountPerMonth: string;
+  startingDate: string;
+  isBalloting: boolean;
 };

@@ -93,6 +93,7 @@ const newBcForm = {
   amount_per_month: "ماہانہ رقم",
   amount_per_month_required: "ماہانہ رقم ضروری ہے",
   starting_date: "شروع کرنے کی تاریخ",
+  starting_date_required: "آغاز کی تاریخ درکار ہے",
   total_expected_bc_amount: "کل متوقع BC رقم",
   bc_balloting: "بی سی بلٹنگ",
   members: "اراکین",
@@ -105,7 +106,6 @@ const newBcForm = {
   please_add_members: "اراکین کا اضافہ کریں",
   password_must_match_confirm_password_please_try_again:
     "پاس ورڈ کے مطابقہ کریں۔ براہ کرم تصدیق کریں!",
-  cancle: "منسوخ کریں",
   your_password_has_been_updated_please_login_to_continue:
     "آپ کا پاس ورڈ اپ ڈیٹ کر دیا گیا ہے۔ جاری رکھنے کے لئے لاگ ان کریں۔",
   login: "لاگ ان",

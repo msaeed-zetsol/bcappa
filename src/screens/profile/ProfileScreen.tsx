@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  StatusBar,
-  TouchableOpacity,
-  ScrollView,
-  Modal,
-} from "react-native";
+import { StatusBar, TouchableOpacity, ScrollView, Modal } from "react-native";
 import React, { useState, useCallback } from "react";
 import { View, Text, Avatar, Button, Icon } from "native-base";
 import { verticalScale, horizontalScale } from "../../utilities/dimensions";
@@ -28,21 +22,21 @@ import {
   getFirstAndLastCharsUppercase,
 } from "../../utilities/helper-functions";
 import { Content_Type } from "../../constants/Base_Url";
-import { useDispatch } from "react-redux";
 import * as Animatable from "react-native-animatable";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useTranslation } from "react-i18next";
 import useAxios from "../../hooks/useAxios";
+import { useAppDispatch } from "../../hooks/hooks";
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
-  const dispatch: any = useDispatch();
   const [imageModal, setImageModal] = useState(false);
   const [isButtonPressed, setButtonPressed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [userInfo, setUserInfo] = useState<Profile>();
-  const AvatarName = getFirstAndLastCharsUppercase(userInfo?.fullName || "");
+  const avatarName = getFirstAndLastCharsUppercase(userInfo?.fullName || "");
   const { t } = useTranslation();
+  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
 
   const [profileImage, setProfileImage] = useState(
     "https://images.unsplash.com/photo-1614289371518-722f2615943d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
@@ -53,6 +47,7 @@ const ProfileScreen = () => {
     notVerified: false,
   });
   const [logoutModal, setLogoutModal] = useState(false);
+
   const handleCallback = (payload: any) => {
     console.log({ payload });
     setButtonPressed(false);
@@ -69,16 +64,8 @@ const ProfileScreen = () => {
         notVerified: !payload.value,
       }));
     }
-
-    //verified logic
-    // if(payload.name===modalEnums.){
-    //   setVerificationModal(prevData => ({
-    //     ...prevData,
-    //     notVerified: !payload.value,
-    //   }));
-
-    // }
   };
+
   const logoutSocialLogIn = async () => {
     try {
       const data = await GoogleSignin.signOut();
@@ -117,11 +104,11 @@ const ProfileScreen = () => {
       width: 300,
       height: 400,
       cropping: true,
-    }).then(async (image: any) => {
+    }).then((image: any) => {
       console.log(image);
       setProfileImage(image.path);
       setImageModal(false);
-      await setImage(image);
+      setImage(image);
     });
   };
   const [data, start] = useAxios<any>("/user/profile", "put", {
@@ -206,7 +193,7 @@ const ProfileScreen = () => {
           }}
           size="xl"
         >
-          {AvatarName}
+          {avatarName}
           <Avatar.Badge
             p={verticalScale(13)}
             bg={wildWatermelon}
@@ -361,12 +348,15 @@ const ProfileScreen = () => {
           show={true}
         />
       )}
-      <Modal visible={imageModal} transparent={true} animationType="slide">
+
+      <Modal
+        visible={imageModal}
+        statusBarTranslucent
+        transparent
+        presentationStyle="overFullScreen"
+        animationType="fade"
+      >
         <View flex={1} bg={"rgba(0, 0, 0, 0.63)"} justifyContent={"flex-end"}>
-          <StatusBar
-            backgroundColor={"rgba(0, 0, 0, 0.63)"}
-            barStyle={"dark-content"}
-          />
           <View
             mx={horizontalScale(20)}
             bg={"WHITE_COLOR"}
@@ -436,8 +426,14 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </View>
       </Modal>
-      <Modal visible={logoutModal} transparent={true}>
-        <Animatable.View
+      
+      <Modal
+        visible={logoutModal}
+        statusBarTranslucent
+        transparent
+        presentationStyle="overFullScreen"
+      >
+        <View
           style={{
             flex: 1,
             backgroundColor: "rgba(0, 0, 0, 0.63)",
@@ -521,19 +517,10 @@ const ProfileScreen = () => {
               </Button>
             </View>
           </Animatable.View>
-        </Animatable.View>
+        </View>
       </Modal>
     </View>
   );
 };
 
 export default ProfileScreen;
-
-const styles = StyleSheet.create({
-  contentStyles: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: verticalScale(25),
-    alignItems: "center",
-  },
-});
