@@ -57,48 +57,52 @@ const UpdatePersonalInformationScreen = () => {
     "Network Error": "Please check your connection and try again.",
     "Request failed": "Invalid request data. Please check your input.",
   });
+  const [saveData, saveStart] = useAxios<any>("/user/profile", "put", {
+    "Network Error": "Please check your connection and try again.",
+    "Request failed": "Invalid request data. Please check your input.",
+    "Something went wrong.": "Something went wrong. Please try again later.",
+    "phone must be a valid phone number": "Invalid phone",
+  });
   const getPersonalData = async () => {
     try {
       start();
-      if (data) {
-        console.log({ response: data?.dob });
-
-        if (data?.dob) {
-          const d = data?.dob?.split("T")[0];
-          setShowDate(d);
-        }
-
-        let phoneNumber: PhoneNumber | undefined;
-
-        if (data?.phone) {
-          phoneNumber = parsePhoneNumber(data?.phone);
-          setCountryCode("+" + phoneNumber?.countryCallingCode);
-        }
-        console.log("data", data);
-
-        setPersonalData({
-          fullName: data?.fullName || "",
-          email: data?.email || "",
-          phone: phoneNumber?.nationalNumber?.toString() || "",
-          cnic: data?.cnic || "",
-          dob: data?.dob || "",
-          gender: data?.gender || "",
-          bcAmount: data?.monthlyAmount || 0, // Assuming it's a number, replace with appropriate default value if needed
-        });
-      }
     } catch (error) {
       console.error("Error fetching personal data:", error);
     }
   };
+
   useEffect(() => {
     if (data) {
-      getPersonalData();
+      console.log({ response: data?.dob });
+
+      if (data?.dob) {
+        const d = data?.dob?.split("T")[0];
+        setShowDate(d);
+      }
+
+      let phoneNumber;
+
+      if (data?.phone) {
+        phoneNumber = parsePhoneNumber(data?.phone);
+        setCountryCode("+" + phoneNumber?.countryCallingCode);
+      }
+      console.log("data", data);
+
+      setPersonalData({
+        fullName: data?.fullName || "",
+        email: data?.email || "",
+        phone: phoneNumber?.nationalNumber?.toString() || "",
+        cnic: data?.cnic || "",
+        dob: data?.dob || "",
+        gender: data?.gender || "",
+        bcAmount: data?.monthlyAmount || 0,
+      });
     }
   }, [data]);
-  useEffect(()=>{
+
+  useEffect(() => {
     getPersonalData();
-  },[]) 
-  
+  }, []);
 
   const getMaximumDate = (): Date => {
     return apply(new Date(), (date) => {
@@ -116,26 +120,18 @@ const UpdatePersonalInformationScreen = () => {
           : "",
       monthlyAmount: +personalData.bcAmount || 0,
       cnic: personalData.cnic || "",
-      dob: date ? date : "",
-      gender: personalData?.gender || "",
+      dob: date ? date.toISOString() : "", 
+      gender: personalData.gender || "",
     };
 
     removeEmptyProperties(data);
+
     try {
-      const response = await apimiddleWare({
-        url: "/user/profile",
-        method: "put",
-        data: data,
-        reduxDispatch: dispatch,
-        navigation: navigation,
-      });
-      console.log({ response });
-      const stringifyUserData: any = await JSON.stringify(response);
-      await AsyncStorage.setItem("loginUserData", stringifyUserData);
+      saveStart({ data });
       navigation.goBack();
-      setIsLoading(false);
     } catch (error) {
-      console.log({ error });
+      console.error("Error saving details:", error);
+    } finally {
       setIsLoading(false);
     }
   };

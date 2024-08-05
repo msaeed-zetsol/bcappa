@@ -1,5 +1,5 @@
 import { StatusBar, TouchableOpacity, ScrollView, Modal } from "react-native";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { View, Text, Avatar, Button, Icon } from "native-base";
 import { verticalScale, horizontalScale } from "../../utilities/dimensions";
 import { newColorTheme, wildWatermelon } from "../../constants/Colors";
@@ -138,7 +138,6 @@ const ProfileScreen = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log({ response: data });
-
       if (data) {
         setProfileImage(data.profileImg.uri);
 
@@ -159,20 +158,19 @@ const ProfileScreen = () => {
   };
 
   const getData = async () => {
-    const getUserData = await AsyncStorage.getItem("loginUserData");
-    if (getUserData) {
+    try {
+      const getUserData: any = await AsyncStorage.getItem("loginUserData");
       const userData = JSON.parse(getUserData);
       setUserInfo(userData);
       setProfileImage(userData.profileImg);
-      console.log({ userData });
+      console.log("User Data:", userData);
+    } catch (error) {
+      console.error("Error retrieving user data from AsyncStorage:", error);
     }
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      getData();
-    }, [])
-  );
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <View
@@ -426,7 +424,7 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </View>
       </Modal>
-      
+
       <Modal
         visible={logoutModal}
         statusBarTranslucent
