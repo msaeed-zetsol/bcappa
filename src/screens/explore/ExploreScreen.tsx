@@ -17,7 +17,17 @@ import InfoModal from "../../components/InfoModal";
 import { useTranslation } from "react-i18next";
 import MatchCard from "../../components/MatchCard";
 import { useAppDispatch } from "../../hooks/hooks";
+import useAxios from "../../hooks/useAxios";
 
+type SwipeResponse = {
+  status: string;
+  userOne: {
+    fullName: string;
+  };
+  userTwo: {
+    fullName: string;
+  };
+};
 const ExploreScreen = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -48,60 +58,66 @@ const ExploreScreen = () => {
       userTwo: "",
     });
   };
-
+  const [users, userStart] = useAxios<User[]>("/bcs/public/users", "get", {
+    "Request failed": "Invalid request data. Please check your input.",
+  });
   const getAllUsers = async () => {
-    setIsLoadingg(true);
-
     const getUserData: any = await AsyncStorage.getItem("loginUserData");
     const userData = await JSON.parse(getUserData);
+    console.log("userData:", userData);
 
     if (!userData.monthlyAmount) {
       setMonthlyAmount(true);
     } else {
-      const users: User[] = await apimiddleWare({
-        url: "/bcs/public/users",
-        method: "get",
-      });
-
-      if (users) {
-        const shuffledUsers = shuffleAndMoveLastArrayItems(users);
-        setPublicUsers(shuffledUsers);
-        setRemainingCards(shuffledUsers.length);
-      }
-      setIsLoadingg(false);
+      await userStart();
+      console.log("start");
     }
   };
+
+
+  useEffect(() => {
+    console.log("Users state:", users);
+    if (users) {
+      const shuffledUsers = shuffleAndMoveLastArrayItems(users);
+      setPublicUsers(shuffledUsers);
+      setRemainingCards(shuffledUsers.length);
+      console.log("length", shuffledUsers.length);
+    } else {
+      console.log("loading");
+    }
+  }, [users]);
 
   useFocusEffect(
     useCallback(() => {
       getAllUsers();
     }, [])
   );
+  const [data, start] = useAxios<SwipeResponse>("/bcs/handle-swipes", "post", {
+    "Request failed": "Invalid request data. Please check your input.",
+  });
 
   const handleRightSwipe = async (index: number) => {
     setRemainingCards(remainingCards - 1);
 
-    const data = { otherUserId: publicUsers[index].id };
-    const response = await apimiddleWare({
-      url: "/bcs/handle-swipes",
-      method: "post",
-      data: data,
-      reduxDispatch: dispatch,
-    });
+    const requestData = { otherUserId: publicUsers[index].id };
+    try {
+      start({ data: requestData });
 
-    console.log(`Swiped Response: ${JSON.stringify(response)}`);
+      console.log(`Swiped Response: ${JSON.stringify(data)}`);
 
-    if (response) {
-      if (response?.status === "joined") {
-        setUser({
-          userOne: response.userOne.fullName,
-          userTwo: response.userTwo.fullName,
-        });
-        setJoined(true);
+      if (data) {
+        if (data?.status === "joined") {
+          setUser({
+            userOne: data.userOne.fullName,
+            userTwo: data.userTwo.fullName,
+          });
+          setJoined(true);
+        }
       }
+    } catch (error) {
+      console.error("Error handling swipe:", error);
     }
   };
-
   const handleLeftSwipe = (index: number) => {
     setPublicUsers([...publicUsers, publicUsers[index]]);
   };
