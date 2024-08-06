@@ -111,11 +111,9 @@ const ProfileScreen = () => {
       setImage(image);
     });
   };
-  const [data, start] = useAxios<any>("/user/profile", "put", {
-    "Network Error": "Please check your connection and try again.",
+  const [data, start] = useAxios("/user/profile", "put", {
     "Request failed": "Invalid request data. Please check your input.",
   });
-
   const setImage = async (img: any) => {
     const data = {
       profileImg: {
@@ -140,7 +138,6 @@ const ProfileScreen = () => {
       console.log({ response: data });
       if (data) {
         setProfileImage(data.profileImg.uri);
-
         const getItems = await AsyncStorage.getItem("loginUserData");
         if (getItems) {
           const parsedItem = JSON.parse(getItems);

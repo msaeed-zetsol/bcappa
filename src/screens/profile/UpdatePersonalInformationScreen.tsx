@@ -32,7 +32,17 @@ import useAxios from "../../hooks/useAxios";
 
 const initialDate = new Date();
 initialDate.setDate(initialDate.getDate() - 1); // Set initial date to one day before today
-
+type PersonalData={
+  monthlyAmount: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  cnic: string;
+  dob: string;
+  role: string;
+  gender: string;
+  bcAmount: number;
+}
 const UpdatePersonalInformationScreen = () => {
   const dispatch: any = useDispatch();
   const navigation = useNavigation();
@@ -53,12 +63,10 @@ const UpdatePersonalInformationScreen = () => {
     bcAmount: 0,
   });
   const { t } = useTranslation();
-  const [data, start] = useAxios<any>("/user/profile", "get", {
-    "Network Error": "Please check your connection and try again.",
+  const [data, start] = useAxios<PersonalData>("/user/profile", "get", {
     "Request failed": "Invalid request data. Please check your input.",
   });
-  const [saveData, saveStart] = useAxios<any>("/user/profile", "put", {
-    "Network Error": "Please check your connection and try again.",
+  const [saveData, saveStart] = useAxios("/user/profile", "put", {
     "Request failed": "Invalid request data. Please check your input.",
     "Something went wrong.": "Something went wrong. Please try again later.",
     "phone must be a valid phone number": "Invalid phone",

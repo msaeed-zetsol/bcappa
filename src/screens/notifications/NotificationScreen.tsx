@@ -5,7 +5,7 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View } from "native-base";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import Colors, { deepSkyBlue, newColorTheme } from "../../constants/Colors";
@@ -15,25 +15,27 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "../../hooks/hooks";
 import NotificationItem from "../../components/NotificationItem";
+import useAxios from "../../hooks/useAxios";
 
 const NotificationScreen = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-
+  const [data, start] = useAxios<any>("/notifications/my", "get", {
+    "Request failed": "Invalid request data. Please check your input.",
+  });
   const getNotifications = async () => {
     setLoading(true);
-    const response = await apimiddleWare({
-      url: `/notifications/my`,
-      method: "get",
-      reduxDispatch: dispatch,
-    });
-    if (response) {
-      setLoading(false);
-      setNotifications(response);
-    }
+    await start(); 
   };
+
+  useEffect(() => {
+    if (data) {
+      setLoading(false);
+      setNotifications(data);
+    }
+  }, [data]);
 
   useFocusEffect(
     React.useCallback(() => {

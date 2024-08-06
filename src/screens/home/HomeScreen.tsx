@@ -85,15 +85,9 @@ const HomeScreen = () => {
     }
   };
 
-  const [data, start] = useAxios("/bcs/active", "get", {
-    "Network Error":
-      "Unable to connect. Please check your internet connection.",
-  });
+  const [data, start] = useAxios("/bcs/active", "get");
 
-  const [joinBcData, joinBcStart] = useAxios("/bcs/ready-to-join", "get", {
-    "Network Error":
-      "Unable to connect. Please check your internet connection.",
-  });
+  const [joinBcData, joinBcStart] = useAxios("/bcs/ready-to-join", "get");
 
   const getActiveBc = async () => {
     setActiveLoad(true);

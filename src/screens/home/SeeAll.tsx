@@ -26,9 +26,7 @@ const SeeAll = () => {
   const { name, api, btn } = route.params;
   const [isLoading, setIsLoading] = useState(true);
   const [allData, setAllData] = useState<any>([]);
-  const [data, start] = useAxios<DataResponse[]>(api, "get", {
-    "Network Error": "Unable to connect. Please check your internet connection.",
-  });
+  const [data, start] = useAxios<DataResponse[]>(api, "get");
   
   const getData = async () => {
     setIsLoading(true); 
