@@ -351,6 +351,13 @@ const ProfileScreen = ({ navigation }: ProfileScreenProps) => {
         <ProfileInformationRow
           heading={t("bc_settings")}
           startIcon={{ Icon: Settings }}
+          onPress={() => {
+            navigation.dispatch(
+              CommonActions.navigate("BcSettingsScreen", {
+                name: "Bc Settings",
+              })
+            );
+          }}
           endIconMode="navigation"
         />
         <Divider backgroundColor={aliceBlue} />

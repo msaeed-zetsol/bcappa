@@ -1,13 +1,13 @@
-import { StyleSheet, StatusBar, ScrollView, Modal } from 'react-native';
-import React, { useState } from 'react';
-import { View, Text, Radio, Button } from 'native-base';
+import { StyleSheet, StatusBar, ScrollView, Modal } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Radio, Button } from "native-base";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { Fonts, Images } from "../../constants";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { newColorTheme } from "../../constants/Colors";
 import { apimiddleWare } from "../../utilities/helper-functions";
 import { useTranslation } from "react-i18next";
-import AppBar from '../../components/AppBar';
+import AppBar from "../../components/AppBar";
 
 const SummaryScreen = () => {
   const paymentMethod = [

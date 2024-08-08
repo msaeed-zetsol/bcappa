@@ -32,6 +32,7 @@ import useAxios from "../../hooks/useAxios";
 import { NativeStackScreenProps } from "react-native-screens/lib/typescript/native-stack/types";
 import { AuthStackParamList } from "../../navigators/stack-navigator/AuthStack";
 import PrimaryButton from "../../components/PrimaryButton";
+import MultiSelectModal from "../../components/MultiSelectModal";
 
 type SignUpScreenProps = NativeStackScreenProps<
   AuthStackParamList,
@@ -98,6 +99,11 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
   );
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  const genderOptions = [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+    { label: "Other", value: "other" },
+  ];
   const handleSignup = async (formValues: SignupFormValues) => {
     abortControllerRef.current = start({
       data: {
@@ -406,48 +412,29 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
               <Text style={globalStyles.errorText}>{errors.cnic.message}</Text>
             )}
           </View>
-
-          <View mt={verticalScale(15)}>
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Select
-                  isDisabled={loading || socialSigning}
-                  style={{ marginStart: 8 }}
-                  padding={3}
-                  selectedValue={value}
-                  borderRadius={16}
-                  placeholderTextColor={"GREY"}
-                  color={"BLACK_COLOR"}
-                  fontSize={"sm"}
-                  fontFamily={Fonts.POPPINS_REGULAR}
-                  accessibilityLabel={t("select_gender")}
-                  dropdownIcon={
-                    <Icon
-                      as={<Ionicons name={"caret-down"} />}
-                      size={5}
-                      mr={5}
-                      color="BLACK_COLOR"
-                    />
-                  }
-                  _actionSheet={{ disableOverlay: true }}
-                  _actionSheetContent={{}}
-                  placeholder={t("select_gender")}
-                  onValueChange={(itemValue) => onChange(itemValue)}
-                >
-                  <Select.Item label={t("male")} value="male" />
-                  <Select.Item label={t("female")} value="female" />
-                  <Select.Item label={t("other")} value="other" />
-                </Select>
+          <View style={styles.container}>
+            <View style={{ marginTop: 15 }}>
+              <Controller
+                control={control}
+                name="gender"
+                defaultValue={""}
+                render={({ field: { onChange, value } }) => (
+                  <MultiSelectModal
+                    options={genderOptions}
+                    selectedOptions={value}
+                    onSelect={onChange}
+                    placeholder={t("select_gender")}
+                    disabled={false}
+                  />
+                )}
+                rules={{ required: t("gender_is_required") }}
+              />
+              {errors.gender && (
+                <Text style={globalStyles.errorText}>
+                  {errors.gender.message}
+                </Text>
               )}
-              name="gender"
-              rules={{ required: t("gender_is_required") }}
-            />
-            {errors.gender && (
-              <Text style={globalStyles.errorText}>
-                {errors.gender.message}
-              </Text>
-            )}
+            </View>
           </View>
 
           <View mt={verticalScale(15)}>

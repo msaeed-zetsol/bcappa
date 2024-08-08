@@ -24,6 +24,7 @@ import BcAppaOverviewScreen from "../../screens/faq/BcAppaOverviewScreen";
 import GeneralInformationScreen from "../../screens/faq/GeneralInformationScreen";
 import PaymentsInformationScreen from "../../screens/faq/PaymentsInformation";
 import HowItWorksScreen from "../../screens/faq/HowItWorksScreen";
+import BcSettingsScreen from "../../screens/profile/bc-settings/BcSettingsScreen";
 
 export type RootStackParamList = {
   AuthStack: NavigatorScreenParams<AuthStackParamList>;
@@ -49,6 +50,7 @@ export type RootStackParamList = {
   MyRewards: undefined;
   JazzDostVerification: undefined;
   JazzDostSignup: undefined;
+  BcSettingsScreen: undefined;
   CreateOrUpdateBcScreen: {
     bc?: MyBc;
   };
@@ -107,6 +109,7 @@ const StackNavigator = () => {
         name="AddUpdateMembersScreen"
         component={AddUpdateMembersScreen}
       />
+      <Stack.Screen name="BcSettingsScreen" component={BcSettingsScreen} />
       <Stack.Screen name="SeeAll" component={SeeAll} />
       <Stack.Screen name="BcCreatedScreen" component={BcCreatedScreen} />
       <Stack.Screen name="BcAppaOverviewScreen" component={BcAppaOverviewScreen}/>
