@@ -58,6 +58,7 @@ const ExploreScreen = () => {
       userTwo: "",
     });
   };
+
   const [users, userStart] = useAxios<User[]>("/bcs/public/users", "get", {
     "Request failed": "Invalid request data. Please check your input.",
   });
@@ -73,7 +74,6 @@ const ExploreScreen = () => {
       console.log("start");
     }
   };
-
 
   useEffect(() => {
     console.log("Users state:", users);

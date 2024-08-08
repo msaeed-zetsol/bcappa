@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   StatusBar,
   FlatList,
   Modal,
   ActivityIndicator,
-} from 'react-native';
-import { View, Text, Avatar, Button } from 'native-base';
-import Colors, { newColorTheme } from '../../constants/Colors';
+} from "react-native";
+import { View, Text, Avatar, Button } from "native-base";
+import Colors, { newColorTheme } from "../../constants/Colors";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import {
   CommonActions,
@@ -20,7 +20,7 @@ import { apimiddleWare } from "../../utilities/helper-functions";
 import { BcType } from "../../types/Enums";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
-import AppBar from '../../components/AppBar';
+import AppBar from "../../components/AppBar";
 
 const getCurrentAndPreviousMonthsPayments = (data: any) => {
   const currentDate = new Date();
@@ -237,7 +237,7 @@ const UserSchedule = () => {
                         item.paid === true ? Colors.PRIMARY_COLOR : "#FF696D",
                       backgroundColor:
                         item.paid === true ? Colors.PRIMARY_COLOR : "#FF696D",
-                      borderRadius:5,
+                      borderRadius: 5,
                       paddingVertical: verticalScale(1),
                       paddingHorizontal: horizontalScale(8),
                     }}

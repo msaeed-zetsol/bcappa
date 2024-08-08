@@ -321,6 +321,13 @@ const ProfileScreen = () => {
         <ProfileInformationRow
           heading={t("bc_settings")}
           startIcon={{ Icon: Images.Settings }}
+          onPress={() => {
+            navigation.dispatch(
+              CommonActions.navigate("BcSettingsScreen", {
+                name: "Bc Settings",
+              })
+            );
+          }}
           endIconMode="navigation"
         />
 

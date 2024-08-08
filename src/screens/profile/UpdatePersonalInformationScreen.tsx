@@ -32,7 +32,7 @@ import useAxios from "../../hooks/useAxios";
 
 const initialDate = new Date();
 initialDate.setDate(initialDate.getDate() - 1); // Set initial date to one day before today
-type PersonalData={
+type PersonalData = {
   monthlyAmount: number;
   fullName: string;
   email: string;
@@ -42,7 +42,7 @@ type PersonalData={
   role: string;
   gender: string;
   bcAmount: number;
-}
+};
 const UpdatePersonalInformationScreen = () => {
   const dispatch: any = useDispatch();
   const navigation = useNavigation();
@@ -128,7 +128,7 @@ const UpdatePersonalInformationScreen = () => {
           : "",
       monthlyAmount: +personalData.bcAmount || 0,
       cnic: personalData.cnic || "",
-      dob: date ? date.toISOString() : "", 
+      dob: date ? date.toISOString() : "",
       gender: personalData.gender || "",
     };
 
