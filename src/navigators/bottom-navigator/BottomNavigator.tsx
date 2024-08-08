@@ -13,7 +13,15 @@ import ProfileScreen from "../../screens/profile/ProfileScreen";
 import { Image } from "native-base";
 import { wildWatermelon } from "../../constants/Colors";
 
-const Tab = createBottomTabNavigator();
+export type TabParamsList = {
+  HomeScreen: undefined;
+  MyBcsScreen: undefined;
+  ExploreScreen: undefined;
+  NotificationScreen: undefined;
+  ProfileScreen: undefined;
+};
+
+const Tab = createBottomTabNavigator<TabParamsList>();
 
 const BottomNavigator = () => {
   const { t } = useTranslation();

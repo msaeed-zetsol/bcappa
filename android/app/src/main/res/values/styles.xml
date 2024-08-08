@@ -4,13 +4,18 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <item name="android:datePickerDialogTheme">@style/DialogTheme</item>
+    </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+       <item name="colorAccent">@color/deepSkyBlue</item>
     </style>
 
     <style name="BootTheme" parent="Theme.BootSplash.EdgeToEdge">
         <item name="bootSplashBackground">@color/bootsplash_background</item>
         <item name="bootSplashLogo">@drawable/bootsplash_logo</item>
         <item name="postBootSplashTheme">@style/AppTheme</item>
-        <item name="darkContentBarsStyle">true</item>
+        <item name="darkContentBarsStyle">false</item>
     </style>
 
 </resources>

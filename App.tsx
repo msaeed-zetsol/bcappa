@@ -56,7 +56,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    BootSplash.hide({ fade: true });
+    BootSplash.hide();
   });
 
   return (

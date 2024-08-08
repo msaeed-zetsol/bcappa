@@ -64,7 +64,10 @@ const AccountVerificationScreen = ({
     }
   );
   const [signupResponse, signup] = useAxios("/auth/signup", "post");
-  const [loginResponse, login] = useAxios("/auth/login", "post");
+  const [loginResponse, login] = useAxios<ProfileResponse>(
+    "/auth/login",
+    "post"
+  );
 
   const abortControllerRef = useRef<AbortController | null>(null);
 

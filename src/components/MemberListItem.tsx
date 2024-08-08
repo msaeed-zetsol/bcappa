@@ -51,7 +51,9 @@ const MemberListItem = ({
             <Text style={[styles.name, { color: blackPearl }]}>
               {member.fullName}
             </Text>
-            <Text style={styles.precedence}> ({index + 1})</Text>
+            {!isBalloting && (
+              <Text style={styles.precedence}> ({index + 1})</Text>
+            )}
           </View>
         </View>
 

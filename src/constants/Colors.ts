@@ -38,3 +38,5 @@ export const zambezi = "#595959";
 export const veryLightGrey = "#CCCCCC";
 export const ghostWhite = "#F5F7FF";
 export const columbiaBlue = "#99DBFF";
+export const aliceBlue = "#EAF8FF";
+export const nobel = "#949494";

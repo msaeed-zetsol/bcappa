@@ -204,7 +204,7 @@ const notificationScreen = {
 
 const faqs = {
   faqs: "عمومی سوالات",
-  what_is_bcappa: "بی سی ایپ کیا ہے",
+  what_is_bcappa: "BcAppa کیا ہے؟",
   general_information: "عام معلومات",
   payments: "ادائیگیاں",
   how_it_works: "یہ کیسے کام کرتا ہے؟",

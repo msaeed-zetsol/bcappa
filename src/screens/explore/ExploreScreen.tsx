@@ -32,7 +32,6 @@ const ExploreScreen = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const docRef = useRef<Swiper<User>>(null);
-  const dispatch = useAppDispatch();
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [isButtonPressed, setButtonPressed] = useState(false);
   const [joined, setJoined] = useState(false);
@@ -73,7 +72,6 @@ const ExploreScreen = () => {
       console.log("start");
     }
   };
-
 
   useEffect(() => {
     console.log("Users state:", users);
@@ -207,11 +205,22 @@ const ExploreScreen = () => {
               keyExtractor={(it) => it.id}
               renderCard={(user, index) => {
                 return (
+                  /**
+                   * The setTimeout is added because the touch event interrupts swiper swipe animations.
+                   */
                   <MatchCard
                     user={user}
                     isCancellable={publicUsers.length - 1 - index !== 0}
-                    onAdd={() => docRef.current?.swipeRight()}
-                    onCancel={() => docRef.current?.swipeLeft()}
+                    onAdd={() => {
+                      setTimeout(() => {
+                        docRef.current?.swipeRight();
+                      }, 100);
+                    }}
+                    onCancel={() => {
+                      setTimeout(() => {
+                        docRef.current?.swipeLeft();
+                      }, 100);
+                    }}
                   />
                 );
               }}

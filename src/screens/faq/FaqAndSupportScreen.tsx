@@ -1,49 +1,43 @@
-import { StyleSheet } from "react-native";
 import React from "react";
 import { View } from "native-base";
 import { verticalScale, horizontalScale } from "../../utilities/dimensions";
-import { useNavigation } from "@react-navigation/native";
-import { newColorTheme } from "../../constants/Colors";
 import ProfileInformationRow from "../../components/ProfileInformationRow";
 import { useTranslation } from "react-i18next";
-import { Images } from "../../constants";
 import AppBar from "../../components/AppBar";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../navigators/stack-navigator/StackNavigator";
 
-const FaqAndSupportScreen = () => {
-  const navigation = useNavigation();
+type FAQProps = NativeStackScreenProps<RootStackParamList, "FaqAndSupport">;
+
+const FaqAndSupportScreen = ({ navigation }: FAQProps) => {
   const { t } = useTranslation();
 
   return (
-    <View
-      flex={1}
-      bg={"BACKGROUND_COLOR"}
-      pt={verticalScale(15)}
-      px={horizontalScale(22)}
-    >
-      <AppBar name={t("faqs")} onPress={navigation.goBack} />
+    <View flex={1} bg={"BACKGROUND_COLOR"} pt={verticalScale(15)}>
+      <AppBar
+        name={t("faqs")}
+        onPress={navigation.goBack}
+        style={{ marginHorizontal: horizontalScale(22) }}
+      />
       <View mt={verticalScale(30)} />
       <ProfileInformationRow
         heading={t("what_is_bcappa")}
-        onPress={() => { }}
-        startIcon={{ Icon: Images.AccountNotVerified }}
+        onPress={() => navigation.navigate("BcAppaOverviewScreen")}
         endIconMode={"navigation"}
       />
       <ProfileInformationRow
         heading={t("general_information")}
-        onPress={() => { }}
-        startIcon={{ Icon: Images.AccountNotVerified }}
+        onPress={() => navigation.navigate("GeneralInformationScreen")}
         endIconMode={"navigation"}
       />
       <ProfileInformationRow
         heading={t("payments")}
-        onPress={() => { }}
-        startIcon={{ Icon: Images.AccountNotVerified }}
+        onPress={() => navigation.navigate("PaymentsInformationScreen")}
         endIconMode={"navigation"}
       />
       <ProfileInformationRow
         heading={t("how_it_works")}
-        onPress={() => { }}
-        startIcon={{ Icon: Images.AccountNotVerified }}
+        onPress={() => navigation.navigate("HowItWorksScreen")}
         endIconMode={"navigation"}
       />
     </View>
@@ -51,5 +45,3 @@ const FaqAndSupportScreen = () => {
 };
 
 export default FaqAndSupportScreen;
-
-const styles = StyleSheet.create({});

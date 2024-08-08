@@ -59,7 +59,7 @@ const MatchCard = ({
       <View style={styles.cardBottom}>
         {isCancellable && (
           <TouchableOpacity
-            onPress={onCancel}
+            onPressIn={onCancel}
             style={[styles.iconContainer, { borderColor: wildWatermelon }]}
           >
             <Image
@@ -70,7 +70,7 @@ const MatchCard = ({
           </TouchableOpacity>
         )}
         <TouchableOpacity
-          onPress={onAdd}
+          onPressIn={onAdd}
           style={[
             styles.iconContainer,
             { borderColor: deepSkyBlue },

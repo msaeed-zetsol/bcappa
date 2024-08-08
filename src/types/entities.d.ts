@@ -40,8 +40,8 @@ type User = {
 type UserSetting = {
   id: number;
   signupType: string;
-  isProfileCreated: number;
-  isJazzDostVerified: number;
+  isProfileCreated: boolean;
+  isJazzDostVerified: boolean;
 };
 
 // bcs

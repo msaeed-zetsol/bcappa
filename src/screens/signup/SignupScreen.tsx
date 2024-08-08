@@ -1,4 +1,9 @@
-import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { Fonts, Images } from "../../constants";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
@@ -6,7 +11,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Text, Box, Pressable, Icon, View, Select } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Colors, { newColorTheme } from "../../constants/Colors";
+import Colors, { deepSkyBlue, newColorTheme } from "../../constants/Colors";
 import { CommonActions, StackActions } from "@react-navigation/native";
 import TextFieldComponent from "../../components/TextFieldComponent";
 import { apimiddleWare } from "../../utilities/helper-functions";
@@ -23,7 +28,6 @@ import { useAppDispatch } from "../../hooks/hooks";
 import CountryCodePicker from "../../components/CountryCodePicker";
 import Message from "../../components/AlertMessage";
 import AppBar from "../../components/AppBar";
-import { setMembers } from "../../redux/members/membersSlice";
 import useAxios from "../../hooks/useAxios";
 import { NativeStackScreenProps } from "react-native-screens/lib/typescript/native-stack/types";
 import { AuthStackParamList } from "../../navigators/stack-navigator/AuthStack";
@@ -47,7 +51,6 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
   const [countryCode, setCountryCode] = useState("+92");
   const [hasAgreed, toggleHasAgreed] = useState(false);
 
-  const [showDateError, setShowDateError] = useState(false);
   const [showAgreementError, setShowAgreementError] = useState(false);
 
   const getMaximumDate = (): Date => {
@@ -93,9 +96,10 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
         "Sorry, an account with the provided information already exists. Please try logging in.",
     }
   );
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const handleSignup = async (formValues: SignupFormValues) => {
-    start({
+    abortControllerRef.current = start({
       data: {
         email: formValues.email,
         phone: countryCode + formValues.phone,
@@ -129,34 +133,27 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
     }
   }, [data]);
 
-  useEffect(() => reset, []);
+  useEffect(
+    () => () => {
+      reset();
+      abortControllerRef.current?.abort();
+    },
+    []
+  );
 
-  const googleLogin = async () => {
-    try {
-      await GoogleSignin.hasPlayServices({
-        showPlayServicesUpdateDialog: true,
-      });
-      const { user } = await GoogleSignin.signIn();
-      const getToken: any = await AsyncStorage.getItem("fcmToken");
-      const parsedFcmToken: any = await JSON.parse(getToken);
+  const [googleResponse, socialSignIn] = useAxios("/auth/login/google", "post");
+  const [socialSigning, setSocialSignin] = useState(false);
 
-      const datas = {
-        ...user,
-        fcmToken: parsedFcmToken,
-        role: "customer",
-      };
+  useEffect(() => {
+    if (googleResponse === null) {
+      setSocialSignin(false);
+    }
 
-      const response = await apimiddleWare({
-        url: "/auth/login/google",
-        method: "post",
-        data: datas,
-        reduxDispatch: dispatch,
-        navigation: navigation,
-      });
-
-      if (response) {
-        const loginUserDataString = JSON.stringify(response);
-        await AsyncStorage.setItem("loginUserData", loginUserDataString);
+    if (googleResponse) {
+      AsyncStorage.setItem(
+        "loginUserData",
+        JSON.stringify(googleResponse)
+      ).then(() => {
         navigation.dispatch(
           StackActions.replace("BottomNavigator", {
             screen: "HomeScreen",
@@ -165,9 +162,35 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
             },
           })
         );
+      });
+    }
+  }, [googleResponse]);
+
+  const signInWithGoogle = async () => {
+    try {
+      const currentUser = GoogleSignin.getCurrentUser();
+      if (currentUser) {
+        await GoogleSignin.revokeAccess();
       }
-    } catch (err) {
-      console.log(err);
+
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
+      const { user } = await GoogleSignin.signIn();
+
+      setSocialSignin(true);
+      const getToken: any = await AsyncStorage.getItem("fcmToken");
+      const parsedFcmToken: any = await JSON.parse(getToken);
+
+      const data = {
+        ...user,
+        fcmToken: parsedFcmToken,
+        role: "customer",
+      };
+
+      abortControllerRef.current = socialSignIn({ data: data });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -181,16 +204,6 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
         secondButtonText={t("cancel")}
         secondCallback={() => setShowAgreementError(false)}
         show={showAgreementError}
-      />
-
-      <Message
-        Photo={() => <Images.AccountNotVerified />}
-        message={t("please_select_your_date_of_birth")}
-        buttonText={t("ok")}
-        callback={() => setShowDateError(false)}
-        secondButtonText={t("cancel")}
-        secondCallback={() => setShowDateError(false)}
-        show={showDateError}
       />
 
       <CountryCodePicker
@@ -227,10 +240,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
 
       <AppBar
         name={t("sign_up")}
-        onPress={() => {
-          dispatch(setMembers([]));
-          navigation.goBack();
-        }}
+        onPress={navigation.goBack}
         style={{ marginHorizontal: horizontalScale(28) }}
       />
 
@@ -259,7 +269,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextFieldComponent
-                isDisabled={loading}
+                isDisabled={loading || socialSigning}
                 placeholder={t("full_name")}
                 onBlur={onBlur}
                 onChange={onChange}
@@ -284,7 +294,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  isDisabled={loading}
+                  isDisabled={loading || socialSigning}
                   placeholder={t("email_id")}
                   value={value}
                   onBlur={onBlur}
@@ -312,7 +322,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  isDisabled={loading}
+                  isDisabled={loading || socialSigning}
                   placeholder={t("phone_number")}
                   onBlur={onBlur}
                   onChange={onChange}
@@ -369,7 +379,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  isDisabled={loading}
+                  isDisabled={loading || socialSigning}
                   placeholder={t("cnic_no")}
                   value={value}
                   onBlur={onBlur}
@@ -402,7 +412,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Select
-                  isDisabled={loading}
+                  isDisabled={loading || socialSigning}
                   style={{ marginStart: 8 }}
                   padding={3}
                   selectedValue={value}
@@ -448,11 +458,11 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
               render={({ field: { onChange, onBlur, value } }) => {
                 return (
                   <TouchableOpacity
-                    disabled={loading}
+                    disabled={loading || socialSigning}
                     onPress={() => setShowDatePickerModal(true)}
                   >
                     <TextFieldComponent
-                      isDisabled={loading}
+                      isDisabled={loading || socialSigning}
                       placeholder={t("date_of_birth")}
                       value={value}
                       readOnly={true}
@@ -481,7 +491,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextFieldComponent
-                  isDisabled={loading}
+                  isDisabled={loading || socialSigning}
                   placeholder={t("password")}
                   value={value}
                   onBlur={onBlur}
@@ -529,7 +539,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
 
         <View mt={3} flexDirection={"row"} alignItems={"center"} flex={1}>
           <CheckBox
-            disabled={loading}
+            disabled={loading || socialSigning}
             value={hasAgreed}
             onValueChange={(newValue) => toggleHasAgreed(newValue)}
             tintColors={{ true: Colors.PRIMARY_COLOR, false: Colors.GREY }}
@@ -574,7 +584,7 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
 
         <PrimaryButton
           isLoading={loading}
-          isDisabled={!isValid || !hasAgreed}
+          isDisabled={!isValid || !hasAgreed || socialSigning}
           text={t("sign_up")}
           props={{ mt: verticalScale(50) }}
           onClick={() => {
@@ -609,26 +619,34 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
           alignItems={"center"}
         >
           <Pressable
-            disabled={loading}
+            android_ripple={{
+              color: "#cee4f0",
+            }}
+            disabled={loading || socialSigning}
             style={[
               styles.googleButton,
               loading ? styles.inactiveGoogleButton : styles.activeGoogleButton,
             ]}
-            onPress={googleLogin}
+            onPress={signInWithGoogle}
             _pressed={{
               backgroundColor: "DISABLED_COLOR",
             }}
           >
-            <Images.Google />
-            <Text
-              pl="2"
-              pr="2"
-              fontSize={verticalScale(16)}
-              textAlign={"center"}
-              fontFamily={Fonts.POPPINS_MEDIUM}
-            >
-              {t("google")}
-            </Text>
+            {socialSigning ? (
+              <ActivityIndicator size={"small"} color={"gray"} />
+            ) : (
+              <>
+                <Images.Google />
+                <Text
+                  pl="2"
+                  fontSize={verticalScale(16)}
+                  textAlign={"center"}
+                  fontFamily={Fonts.POPPINS_MEDIUM}
+                >
+                  {t("google")}
+                </Text>
+              </>
+            )}
           </Pressable>
         </View>
 

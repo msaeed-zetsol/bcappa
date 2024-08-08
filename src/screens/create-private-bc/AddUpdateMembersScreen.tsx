@@ -85,11 +85,7 @@ const AddUpdateMembersScreen = ({
       isBalloting={isBalloting}
       onPressIn={drag}
       onDelete={(item) => {
-        updateMembers(
-          members.filter(
-            (it) => it.openingPrecedence !== item.openingPrecedence
-          )
-        );
+        updateMembers(members.filter((it) => it.phone !== item.phone));
         if (updatingBc) {
           removeBcMember(item);
         }

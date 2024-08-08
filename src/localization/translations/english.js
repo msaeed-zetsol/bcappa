@@ -202,7 +202,7 @@ const notificationScreen = {
 
 const faqs = {
   faqs: "FAQ's",
-  what_is_bcappa: "What is Bc Appa",
+  what_is_bcappa: "What is BcAppa?",
   general_information: "General Information",
   payments: "Payments",
   how_it_works: "How it works?",

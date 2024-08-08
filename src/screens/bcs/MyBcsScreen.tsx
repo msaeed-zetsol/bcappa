@@ -10,7 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, Text } from "native-base";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { Fonts } from "../../constants";
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import { CompositeScreenProps } from "@react-navigation/native";
 import Colors, { deepSkyBlue, newColorTheme } from "../../constants/Colors";
 import dynamicLinks from "@react-native-firebase/dynamic-links";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,13 +18,38 @@ import { useTranslation } from "react-i18next";
 import useAxios from "../../hooks/useAxios";
 import AddFloatingActionButton from "../../components/AddFloatingActionButton";
 import BcCard from "../../components/BcCard";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { TabParamsList } from "../../navigators/bottom-navigator/BottomNavigator";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../navigators/stack-navigator/StackNavigator";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { store } from "../../redux/store";
+import { updateRefreshState } from "../../redux/refresh/refreshSlice";
 
-const MyBcsScreen = () => {
-  const navigation = useNavigation();
+type MyBcsScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<TabParamsList, "MyBcsScreen">,
+  NativeStackScreenProps<RootStackParamList>
+>;
+
+const MyBcsScreen = ({ route, navigation }: MyBcsScreenProps) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User>();
-  const { t } = useTranslation();
   const dynamicLink = useRef<string | null>(null);
+  const refreshState = useAppSelector((store) => store.refresh);
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    if (refreshState.myBcs) {
+      getMyBcs();
+      dispatch(
+        updateRefreshState({
+          ...refreshState,
+          myBcs: false,
+        })
+      );
+    }
+  }, [refreshState.myBcs]);
 
   const shareDynamicLink = (id: string) => {
     buildLink(id).then((link) => {
@@ -52,37 +77,26 @@ const MyBcsScreen = () => {
   };
 
   const navigateToUpdateBc = (bc: MyBc) => {
-    navigation.dispatch(
-      CommonActions.navigate("CreateOrUpdateBcScreen", {
-        bc: bc,
-      })
-    );
+    navigation.navigate("CreateOrUpdateBcScreen", {
+      bc: bc,
+    });
   };
 
   const navigateToDetails = (id: string) => {
-    navigation.dispatch(
-      CommonActions.navigate("BcDetailsScreen", {
-        item: id,
-        deeplink: false,
-      })
-    );
+    navigation.navigate("BcDetailsScreen", {
+      bcId: id,
+      deeplink: false,
+    });
   };
 
   const navigateToCreateBcScreen = () =>
-    navigation.dispatch(
-      CommonActions.navigate("CreateOrUpdateBcScreen", { bc: undefined })
-    );
+    navigation.navigate("CreateOrUpdateBcScreen", { bc: undefined });
 
   const [response, start] = useAxios<MyBcsResponse>("/bcs/my", "get");
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const getMyBcs = async () => {
     setLoading(true);
-    AsyncStorage.getItem("loginUserData").then((it) => {
-      if (it) {
-        setUser(JSON.parse(it));
-      }
-    });
     abortControllerRef.current = start();
   };
 
@@ -93,6 +107,11 @@ const MyBcsScreen = () => {
   }, [response]);
 
   useEffect(() => {
+    AsyncStorage.getItem("loginUserData").then((it) => {
+      if (it) {
+        setUser(JSON.parse(it));
+      }
+    });
     getMyBcs();
     return () => abortControllerRef.current?.abort();
   }, []);
@@ -183,7 +202,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "yellow",
   },
 });
 

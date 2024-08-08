@@ -1,9 +1,11 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import BottomNavigator from "../bottom-navigator/BottomNavigator";
+import BottomNavigator, {
+  TabParamsList,
+} from "../bottom-navigator/BottomNavigator";
 import AuthStack, { AuthStackParamList } from "./AuthStack";
 import VerifiedAccountDetails from "../../screens/jazzDost/VerifiedAccountDetails";
-import UpdatePersonalInformationScreen from "../../screens/profile/UpdatePersonalInformationScreen";
+import UpdateProfileScreen from "../../screens/update-profile/UpdateProfileScreen";
 import TermsAndConditionScreen from "../../screens/others/TermsAndConditionScreen";
 import FaqAndSupportScreen from "../../screens/faq/FaqAndSupportScreen";
 import LanguageScreen from "../../screens/language/LanguageScreen";
@@ -17,18 +19,32 @@ import AddUpdateMembersScreen from "../../screens/create-private-bc/AddUpdateMem
 import BcDetailsScreen from "../../screens/bcs/BcDetailsScreen";
 import SummaryScreen from "../../screens/bcs/SummaryScreen";
 import BcCreatedScreen from "../../screens/create-private-bc/BcCreatedScreen";
+import { NavigatorScreenParams } from "@react-navigation/native";
+import BcAppaOverviewScreen from "../../screens/faq/BcAppaOverviewScreen";
+import GeneralInformationScreen from "../../screens/faq/GeneralInformationScreen";
+import PaymentsInformationScreen from "../../screens/faq/PaymentsInformation";
+import HowItWorksScreen from "../../screens/faq/HowItWorksScreen";
 
 export type RootStackParamList = {
-  AuthStack: AuthStackParamList;
-  BottomNavigator: undefined;
+  AuthStack: NavigatorScreenParams<AuthStackParamList>;
+  BottomNavigator: NavigatorScreenParams<TabParamsList>;
   TermsAndConditions: undefined;
   BcCreatedScreen: { bcId: string };
-  BcDetailsScreen: undefined;
+  BcDetailsScreen: {
+    bcId: string;
+    deeplink: boolean;
+  };
   UserSchedule: undefined;
   SummaryScreen: undefined;
   VerifiedAccountDetails: undefined;
-  PersonalInformation: undefined;
+  UpdateProfileScreen: {
+    profile: ProfileResponse;
+  };
   FaqAndSupport: undefined;
+  BcAppaOverviewScreen: undefined;
+  GeneralInformationScreen: undefined;
+  PaymentsInformationScreen: undefined;
+  HowItWorksScreen: undefined;
   Language: undefined;
   MyRewards: undefined;
   JazzDostVerification: undefined;
@@ -37,7 +53,7 @@ export type RootStackParamList = {
     bc?: MyBc;
   };
   AddUpdateMembersScreen: {
-    bcId: number;
+    bcId: string;
     isBalloting: boolean;
     maxUsers: number;
     updatingBc: boolean;
@@ -52,6 +68,7 @@ const StackNavigator = () => {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
+        navigationBarColor: "white",
       }}
       initialRouteName="AuthStack"
     >
@@ -71,8 +88,8 @@ const StackNavigator = () => {
         component={VerifiedAccountDetails}
       />
       <Stack.Screen
-        name="PersonalInformation"
-        component={UpdatePersonalInformationScreen}
+        name="UpdateProfileScreen"
+        component={UpdateProfileScreen}
       />
       <Stack.Screen name="FaqAndSupport" component={FaqAndSupportScreen} />
       <Stack.Screen name="Language" component={LanguageScreen} />
@@ -92,6 +109,10 @@ const StackNavigator = () => {
       />
       <Stack.Screen name="SeeAll" component={SeeAll} />
       <Stack.Screen name="BcCreatedScreen" component={BcCreatedScreen} />
+      <Stack.Screen name="BcAppaOverviewScreen" component={BcAppaOverviewScreen}/>
+      <Stack.Screen name="GeneralInformationScreen" component={GeneralInformationScreen}/>
+      <Stack.Screen name="PaymentsInformationScreen" component={PaymentsInformationScreen}/>
+      <Stack.Screen name="HowItWorksScreen" component={HowItWorksScreen}/>
     </Stack.Navigator>
   );
 };

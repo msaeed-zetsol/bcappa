@@ -15,3 +15,6 @@ type MyBc = BC & {
 
 type MyBcsResponse = MyBc[];
 type CreateBcResponse = Omit<MyBc, "totalMembers" | "user">;
+type ProfileResponse = User & {
+  settings: UserSetting;
+};

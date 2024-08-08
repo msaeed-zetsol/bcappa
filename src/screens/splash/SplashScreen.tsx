@@ -85,7 +85,7 @@ const SplashScreen = () => {
      * It doesn't matter if we found a splash or not.
      */
     if ((status === "found" || status === "not found") && destination) {
-      // user has to wait at-least 2.5 seconds
+      // user has to wait at-least 2 seconds
       setTimeout(() => {
         // Navigate to destination
         if (destination === "HomeScreen") {

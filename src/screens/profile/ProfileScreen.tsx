@@ -1,55 +1,101 @@
-import { StatusBar, TouchableOpacity, ScrollView, Modal } from "react-native";
-import React, { useState, useCallback, useEffect } from "react";
-import { View, Text, Avatar, Button, Icon } from "native-base";
+import {
+  StatusBar,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
+import { View, Text, Avatar, Button, Divider } from "native-base";
 import { verticalScale, horizontalScale } from "../../utilities/dimensions";
-import { newColorTheme, wildWatermelon } from "../../constants/Colors";
+import {
+  aliceBlue,
+  newColorTheme,
+  nobel,
+  wildWatermelon,
+} from "../../constants/Colors";
 import { Fonts, Images } from "../../constants";
-import ImagePicker from "react-native-image-crop-picker";
+import ImagePicker, {
+  ImageOrVideo,
+  Options,
+} from "react-native-image-crop-picker";
 import InfoModal from "../../components/InfoModal";
 import { modalEnums } from "../../types/Enums";
 import {
   CommonActions,
-  StackActions,
+  CompositeScreenProps,
   useFocusEffect,
-  useNavigation,
 } from "@react-navigation/native";
 import ProfileInformationRow from "../../components/ProfileInformationRow";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Profile } from "../../types/Interface";
 import {
-  apimiddleWare,
   createFormData,
   getFirstAndLastCharsUppercase,
 } from "../../utilities/helper-functions";
-import { Content_Type } from "../../constants/Base_Url";
 import * as Animatable from "react-native-animatable";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useTranslation } from "react-i18next";
 import useAxios from "../../hooks/useAxios";
-import { useAppDispatch } from "../../hooks/hooks";
+import Personal from "../../assets/svg/Personal.svg";
+import FAQ from "../../assets/svg/FAQ.svg";
+import Language from "../../assets/svg/Language.svg";
+import Logout from "../../assets/svg/Logout.svg";
+import Rewards from "../../assets/svg/Rewards.svg";
+import Terms from "../../assets/svg/Terms.svg";
+import Verification from "../../assets/svg/Verification.svg";
+import Settings from "../../assets/svg/Settings.svg";
+import PhotoPicker from "../../components/PhotoPicker";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { TabParamsList } from "../../navigators/bottom-navigator/BottomNavigator";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../navigators/stack-navigator/StackNavigator";
 
-const ProfileScreen = () => {
-  const [imageModal, setImageModal] = useState(false);
-  const [isButtonPressed, setButtonPressed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [userInfo, setUserInfo] = useState<Profile>();
-  const avatarName = getFirstAndLastCharsUppercase(userInfo?.fullName || "");
+type ProfileScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<TabParamsList, "ProfileScreen">,
+  NativeStackScreenProps<RootStackParamList>
+>;
+
+const ProfileScreen = ({ navigation }: ProfileScreenProps) => {
+  const [photoPickerModal, showPhotoPickerModal] = useState(false);
+  const [userProfile, setUserProfile] = useState<ProfileResponse>();
+  const [profileImage, setProfileImage] = useState<string>();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isLoggingOut, setLoggingOut] = useState(false);
+  const [updatingProfile, setUpdatingProfile] = useState(false);
   const { t } = useTranslation();
-  const navigation = useNavigation();
-  const dispatch = useAppDispatch();
 
-  const [profileImage, setProfileImage] = useState(
-    "https://images.unsplash.com/photo-1614289371518-722f2615943d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+  const avatarName = useMemo(
+    () => getFirstAndLastCharsUppercase(userProfile?.fullName || ""),
+    [userProfile?.fullName]
   );
+
+  const pickerOptions: Options = useMemo(() => {
+    return {
+      width: 300,
+      height: 400,
+      cropping: true,
+    };
+  }, []);
+
+  const handlePickedImage = (image: ImageOrVideo) => {
+    showPhotoPickerModal(false);
+    setProfileImage(image.path);
+    sendUpdateProfileRequest(image.path, image.mime);
+  };
 
   const [verificationModal, setVerificationModal] = useState({
     verified: true,
     notVerified: false,
   });
-  const [logoutModal, setLogoutModal] = useState(false);
-
+  const [isButtonPressed, setButtonPressed] = useState(false);
   const handleCallback = (payload: any) => {
-    console.log({ payload });
     setButtonPressed(false);
     if (payload.name === modalEnums.ACCOUNT_NOT_VERIFIED) {
       setVerificationModal((prevData) => ({
@@ -66,6 +112,10 @@ const ProfileScreen = () => {
     }
   };
 
+  const [logoutResponse, logout] = useAxios<MessageResponse>(
+    "/auth/logout",
+    "post"
+  );
   const logoutSocialLogIn = async () => {
     try {
       const data = await GoogleSignin.signOut();
@@ -75,184 +125,167 @@ const ProfileScreen = () => {
     }
   };
 
-  const logoutHandler = async () => {
-    setIsLoading(true);
-    await logoutSocialLogIn();
-    await AsyncStorage.removeItem("loginUserData");
-    navigation.dispatch(
-      StackActions.replace("AuthStack", {
-        screen: "LoginScreen",
-      })
-    );
+  const logoutHandler = () => {
+    setLoggingOut(true);
+    abortControllerRef.current = logout();
   };
 
-  const SelectImageFromGallery = async () => {
-    await ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true,
-    }).then((image: any) => {
-      console.log(image);
-      setProfileImage(image.path);
-      setImageModal(false);
-      setImage(image);
-    });
+  useEffect(() => {
+    if (logoutResponse === null) {
+      setLoggingOut(false);
+    }
+
+    if (logoutResponse && logoutResponse.message === "Logout Successful") {
+      navigateToLoginScreen();
+    }
+  }, [logoutResponse]);
+
+  const navigateToLoginScreen = async () => {
+    await logoutSocialLogIn();
+    await AsyncStorage.removeItem("loginUserData");
+    navigation.replace("AuthStack", { screen: "LoginScreen" });
+  };
+
+  const [profileResponse, updateProfile] = useAxios<ProfileResponse>(
+    "/user/profile",
+    "put",
+    {
+      "Request failed": "Invalid request data. Please check your input.",
+    }
+  );
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const selectImageFromGallery = async () => {
+    const result: ImageOrVideo = await ImagePicker.openPicker(pickerOptions);
+    handlePickedImage(result);
   };
 
   const selectImgeFromCamera = async () => {
-    await ImagePicker.openCamera({
-      width: 300,
-      height: 400,
-      cropping: true,
-    }).then((image: any) => {
-      console.log(image);
-      setProfileImage(image.path);
-      setImageModal(false);
-      setImage(image);
-    });
+    const result: ImageOrVideo = await ImagePicker.openCamera(pickerOptions);
+    handlePickedImage(result);
   };
-  const [data, start] = useAxios("/user/profile", "put", {
-    "Request failed": "Invalid request data. Please check your input.",
-  });
-  const setImage = async (img: any) => {
+
+  const sendUpdateProfileRequest = async (path: string, mime: string) => {
+    setUpdatingProfile(true);
     const data = {
       profileImg: {
-        uri: (img as any).path,
-        name: (img as any).path?.split("/")[
-          (img as any).path?.split("/")?.length - 1
-        ],
-        fileName: (img as any)?.path.split("/")[
-          (img as any)?.path.split("/")?.length - 1
-        ],
-        type: (img as any).mime,
+        uri: path,
+        name: path.split("/")[path.split("/")?.length - 1],
+        fileName: path.split("/")[path.split("/")?.length - 1],
+        type: mime,
       },
     };
 
-    console.log({ data: data.profileImg });
+    abortControllerRef.current = updateProfile({
+      data: createFormData(data),
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  };
 
-    try {
-      await start({
-        data: createFormData(data),
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      console.log({ response: data });
-      if (data) {
-        setProfileImage(data.profileImg.uri);
-        const getItems = await AsyncStorage.getItem("loginUserData");
-        if (getItems) {
-          const parsedItem = JSON.parse(getItems);
-          parsedItem.profileImg = data.profileImg.uri;
-          const stringifyResponse = JSON.stringify(parsedItem);
-          await AsyncStorage.setItem("loginUserData", stringifyResponse);
+  useEffect(() => {
+    if (profileResponse === null) {
+      setUpdatingProfile(false);
+    }
+
+    if (profileResponse) {
+      if (userProfile) {
+        userProfile.profileImg = profileResponse.profileImg;
+        AsyncStorage.setItem("loginUserData", JSON.stringify(userProfile)).then(
+          () => {
+            setUpdatingProfile(false);
+          }
+        );
+      }
+    }
+  }, [profileResponse]);
+
+  const setSavedProfileImage = async () => {
+    AsyncStorage.getItem(
+      "loginUserData",
+      (error?: Error | null, result?: string | null) => {
+        if (result) {
+          const profile = JSON.parse(result);
+          setUserProfile(profile);
+          setProfileImage(profile.profileImg);
+        } else if (error) {
+          console.log(error.message);
         }
       }
-    } catch (error: any) {
-      console.error(
-        "Error updating profile image:",
-        error.response?.data || error.message
-      );
-    }
+    );
   };
 
-  const getData = async () => {
-    try {
-      const getUserData: any = await AsyncStorage.getItem("loginUserData");
-      const userData = JSON.parse(getUserData);
-      setUserInfo(userData);
-      setProfileImage(userData.profileImg);
-      console.log("User Data:", userData);
-    } catch (error) {
-      console.error("Error retrieving user data from AsyncStorage:", error);
-    }
-  };
+  useFocusEffect(
+    useCallback(() => {
+      setSavedProfileImage();
+    }, [])
+  );
+
   useEffect(() => {
-    getData();
+    return () => abortControllerRef.current?.abort();
   }, []);
 
   return (
-    <View
-      flex={1}
-      bg={"BACKGROUND_COLOR"}
-      pt={verticalScale(15)}
-      px={horizontalScale(22)}
-    >
+    <View style={styles.container}>
       <StatusBar
         barStyle={"dark-content"}
         backgroundColor={newColorTheme.BACKGROUND_COLOR}
       />
+
       <View justifyContent={"center"} alignItems={"center"} mt={5}>
-        <Avatar
-          bg="amber.500"
-          source={{
-            uri: profileImage,
-          }}
-          size="xl"
-        >
+        <Avatar bg="amber.500" source={{ uri: profileImage }} size="xl">
           {avatarName}
+
           <Avatar.Badge
             p={verticalScale(13)}
             bg={wildWatermelon}
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <TouchableOpacity
-              style={{ justifyContent: "center" }}
-              onPress={() => {
-                setImageModal(true);
-              }}
-            >
-              <Images.Camera width={18} height={18} />
-            </TouchableOpacity>
+            {updatingProfile ? (
+              <ActivityIndicator size={"large"} color={wildWatermelon} />
+            ) : (
+              <TouchableOpacity
+                style={{ justifyContent: "center" }}
+                onPress={() => showPhotoPickerModal(true)}
+              >
+                <Images.Camera width={18} height={18} />
+              </TouchableOpacity>
+            )}
           </Avatar.Badge>
         </Avatar>
       </View>
-      <View
-        flexDirection={"row"}
-        alignItems={"center"}
-        justifyContent={"center"}
-      >
-        <Text
-          mt={2}
-          fontSize={verticalScale(20)}
-          color={"#06202E"}
-          letterSpacing={0.3}
-          fontFamily={Fonts.POPPINS_BOLD}
-          isTruncated={true}
-          numberOfLines={1}
-          maxWidth={horizontalScale(250)}
-          textAlign="center"
-        >
-          {userInfo?.fullName}
+
+      <View style={styles.centeredRow}>
+        <Text style={styles.fullName} isTruncated={true} numberOfLines={1}>
+          {userProfile?.fullName}
         </Text>
         <Images.Reward />
       </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: verticalScale(15) }}
+        contentContainerStyle={{ paddingBottom: verticalScale(30) }}
       >
-        <Text
-          mt={5}
-          color={"GREY"}
-          fontFamily={Fonts.POPPINS_REGULAR}
-          fontSize={verticalScale(15)}
-        >
-          {t("general")}
-        </Text>
+        <Text style={styles.grayText}>{t("general")}</Text>
 
         <ProfileInformationRow
           heading={t("personal_information")}
-          onPress={() =>
-            navigation.dispatch(CommonActions.navigate("PersonalInformation"))
-          }
-          startIcon={{ Icon: Images.Profiles }}
+          onPress={() => {
+            if (userProfile) {
+              navigation.navigate("UpdateProfileScreen", {
+                profile: userProfile,
+              });
+            }
+          }}
+          startIcon={{ Icon: Personal }}
           endIconMode="navigation"
         />
+        <Divider backgroundColor={aliceBlue} />
 
-        <ProfileInformationRow
+        {/* <ProfileInformationRow
           heading={t("account_verification")}
           onPress={() => {
-            if (userInfo?.settings?.isJazzDostVerified) {
+            if (userProfile?.settings?.isJazzDostVerified) {
               navigation.dispatch(
                 CommonActions.navigate("VerifiedAccountDetails")
               );
@@ -263,29 +296,32 @@ const ProfileScreen = () => {
               }));
             }
           }}
-          startIcon={{ Icon: Images.PaymentInfo }}
+          startIcon={{ Icon: Verification }}
           endIconMode={{
-            isVerified: userInfo?.settings?.isJazzDostVerified ?? false,
+            isVerified: userProfile?.settings?.isJazzDostVerified ?? false,
           }}
         />
+        <Divider backgroundColor={aliceBlue} /> */}
 
-        <ProfileInformationRow
+        {/* <ProfileInformationRow
           heading={t("my_rewards")}
           onPress={() =>
             navigation.dispatch(CommonActions.navigate("MyRewards"))
           }
-          startIcon={{ Icon: Images.Faq }}
+          startIcon={{ Icon: Rewards }}
           endIconMode="navigation"
         />
+        <Divider backgroundColor={aliceBlue} /> */}
 
         <ProfileInformationRow
           heading={t("faq_and_support")}
           onPress={() =>
             navigation.dispatch(CommonActions.navigate("FaqAndSupport"))
           }
-          startIcon={{ Icon: Images.Faq }}
+          startIcon={{ Icon: FAQ }}
           endIconMode="navigation"
         />
+        <Divider backgroundColor={aliceBlue} />
 
         <ProfileInformationRow
           heading={t("terms_and_conditions")}
@@ -296,38 +332,33 @@ const ProfileScreen = () => {
               })
             );
           }}
-          startIcon={{ Icon: Images.Faq }}
+          startIcon={{ Icon: Terms }}
           endIconMode="navigation"
         />
 
-        <Text
-          mt={5}
-          color={"GREY"}
-          fontFamily={Fonts.POPPINS_REGULAR}
-          fontSize={verticalScale(15)}
-        >
-          {t("preferences")}
-        </Text>
+        <Text style={styles.grayText}>{t("preferences")}</Text>
 
         <ProfileInformationRow
           heading={t("language")}
           onPress={() =>
             navigation.dispatch(CommonActions.navigate("Language"))
           }
-          startIcon={{ Icon: Images.Language }}
+          startIcon={{ Icon: Language }}
           endIconMode="navigation"
         />
+        <Divider backgroundColor={aliceBlue} />
 
         <ProfileInformationRow
           heading={t("bc_settings")}
-          startIcon={{ Icon: Images.Settings }}
+          startIcon={{ Icon: Settings }}
           endIconMode="navigation"
         />
+        <Divider backgroundColor={aliceBlue} />
 
         <ProfileInformationRow
           heading={t("log_out")}
-          onPress={() => setLogoutModal(true)}
-          startIcon={{ Icon: Images.Logout }}
+          onPress={() => setShowLogoutModal(true)}
+          startIcon={{ Icon: Logout }}
           endIconMode="navigation"
         />
       </ScrollView>
@@ -344,86 +375,20 @@ const ProfileScreen = () => {
         />
       )}
 
-      <Modal
-        visible={imageModal}
-        statusBarTranslucent
-        transparent
-        presentationStyle="overFullScreen"
-        animationType="fade"
-      >
-        <View flex={1} bg={"rgba(0, 0, 0, 0.63)"} justifyContent={"flex-end"}>
-          <View
-            mx={horizontalScale(20)}
-            bg={"WHITE_COLOR"}
-            borderRadius={15}
-            mb={verticalScale(15)}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                SelectImageFromGallery();
-              }}
-              activeOpacity={0.8}
-              style={{
-                borderColor: "DISABLED_COLOR",
-                borderBottomWidth: 0.5,
-                padding: 20,
-              }}
-            >
-              <Text
-                textAlign="center"
-                color={"PRIMARY_COLOR"}
-                fontFamily={Fonts.POPPINS_MEDIUM}
-                fontSize={verticalScale(18)}
-              >
-                {t("photo_gallery")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                selectImgeFromCamera();
-              }}
-              activeOpacity={0.5}
-              style={{
-                padding: 20,
-              }}
-            >
-              <Text
-                textAlign="center"
-                color={"PRIMARY_COLOR"}
-                fontFamily={Fonts.POPPINS_MEDIUM}
-                fontSize={verticalScale(18)}
-              >
-                {t("camera")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={() => {
-              setImageModal(false);
-            }}
-            style={{
-              borderRadius: 15,
-              padding: 20,
-              backgroundColor: "white",
-              marginHorizontal: horizontalScale(20),
-              marginBottom: verticalScale(15),
-            }}
-          >
-            <Text
-              textAlign="center"
-              color={"PRIMARY_COLOR"}
-              fontFamily={Fonts.POPPINS_MEDIUM}
-              fontSize={verticalScale(18)}
-            >
-              {t("cancel")}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+      <PhotoPicker
+        visible={photoPickerModal}
+        onDismiss={() => showPhotoPickerModal(false)}
+        onPick={(type) => {
+          if (type == "camera") {
+            selectImgeFromCamera();
+          } else {
+            selectImageFromGallery();
+          }
+        }}
+      />
 
       <Modal
-        visible={logoutModal}
+        visible={showLogoutModal}
         statusBarTranslucent
         transparent
         presentationStyle="overFullScreen"
@@ -476,13 +441,13 @@ const ProfileScreen = () => {
                 mr={2}
                 borderRadius={10}
                 onPress={() => {
-                  setLogoutModal(false);
+                  setShowLogoutModal(false);
                 }}
               >
                 {t("cancel")}
               </Button>
               <Button
-                isLoading={isLoading}
+                isLoading={isLoggingOut}
                 variant="solid"
                 _text={{
                   color: "WHITE_COLOR",
@@ -505,7 +470,7 @@ const ProfileScreen = () => {
                 size={"lg"}
                 px={"8"}
                 borderRadius={10}
-                isPressed={isLoading}
+                isPressed={isLoggingOut}
                 onPress={logoutHandler}
               >
                 {t("log_out")}
@@ -517,5 +482,35 @@ const ProfileScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: verticalScale(15),
+  },
+  fullName: {
+    marginTop: 2,
+    fontSize: verticalScale(20),
+    color: "#06202E",
+    letterSpacing: 0.3,
+    fontFamily: Fonts.POPPINS_BOLD,
+    maxWidth: horizontalScale(250),
+    textAlign: "center",
+  },
+  centeredRow: {
+    marginTop: verticalScale(4),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  grayText: {
+    marginStart: horizontalScale(22),
+    marginTop: verticalScale(16),
+    color: nobel,
+    fontFamily: Fonts.POPPINS_REGULAR,
+    fontSize: verticalScale(15),
+  },
+});
 
 export default ProfileScreen;

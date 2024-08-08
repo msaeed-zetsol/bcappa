@@ -28,6 +28,7 @@ import dynamicLinks from "@react-native-firebase/dynamic-links";
 import { useAppDispatch } from "../../hooks/hooks";
 import { setErrors } from "../../redux/user/userSlice";
 import PrimaryButton from "../../components/PrimaryButton";
+import { updateRefreshState } from "../../redux/refresh/refreshSlice";
 
 type BcCreatedProps = NativeStackScreenProps<
   RootStackParamList,
@@ -183,7 +184,15 @@ const BcCreatedScreen = ({ route, navigation }: BcCreatedProps) => {
         text="Back"
         isDisabled={false}
         isLoading={false}
-        onClick={navigation.goBack}
+        onClick={() => {
+          dispatch(
+            updateRefreshState({
+              home: true,
+              myBcs: true,
+            })
+          );
+          navigation.goBack();
+        }}
         props={{ width: "85%", mt: verticalScale(16) }}
       />
     </ScrollView>
@@ -193,6 +202,7 @@ const BcCreatedScreen = ({ route, navigation }: BcCreatedProps) => {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 24,
+    paddingBottom: verticalScale(36),
     flex: 1,
     backgroundColor: "white",
   },

@@ -68,6 +68,10 @@ export async function onDisplayNotification(
       android: {
         channelId,
         smallIcon: "ic_launcher_round",
+        pressAction: {
+          id: "demo",
+          launchActivity: "default",
+        },
       },
     });
   } catch (error) {
@@ -79,6 +83,7 @@ export const notificationListener = async (navigation?: any) => {
   try {
     // fired when app is opened from background upon notification click.
     messaging().onNotificationOpenedApp(async (remoteMessage) => {
+      console.log(`onNotificationOpenedApp`);
       // TODO(khuram): handle what happens to notification according to its type.
     });
 

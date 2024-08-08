@@ -26,14 +26,23 @@ type SignupFormValues = {
   cnic: string;
   password: string;
   gender: string;
-  countryCode: string;
   dob: string;
   role: "customer";
 };
 
+type ProfileFormValues = {
+  fullName: string;
+  email?: string;
+  phone: string;
+  cnic: string;
+  password: string;
+  gender: string;
+  dob: string;
+};
+
 type ForgotPasswordFormValues = {
-  email: string | undefined;
-  phone: string | undefined;
+  email?: string;
+  phone?: string;
 };
 
 type NewPasswordFormValues = {

@@ -31,6 +31,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigators/stack-navigator/StackNavigator";
 import ViewMembersButton from "../../components/ViewMembersButton";
 import SecondaryButton from "../../components/SecondaryButton";
+import { updateRefreshState } from "../../redux/refresh/refreshSlice";
 
 type CreateBcScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -70,7 +71,6 @@ const CreateOrUpdateBcScreen = ({ route, navigation }: CreateBcScreenProps) => {
     formState: { errors, isValid },
     setValue,
     watch,
-    trigger,
   } = useForm<CreateBcFormValues>({
     defaultValues: {
       title: params.bc?.title ?? "",
@@ -141,7 +141,6 @@ const CreateOrUpdateBcScreen = ({ route, navigation }: CreateBcScreenProps) => {
     }
 
     if (createResponse) {
-      dispatch(setMembers([]));
       navigation.replace("BcCreatedScreen", { bcId: createResponse.id });
     }
   }, [createResponse]);
@@ -152,7 +151,12 @@ const CreateOrUpdateBcScreen = ({ route, navigation }: CreateBcScreenProps) => {
     }
 
     if (updateResponse) {
-      dispatch(setMembers([]));
+      dispatch(
+        updateRefreshState({
+          home: true,
+          myBcs: true,
+        })
+      );
       navigation.goBack();
     }
   }, [updateResponse]);
@@ -179,7 +183,7 @@ const CreateOrUpdateBcScreen = ({ route, navigation }: CreateBcScreenProps) => {
             render={({ field: { onChange, onBlur, value } }) => (
               <View>
                 <Input
-                  readOnly={loading}
+                  isDisabled={loading}
                   placeholder={t("title")}
                   w="100%"
                   size="lg"
@@ -215,7 +219,7 @@ const CreateOrUpdateBcScreen = ({ route, navigation }: CreateBcScreenProps) => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <View>
                   <Input
-                    readOnly={loading}
+                    isDisabled={loading}
                     placeholder={t("max_users")}
                     w="100%"
                     size="lg"
@@ -254,7 +258,7 @@ const CreateOrUpdateBcScreen = ({ route, navigation }: CreateBcScreenProps) => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <View>
                   <Input
-                    readOnly={loading}
+                    isDisabled={loading}
                     placeholder={t("amount_per_month")}
                     w="100%"
                     size="lg"
@@ -410,10 +414,10 @@ const CreateOrUpdateBcScreen = ({ route, navigation }: CreateBcScreenProps) => {
           membersLength={members.length}
           onClick={() => {
             navigation.navigate("AddUpdateMembersScreen", {
-              bcId: 0,
+              bcId: params.bc?.id ?? "",
               isBalloting: isBalloting,
               maxUsers: +maxUsers,
-              updatingBc: false,
+              updatingBc: isUpdatingBc,
             });
           }}
           style={{
@@ -443,11 +447,6 @@ const CreateOrUpdateBcScreen = ({ route, navigation }: CreateBcScreenProps) => {
             color={wildWatermelon}
             props={{ mb: verticalScale(10) }}
           />
-          {console.log(`is form valid: ${isValid}`)}
-          {console.log(`are enough members: ${members.length > 1}`)}
-          {console.log(
-            `are members greater than limit: ${members.length} - ${maxUsers}`
-          )}
           <PrimaryButton
             text={isUpdatingBc ? t("update") : t("create")}
             isDisabled={

@@ -28,9 +28,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import InfoModal from "../../components/InfoModal";
 import { useTranslation } from "react-i18next";
 import AppBar from "../../components/AppBar";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../navigators/stack-navigator/StackNavigator";
+import useAxios from "../../hooks/useAxios";
+import { useAppDispatch } from "../../hooks/hooks";
 
-const BcDetailsScreen = () => {
-  const routes: any = useRoute();
+type BcDetailsScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "BcDetailsScreen"
+>;
+
+const BcDetailsScreen = ({ route, navigation }: BcDetailsScreenProps) => {
+  const { bcId, deeplink } = route.params;
   const [bcData, setBcData] = useState<any>([]);
   const [BcMembers, setBcMembers] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -38,9 +47,9 @@ const BcDetailsScreen = () => {
   const [loadScreen, setLoadScreen] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [bcTime, setBcTime] = useState<any>("");
-  const navigation = useNavigation();
   const { t } = useTranslation();
   const numberFormatter = useMemo(() => new Intl.NumberFormat(), []);
+  const dispatch = useAppDispatch();
 
   const [isJazzDostVerified, setIsJazzDostVerified] = useState<boolean | null>(
     null
@@ -48,16 +57,26 @@ const BcDetailsScreen = () => {
 
   const [isPresent, setIsPresent] = useState<boolean>(false);
   const [isButtonPressed, setButtonPressed] = useState(false);
-  const dispatch: any = useDispatch();
-  const { item, deeplink } = routes.params;
+
   const currentDateISOString = new Date().toISOString();
+
+  const [response, getDetails] = useAxios(`/bcs/details/${bcId}`, "get");
+
+  useEffect(() => {
+    if (response === null) {
+      setIsLoading(false);
+    }
+
+    if (response) {
+    }
+  }, [response]);
 
   const getData = async () => {
     const getUserData: any = await AsyncStorage.getItem("loginUserData");
     const parsedUserData: any = JSON.parse(getUserData);
     setUserData(parsedUserData);
     const response = await apimiddleWare({
-      url: `/bcs/details/${item}`,
+      url: `/bcs/details/${bcId}`,
       method: "get",
       navigation,
       reduxDispatch: dispatch,
@@ -133,7 +152,7 @@ const BcDetailsScreen = () => {
 
   const Join = async () => {
     const response = await apimiddleWare({
-      url: `/bcs/join/${item}`,
+      url: `/bcs/join/${bcId}`,
       method: "post",
     });
     if (response) {

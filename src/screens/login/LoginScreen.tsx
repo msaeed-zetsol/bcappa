@@ -3,8 +3,9 @@ import {
   StatusBar,
   TouchableOpacity,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Images, Fonts } from "../../constants";
 import { horizontalScale, verticalScale } from "../../utilities/dimensions";
 import { useForm, Controller } from "react-hook-form";
@@ -19,12 +20,16 @@ import {
   View,
 } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { StackActions } from "@react-navigation/native";
+import { CompositeScreenProps, StackActions } from "@react-navigation/native";
 import { newColorTheme } from "../../constants/Colors";
 import { apimiddleWare } from "../../utilities/helper-functions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { requestUserPermission } from "../../utilities/firebase-notifications";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 import {
   LoginManager,
   AccessToken,
@@ -36,15 +41,16 @@ import useAxios from "../../hooks/useAxios";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigators/stack-navigator/AuthStack";
 import PrimaryButton from "../../components/PrimaryButton";
+import { RootStackParamList } from "../../navigators/stack-navigator/StackNavigator";
 
 GoogleSignin.configure({
   webClientId:
     "425837288874-ivnre9s31uk6clo206fqaa8op0n5p5r3.apps.googleusercontent.com",
 });
 
-type LoginScreenProps = NativeStackScreenProps<
-  AuthStackParamList,
-  "LoginScreen"
+type LoginScreenProps = CompositeScreenProps<
+  NativeStackScreenProps<AuthStackParamList, "LoginScreen">,
+  NativeStackScreenProps<RootStackParamList>
 >;
 
 const LoginScreen = ({ navigation }: LoginScreenProps) => {
@@ -66,16 +72,19 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     criteriaMode: "firstError",
   });
 
-  const [data, start] = useAxios("/auth/login", "post", {
+  const [data, start] = useAxios<ProfileResponse>("/auth/login", "post", {
     "Email or Password is Invalid.": "Incorrect email or password.",
   });
   const [loading, setLoading] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
 
   const login = async (formValues: LoginFormValues) => {
     setLoading(true);
     Keyboard.dismiss();
     const token = await getFcmToken();
-    start({
+    abortControllerRef.current = start({
       data: {
         email: formValues.email,
         password: formValues.password,
@@ -115,34 +124,19 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     return "";
   };
 
-  // ------------------Login ---------------------//
+  const [googleResponse, socialSignIn] = useAxios("/auth/login/google", "post");
+  const [socialSigning, setSocialSignin] = useState(false);
 
-  const googleLogin = async () => {
-    try {
-      await GoogleSignin.hasPlayServices({
-        showPlayServicesUpdateDialog: true,
-      });
-      const { user } = await GoogleSignin.signIn();
-      const getToken: any = await AsyncStorage.getItem("fcmToken");
-      const parsedFcmToken: any = await JSON.parse(getToken);
+  useEffect(() => {
+    if (googleResponse === null) {
+      setSocialSignin(false);
+    }
 
-      const datas = {
-        ...user,
-        fcmToken: parsedFcmToken,
-        role: "customer",
-      };
-
-      const response = await apimiddleWare({
-        url: "/auth/login/google",
-        method: "post",
-        data: datas,
-        reduxDispatch: dispatch,
-        navigation: navigation,
-      });
-
-      if (response) {
-        const loginUserDataString = JSON.stringify(response);
-        await AsyncStorage.setItem("loginUserData", loginUserDataString);
+    if (googleResponse) {
+      AsyncStorage.setItem(
+        "loginUserData",
+        JSON.stringify(googleResponse)
+      ).then(() => {
         navigation.dispatch(
           StackActions.replace("BottomNavigator", {
             screen: "HomeScreen",
@@ -151,9 +145,35 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
             },
           })
         );
+      });
+    }
+  }, [googleResponse]);
+
+  const signInWithGoogle = async () => {
+    try {
+      const currentUser = GoogleSignin.getCurrentUser();
+      if(currentUser) {
+        await GoogleSignin.revokeAccess();
       }
-    } catch (err) {
-      console.log(err);
+      
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
+      const { user } = await GoogleSignin.signIn();
+
+      setSocialSignin(true);
+      const getToken: any = await AsyncStorage.getItem("fcmToken");
+      const parsedFcmToken: any = await JSON.parse(getToken);
+
+      const data = {
+        ...user,
+        fcmToken: parsedFcmToken,
+        role: "customer",
+      };
+
+      abortControllerRef.current = socialSignIn({ data: data });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -232,15 +252,6 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     }
   };
 
-  const logoutSocialLogIn = async () => {
-    try {
-      const data = await GoogleSignin.signOut();
-      console.log({ data });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <StatusBar
@@ -272,7 +283,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
             render={({ field: { onChange, onBlur, value } }) => (
               <View>
                 <Input
-                  isDisabled={loading}
+                  isDisabled={loading || socialSigning}
                   placeholder={t("email_id")}
                   w="100%"
                   size="lg"
@@ -332,14 +343,14 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                isDisabled={loading}
+                isDisabled={loading || socialSigning}
                 placeholder={t("password")}
                 w="100%"
                 size="lg"
                 borderRadius={16}
                 p="3"
                 pl="5"
-                mt={verticalScale(25)}
+                mt={verticalScale(16)}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -394,7 +405,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
       </TouchableOpacity>
 
       <PrimaryButton
-        isDisabled={!isValid}
+        isDisabled={!isValid || socialSigning}
         isLoading={loading}
         onClick={handleSubmit(login)}
         text={t("sign_in")}
@@ -426,25 +437,34 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
         alignItems={"center"}
       >
         <Pressable
-          disabled={loading}
+          android_ripple={{
+            color: "#cee4f0",
+          }}
+          disabled={loading || socialSigning}
           style={[
             styles.googleButton,
             loading ? styles.inactiveGoogleButton : styles.activeGoogleButton,
           ]}
-          onPress={googleLogin}
+          onPress={signInWithGoogle}
           _pressed={{
             backgroundColor: "DISABLED_COLOR",
           }}
         >
-          <Images.Google />
-          <Text
-            pl="2"
-            fontSize={verticalScale(16)}
-            textAlign={"center"}
-            fontFamily={Fonts.POPPINS_MEDIUM}
-          >
-            {t("google")}
-          </Text>
+          {socialSigning ? (
+            <ActivityIndicator size={"small"} color={"gray"} />
+          ) : (
+            <>
+              <Images.Google />
+              <Text
+                pl="2"
+                fontSize={verticalScale(16)}
+                textAlign={"center"}
+                fontFamily={Fonts.POPPINS_MEDIUM}
+              >
+                {t("google")}
+              </Text>
+            </>
+          )}
         </Pressable>
         {/* <Pressable
           style={styles.socialButton}

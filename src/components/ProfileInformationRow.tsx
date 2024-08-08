@@ -1,8 +1,9 @@
-import { I18nManager, StyleSheet, TouchableOpacity } from "react-native";
+import { I18nManager, Pressable, StyleSheet } from "react-native";
 import { View, Text } from "native-base";
 import React from "react";
 import { Fonts, Images } from "../constants";
-import { verticalScale } from "../utilities/dimensions";
+import { horizontalScale, verticalScale } from "../utilities/dimensions";
+import { aliceBlue } from "../constants/Colors";
 
 type EndIconMode =
   | "navigation"
@@ -17,7 +18,7 @@ type StartIcon = {
 
 type ProfileInformationRowProps = {
   heading: string;
-  startIcon: StartIcon;
+  startIcon?: StartIcon;
   endIconMode: EndIconMode;
   onPress?: () => void;
 };
@@ -29,9 +30,19 @@ const ProfileInformationRow = ({
   onPress,
 }: ProfileInformationRowProps) => {
   return (
-    <TouchableOpacity style={styles.row} onPress={onPress}>
+    <Pressable
+      android_ripple={{
+        color: "#cee4f0",
+      }}
+      style={styles.row}
+      onPress={onPress}
+    >
       <View style={styles.innerRow}>
-        <startIcon.Icon height={40} width={40} />
+        {startIcon && (
+          <View style={styles.startIconContainer}>
+            <startIcon.Icon height={20} width={20} />
+          </View>
+        )}
         <Text style={styles.text}>{heading}</Text>
       </View>
       {endIconMode === "navigation" ? (
@@ -45,7 +56,7 @@ const ProfileInformationRow = ({
       ) : (
         <Images.NotVerified style={styles.unverifiedIcon} />
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -54,20 +65,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: verticalScale(25),
+    paddingVertical: verticalScale(20),
+    paddingHorizontal: horizontalScale(22),
   },
   innerRow: {
     flexDirection: "row",
     alignItems: "center",
   },
   text: {
-    marginStart: 16,
+    marginStart: 12,
     color: "#03110A",
     fontFamily: Fonts.POPPINS_MEDIUM,
-    fontSize: verticalScale(18),
+    fontSize: verticalScale(17),
   },
   unverifiedIcon: {
     marginEnd: 8,
+  },
+  startIconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: aliceBlue,
+    borderRadius: 32,
+    padding: 8,
   },
 });
 
