@@ -18,7 +18,7 @@ interface Option {
 
 interface MultiSelectModalProps {
   options: Option[];
-  selectedOptions: any;
+  selectedOptions: string[];  
   onSelect: (selected: string[]) => void;
   placeholder: string;
   disabled?: boolean;
@@ -39,9 +39,9 @@ const MultiSelectModal: React.FC<MultiSelectModalProps> = ({
 
   const handleSelect = (option: string) => {
     if (selectedOptions.includes(option)) {
-      onSelect(selectedOptions.filter((item: string) => item !== option));
+      onSelect(selectedOptions.filter((item) => item !== option));
     } else {
-      onSelect([option]);
+      onSelect([...selectedOptions, option]); 
     }
     toggleModal();
   };
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    elevation: 40,
   },
   buttonText: {
     color: "#000",
@@ -118,12 +119,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContent: {
-    width: 300,
+    width: 310,
     backgroundColor: "#fff",
-    borderRadius: 10,
+    borderRadius: 20,
     padding: 20,
-    alignItems: "center",
-    elevation: 20,
+    elevation: 40,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
@@ -133,15 +133,15 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   option: {
-    padding: 20,
+    padding: 15,
     width: "100%",
-    alignItems: "center",
+ 
   },
   selectedOption: {
     backgroundColor: "#f6f3f3",
   },
   optionText: {
-    fontSize: 18,
+    fontSize: 16,
   },
   selectedOptionText: {
     color: "#000",

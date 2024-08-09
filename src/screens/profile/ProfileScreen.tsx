@@ -44,7 +44,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useTranslation } from "react-i18next";
 import useAxios from "../../hooks/useAxios";
 import Personal from "../../assets/svg/Personal.svg";
-import FAQ from "../../assets/svg/FAQ.svg";
+import FAQ from "../../assets/svg/Faq.svg"
 import Language from "../../assets/svg/Language.svg";
 import Logout from "../../assets/svg/Logout.svg";
 import Rewards from "../../assets/svg/Rewards.svg";

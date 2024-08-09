@@ -8,7 +8,7 @@ import SignupScreen from "../../screens/signup/SignupScreen";
 import AccountVerificationScreen, {
   VerificationType,
 } from "../../screens/account-verification/AccountVerificationScreen";
-import OnboardingScreen from "../../screens/onboarding/OnboardingScreen";
+import OnboardingScreen from "../../screens/onboarding/onboardingScreen";
 import { deepSkyBlue } from "../../constants/Colors";
 
 export type AuthStackParamList = {

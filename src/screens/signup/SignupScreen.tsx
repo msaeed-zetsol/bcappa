@@ -113,7 +113,6 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
       },
     });
   };
-
   useEffect(() => {
     if (data === null) {
       setLoading(false);
@@ -417,18 +416,23 @@ const SignupScreen = ({ navigation }: SignUpScreenProps) => {
               <Controller
                 control={control}
                 name="gender"
-                defaultValue={""}
+                defaultValue=""
                 render={({ field: { onChange, value } }) => (
                   <MultiSelectModal
                     options={genderOptions}
-                    selectedOptions={value}
-                    onSelect={onChange}
+                    selectedOptions={value ? [value] : []}
+                    onSelect={(selectedValue) => {
+                      onChange(
+                        selectedValue.length > 0 ? selectedValue[0] : ""
+                      );
+                    }}
                     placeholder={t("select_gender")}
                     disabled={false}
                   />
                 )}
                 rules={{ required: t("gender_is_required") }}
               />
+
               {errors.gender && (
                 <Text style={globalStyles.errorText}>
                   {errors.gender.message}
